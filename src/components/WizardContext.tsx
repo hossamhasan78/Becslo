@@ -12,6 +12,12 @@ interface WizardContextType {
   services: Record<string, Array<{ id: string; name: string; category: string; default_hours: number; min_hours: number; max_hours: number }>>
   config: Record<string, unknown>
   countries: Array<{ code: string; name: string }>
+  errors: Record<string, string>
+  setError: (field: string, error: string) => void
+  clearError: (field: string) => void
+  clearAllErrors: () => void
+  isLoading: boolean
+  setIsLoading: (loading: boolean) => void
 }
 
 const WizardContext = createContext<WizardContextType | null>(null)
@@ -39,6 +45,8 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     costs: []
   })
   const [result, setResult] = useState<CalculationResult | null>(null)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -69,6 +77,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
       geoMultipliers: (config.geo_multipliers as Parameters<typeof calculatePrice>[1]['geoMultipliers']) || {},
       riskBuffer: (config.risk_buffer as number) || 10
     })
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setResult(calcResult)
   }, [input, config])
 
@@ -76,8 +85,24 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     setInput(prev => ({ ...prev, ...updates }))
   }
 
+  const setError = (field: string, error: string) => {
+    setErrors(prev => ({ ...prev, [field]: error }))
+  }
+
+  const clearError = (field: string) => {
+    setErrors(prev => {
+      const newErrors = { ...prev }
+      delete newErrors[field]
+      return newErrors
+    })
+  }
+
+  const clearAllErrors = () => {
+    setErrors({})
+  }
+
   return (
-    <WizardContext.Provider value={{ step, setStep, input, updateInput, result, services, config, countries }}>
+    <WizardContext.Provider value={{ step, setStep, input, updateInput, result, services, config, countries, errors, setError, clearError, clearAllErrors, isLoading, setIsLoading }}>
       {children}
     </WizardContext.Provider>
   )
