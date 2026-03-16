@@ -58,9 +58,9 @@
 
 ## Phase 3: Live Preview Panel
 
-- [ ] T019 [P] Create LivePreview component in src/components/wizard/LivePreview.tsx
-- [ ] T020 [P] Implement real-time calculation using pricing-engine.ts
-- [ ] T021 [P] Ensure preview updates within 100ms of input change
+- [X] T019 [P] Create LivePreview component in src/components/wizard/LivePreview.tsx
+- [X] T020 [P] Implement real-time calculation using pricing-engine.ts
+- [X] T021 [P] Ensure preview updates within 100ms of input change
 
 ---
 
