@@ -69,13 +69,25 @@ src/
 ├── components/
 │   ├── wizard/               # Calculator wizard components
 │   │   ├── PricingModelStep.tsx
+│   │   ├── ServiceSelectionStep.tsx  # New - with validation
+│   │   ├── ExperienceStep.tsx        # New - with validation
+│   │   ├── GeographyStep.tsx         # New - with validation
+│   │   ├── CostsStep.tsx             # New - with validation
 │   │   ├── LivePreview.tsx
-│   │   └── WizardContext.tsx
-│   └── admin/                # Admin components
-│       └── Navigation.tsx
-└── lib/
-    ├── supabase.ts           # Supabase client
-    └── pricing-engine.ts     # Pricing calculation logic
+│   │   └── ResultsPreviewStep.tsx    # New
+│   ├── admin/               # Admin components
+│   │   └── Navigation.tsx
+│   ├── ui/                  # UI components
+│   │   ├── LoadingSpinner.tsx        # New
+│   │   ├── SkeletonLoader.tsx       # New
+│   │   └── ConfirmDialog.tsx        # New
+│   └── ErrorBoundary.tsx             # New
+├── lib/
+│   ├── supabase.ts           # Supabase client
+│   ├── pricing-engine.ts     # Pricing calculation logic
+│   ├── validation.ts        # New - validation utilities
+│   ├── sanitize.ts           # New - XSS sanitization
+│   └── api-error.ts         # New - error handling
 ```
 
 **Structure Decision**: Single project with NextJS 14.x monolith architecture. No new directories needed - polish involves improving existing components.

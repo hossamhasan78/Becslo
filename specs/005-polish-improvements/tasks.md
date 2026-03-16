@@ -35,10 +35,10 @@
 
 - [ ] T004 [US1] Add validation utility in src/lib/validation.ts
 - [ ] T005 [P] [US1] Add validation to PricingModelStep in src/components/wizard/PricingModelStep.tsx
-- [ ] T006 [P] [US1] Add validation to ServiceSelectionStep in src/components/wizard/
-- [ ] T007 [US1] Add validation to ExperienceStep (designer/freelance years)
-- [ ] T008 [US1] Add validation to GeographyStep (country selection)
-- [ ] T009 [US1] Add validation to CostsStep (cost inputs)
+- [ ] T006 [P] [US1] Create ServiceSelectionStep with validation in src/components/wizard/ServiceSelectionStep.tsx
+- [ ] T007 [P] [US1] Create ExperienceStep with validation in src/components/wizard/ExperienceStep.tsx
+- [ ] T008 [P] [US1] Create GeographyStep with validation in src/components/wizard/GeographyStep.tsx
+- [ ] T009 [P] [US1] Create CostsStep with validation in src/components/wizard/CostsStep.tsx
 - [ ] T010 [US1] Add validation state to WizardContext in src/components/WizardContext.tsx
 
 **Checkpoint**: All wizard steps validate inputs before allowing progression
@@ -53,7 +53,7 @@
 
 ### Implementation
 
-- [ ] T011 [P] [US2] Add error handling wrapper to API calls in src/lib/api-client.ts
+- [ ] T011 [P] [US2] Create API error handler utility in src/lib/api-error.ts
 - [ ] T012 [P] [US2] Add global error boundary component in src/components/ErrorBoundary.tsx
 - [ ] T013 [US2] Add error state to WizardContext for display in LivePreview
 - [ ] T014 [US2] Add retry logic (3 attempts) for transient failures
