@@ -1,6 +1,6 @@
 'use client'
 
-import { useWizard } from './WizardContext'
+import { useWizard } from '@/components/WizardContext'
 
 export function PricingModelStep() {
   const { input, updateInput } = useWizard()
