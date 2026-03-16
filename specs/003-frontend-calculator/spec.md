@@ -119,6 +119,7 @@ As a user, I need to export my calculation as a PDF so that I can share it with 
 
 ### Edge Cases
 
+- What happens when unauthenticated user tries to access the calculator?
 - What happens when no services are selected?
 - What happens when API calls fail (services, config, countries)?
 - How does the wizard handle incomplete data when navigating between steps?
@@ -173,6 +174,14 @@ As a user, I need to export my calculation as a PDF so that I can share it with 
 - **SC-006**: PDF export generates and downloads successfully
 - **SC-007**: API failures show appropriate error messages without breaking the wizard
 - **SC-008**: Users can complete the full wizard flow from start to PDF export
+
+---
+
+## Clarifications
+
+### Session 2026-03-16
+
+- Q: Is authentication required for users to access and use the calculator, or can anonymous users use it? → A: Yes - users must sign in with Google OAuth to use calculator
 
 ---
 
