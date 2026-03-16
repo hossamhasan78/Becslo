@@ -131,6 +131,7 @@ All costs in USD. Each entry: name, amount, type (monthly/project).
 ### Admin Pages
 | Path | Description |
 |------|-------------|
+| `/admin` | Dashboard with navigation cards |
 | `/admin/analytics` | Numeric stats (no charts for MVP) |
 | `/admin/services` | CRUD for services |
 | `/admin/config` | Edit multipliers |
@@ -231,6 +232,14 @@ All costs in USD. Each entry: name, amount, type (monthly/project).
 
 ---
 
-## 12. Pending Items
+## 12. Implementation Status
 
-None - all specifications finalized.
+All phases complete as of 2026-03-16.
+
+| Phase | Status |
+|-------|--------|
+| Phase 1: Setup & Database | ✅ Complete |
+| Phase 2: Backend API | ✅ Complete |
+| Phase 3: Frontend Calculator | ✅ Complete |
+| Phase 4: Frontend Admin | ✅ Complete |
+| Phase 5: Polish | ✅ Complete |

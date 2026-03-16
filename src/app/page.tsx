@@ -1,65 +1,110 @@
-import Image from "next/image";
+'use client'
+
+import { WizardProvider, useWizard } from '@/components/WizardContext'
+import { PricingModelStep } from '@/components/wizard/PricingModelStep'
+import { ServiceSelectionStep } from '@/components/wizard/ServiceSelectionStep'
+import { ExperienceStep } from '@/components/wizard/ExperienceStep'
+import { GeographyStep } from '@/components/wizard/GeographyStep'
+import { CostsStep } from '@/components/wizard/CostsStep'
+import { ResultsPreviewStep } from '@/components/wizard/ResultsPreviewStep'
+import { ExportPdfStep } from '@/components/wizard/ExportPdfStep'
+import { LivePreview } from '@/components/wizard/LivePreview'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { SkeletonLoader } from '@/components/ui/SkeletonLoader'
+
+const WIZARD_STEPS = [
+  { id: 1, title: 'Pricing Model', component: PricingModelStep },
+  { id: 2, title: 'Services', component: ServiceSelectionStep },
+  { id: 3, title: 'Experience', component: ExperienceStep },
+  { id: 4, title: 'Geography', component: GeographyStep },
+  { id: 5, title: 'Costs', component: CostsStep },
+  { id: 6, title: 'Results', component: ResultsPreviewStep },
+  { id: 7, title: 'Export', component: ExportPdfStep },
+]
+
+function WizardContent() {
+  const { step, setStep, services, config, countries, isLoading } = useWizard()
+
+  const isLoadingData = !services || !config || !countries || Object.keys(services).length === 0
+
+  if (isLoadingData) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-500">Loading calculator...</p>
+        </div>
+      </div>
+    )
+  }
+
+  const currentStep = WIZARD_STEPS.find(s => s.id === step)
+  const StepComponent = currentStep?.component
+
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <div className="w-3/4 p-8">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-gray-900">Freelance Pricing Calculator</h1>
+          <p className="text-gray-500">Calculate your project price in minutes</p>
+        </div>
+
+        <div className="mb-6">
+          <div className="flex gap-1 overflow-x-auto pb-2">
+            {WIZARD_STEPS.map((s, index) => (
+              <button
+                key={s.id}
+                onClick={() => setStep(s.id)}
+                className={`px-3 py-1.5 text-sm rounded-full whitespace-nowrap ${
+                  step === s.id
+                    ? 'bg-blue-600 text-white'
+                    : index < step
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-gray-100 text-gray-600'
+                }`}
+              >
+                {index + 1}. {s.title}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-sm border p-6">
+          {StepComponent && <StepComponent />}
+        </div>
+
+        <div className="mt-4 flex justify-between">
+          <button
+            onClick={() => setStep(Math.max(1, step - 1))}
+            disabled={step === 1}
+            className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Back
+          </button>
+          <button
+            onClick={() => setStep(Math.min(7, step + 1))}
+            disabled={step === 7}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+
+      <div className="w-1/4 p-8 bg-white border-l">
+        <h2 className="text-lg font-semibold mb-4">Preview</h2>
+        <LivePreview />
+      </div>
+    </div>
+  )
+}
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+    <ErrorBoundary>
+      <WizardProvider>
+        <WizardContent />
+      </WizardProvider>
+    </ErrorBoundary>
+  )
 }
