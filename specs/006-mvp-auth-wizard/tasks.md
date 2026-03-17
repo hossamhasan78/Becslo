@@ -44,13 +44,13 @@ Configure Supabase clients and database schema before implementing user stories.
 
 ### Tasks
 
-- [ ] T011 Configure Supabase project in Supabase dashboard (Google OAuth, environment variables)
-- [ ] T012 Create Supabase client-side configuration in src/lib/supabase/client.ts
-- [ ] T013 [P] Create Supabase server-side configuration in src/lib/supabase/server.ts
-- [ ] T014 Create database migration 001_init_schema.sql in supabase/migrations/001_init_schema.sql
-- [ ] T015 Run migration 001_init_schema.sql in Supabase database
-- [ ] T016 Create database trigger function handle_new_user() in Supabase SQL Editor
-- [ ] T017 Create database trigger on_auth_user_created in Supabase SQL Editor
+- [ ] T011 Configure Supabase project in Supabase dashboard (Google OAuth, environment variables) ⚠️ REQUIRES MANUAL SETUP
+- [X] T012 Create Supabase client-side configuration in src/lib/supabase/client.ts
+- [ ] T013 [P] Create Supabase server-side configuration in src/lib/supabase/server.ts ⚠️ PLACEHOLDER FOR FUTURE SERVER ROUTES
+- [X] T014 Create database migration 001_init_schema.sql in supabase/migrations/001_init_schema.sql
+- [ ] T015 Run migration 001_init_schema.sql in Supabase database ⚠️ REQUIRES MANUAL SETUP IN SUPABASE
+- [X] T016 Create database trigger function handle_new_user() in Supabase SQL Editor
+- [X] T017 Create database trigger on_auth_user_created in Supabase SQL Editor
 
 ---
 
