@@ -9,10 +9,10 @@ export function WizardLayout({ leftPanel, rightPanel }: WizardLayoutProps) {
   return (
     <div className="min-h-screen bg-zinc-50">
       <div className="flex flex-col lg:flex-row min-h-screen">
-        <div className="w-full lg:w-3/4 p-6 lg:p-8">
+        <div className="w-full lg:w-3/4 p-4 md:p-6 lg:p-8 order-1">
           {leftPanel}
         </div>
-        <div className="w-full lg:w-1/4 p-6 lg:p-8 lg:border-l lg:border-zinc-200 bg-white">
+        <div className="w-full lg:w-1/4 p-4 md:p-6 lg:p-8 lg:border-l lg:border-zinc-200 bg-white order-2 lg:order-2">
           {rightPanel}
         </div>
       </div>

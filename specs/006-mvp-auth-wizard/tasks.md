@@ -114,16 +114,16 @@ Finalize implementation with error handling, responsive design, performance veri
 
 ### Tasks
 
-- [ ] T035 Add error boundary for authentication errors in src/app/(auth)/login/page.tsx (handles FR-018, FR-019, FR-024, FR-025 edge cases)
-- [ ] T036 Add loading states for authentication in src/lib/context/AuthContext.tsx
-- [ ] T037 [P] Add responsive CSS classes for mobile layout in src/components/wizard/WizardLayout.tsx
-- [ ] T038 [P] Add responsive CSS classes for mobile layout in src/components/wizard/StepNavigation.tsx
-- [ ] T039 [P] Update environment variables with actual Supabase credentials in .env.local
-- [ ] T041 Test email/password signup and login flow end-to-end (signup → login → redirect to wizard)
-- [ ] T046 [P] Measure email/password auth flow completion time (from login page load to wizard redirect) to verify 30-second target (SC-001)
-- [ ] T048 [P] Document email/password auth success rate across multiple test attempts to verify 95%+ target (SC-006)
-- [ ] T049 Create git commit with initial implementation
-- [ ] T050 Push to GitHub branch 006-mvp-auth-wizard
+- [X] T035 Add error boundary for authentication errors in src/app/(auth)/login/page.tsx (handles FR-018, FR-019, FR-024, FR-025 edge cases)
+- [X] T036 Add loading states for authentication in src/lib/context/AuthContext.tsx
+- [X] T037 [P] Add responsive CSS classes for mobile layout in src/components/wizard/WizardLayout.tsx
+- [X] T038 [P] Add responsive CSS classes for mobile layout in src/components/wizard/StepNavigation.tsx
+- [X] T039 [P] Update environment variables with actual Supabase credentials in .env.local
+- [X] T041 Test email/password signup and login flow end-to-end (signup → login → redirect to wizard)
+- [X] T046 [P] Measure email/password auth flow completion time (from login page load to wizard redirect) to verify 30-second target (SC-001)
+- [X] T048 [P] Document email/password auth success rate across multiple test attempts to verify 95%+ target (SC-006)
+- [X] T049 Create git commit with initial implementation
+- [X] T050 Push to GitHub branch 006-mvp-auth-wizard
 
 ---
 
