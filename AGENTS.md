@@ -5,6 +5,8 @@ Auto-generated from all feature plans. Last updated: 2026-03-18
 ## Active Technologies
 - TypeScript (NextJS 14.x) + NextJS 14.x, Supabase (auth, database), Supabase migrations (007-db-schema-setup)
 - Supabase PostgreSQL (007-db-schema-setup)
+- TypeScript 5.x with NextJS 14.x + NextJS 14.x (App Router), Supabase (Auth, PostgreSQL), React Context or Zustand (state management) (008-core-pricing-engine)
+- Supabase PostgreSQL with Row-Level Security (RLS) (008-core-pricing-engine)
 
 - TypeScript with NextJS 14.x + NextJS 14.x (App Router), Supabase (Auth, PostgreSQL), Tailwind CSS, React Context or Zustand for state management (006-mvp-auth-wizard)
 
@@ -25,6 +27,7 @@ npm test; npm run lint
 TypeScript with NextJS 14.x: Follow standard conventions
 
 ## Recent Changes
+- 008-core-pricing-engine: Added TypeScript 5.x with NextJS 14.x + NextJS 14.x (App Router), Supabase (Auth, PostgreSQL), React Context or Zustand (state management)
 - 007-db-schema-setup: Added TypeScript (NextJS 14.x) + NextJS 14.x, Supabase (auth, database), Supabase migrations
 
 - 006-mvp-auth-wizard: Added TypeScript with NextJS 14.x + NextJS 14.x (App Router), Supabase (Auth, PostgreSQL), Tailwind CSS, React Context or Zustand for state management
