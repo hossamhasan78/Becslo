@@ -50,9 +50,22 @@ Configure Supabase clients and database schema before implementing user stories.
 - [X] T014 Create database migration 001_init_schema.sql in supabase/migrations/001_init_schema.sql
 - [X] T015 Run migration 001_init_schema.sql in Supabase database ⚠️ COMPLETED BY USER
 - [X] T016 Create database trigger function handle_new_user() in Supabase SQL Editor
-- [X] T017 Create database trigger on_auth_user_created in Supabase SQL Editor
+- [X] T018 [P] [US1] Create TypeScript types for authentication in src/types/auth.ts
+- [X] T019 [P] [US1] Create React Context for authentication state in src/lib/context/AuthContext.tsx
+- [X] T020 [US1] Create Google Login Button component in src/components/auth/GoogleLoginButton.tsx
+- [X] T021 [US1] Create Login page with Google OAuth in src/app/(auth)/login/page.tsx
+- [X] T022 [US1] Create OAuth callback server action in src/app/(auth)/callback/route.ts
+- [X] T023 [US1] Create route protection middleware in src/middleware.ts
+- [X] T024 [US1] Update root layout with AuthProvider in src/app/layout.tsx
 
 ---
+
+- [X] T025 [P] [US2] Create TypeScript types for wizard in src/types/wizard.ts
+- [X] T026 [P] [US2] Create React Context for wizard state in src/lib/context/WizardContext.tsx
+- [X] T027 [US2] Create Wizard Layout component with 75% left panel + 25% right panel split in src/components/wizard/WizardLayout.tsx
+- [X] T028 [US2] Create Step Navigation component in src/components/wizard/StepNavigation.tsx
+- [X] T029 [US2] Create Wizard page with layout and placeholder content in src/app/(wizard)/wizard/page.tsx
+- [X] T030 [US2] Update root layout with WizardProvider in src/app/layout.tsx
 
 ## Phase 4: User Story 2 - Wizard Layout Skeleton (Priority: P2)
 
