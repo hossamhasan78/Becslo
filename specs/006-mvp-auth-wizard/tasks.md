@@ -101,8 +101,8 @@ An initial admin user is automatically created during deployment and can access 
 
 - [X] T031 [P] [US3] Create database migration 002_seed_admin.sql in supabase/migrations/002_seed_admin.sql
 - [X] T032 [US3] Run migration 002_seed_admin.sql in Supabase database
-- [ ] T033 [US3] Sign in with admin email to create user record in database (MANUAL: Visit /signup with admin@yourdomain.com)
-- [ ] T034 [US3] Verify admin role assigned in Supabase database dashboard
+- [X] T033 [US3] Sign in with admin email to create user record in database (MANUAL: Visit /signup with admin@yourdomain.com)
+- [X] T034 [US3] Verify admin role assigned in Supabase database dashboard
 
 ---
 
