@@ -7,6 +7,14 @@
 
 ---
 
+## Clarifications
+
+### Session 2026-03-18
+
+- Q: Which 5 API endpoints are expected? → A: Services, Categories, Countries, Costs, Config (all wizard inputs)
+
+---
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Seed Data Available for Wizard (Priority: P1)
@@ -101,6 +109,9 @@ An admin user exists in the system for dashboard access.
 - **FR-014**: System MUST allow admin users full read/write access to all tables
 - **FR-015**: System MUST provide API endpoint to fetch active services filtered by category
 - **FR-016**: System MUST provide API endpoint to fetch all categories
+- **FR-016a**: System MUST provide API endpoint to fetch all countries with multipliers
+- **FR-016b**: System MUST provide API endpoint to fetch active costs
+- **FR-016c**: System MUST provide API endpoint to fetch system configuration
 
 ### Key Entities
 
@@ -122,7 +133,7 @@ An admin user exists in the system for dashboard access.
 
 - **SC-001**: Users can access wizard and see all service, country, and cost data within 2 seconds of page load
 - **SC-002**: 100% of user calculation queries return only the user's own data (RLS enforcement)
-- **SC-003**: All five API endpoints return valid JSON responses within 500ms
+- **SC-003**: All five API endpoints (services, categories, countries, costs, config) return valid JSON responses within 500ms
 - **SC-004**: Admin user can access all data without restriction
 - **SC-005**: Database migration completes successfully and creates all required tables
 - **SC-006**: Seed data populates with 120+ services and 200 countries
