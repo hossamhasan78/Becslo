@@ -54,7 +54,22 @@ Configure Supabase clients and database schema before implementing user stories.
 
 ---
 
-## Phase 3: User Story 1 - Google OAuth Login (Priority: P1)
+## Phase 4: User Story 2 - Wizard Layout Skeleton (Priority: P2)
+
+### Goal
+
+An authenticated user sees a two-panel wizard layout with a 3/4 width left panel for step-by-step input and a 1/4 width right panel displaying a live preview placeholder.
+
+**Independent Test**: Can be fully tested by logging in and verifying that two-panel layout displays correctly with proper proportions and placeholders. Delivers the core UI framework for wizard experience.
+
+### Tasks
+
+- [ ] T025 [P] [US2] Create TypeScript types for wizard in src/types/wizard.ts
+- [ ] T026 [P] [US2] Create React Context for wizard state in src/lib/context/WizardContext.tsx
+- [ ] T027 [US2] Create Wizard Layout component with 75% left panel + 25% right panel split in src/components/wizard/WizardLayout.tsx
+- [ ] T028 [US2] Create Step Navigation component in src/components/wizard/StepNavigation.tsx
+- [ ] T029 [US2] Create Wizard page with layout and placeholder content in src/app/(wizard)/wizard/page.tsx
+- [ ] T030 [US2] Update root layout with WizardProvider in src/app/layout.tsx
 
 ### Goal
 
