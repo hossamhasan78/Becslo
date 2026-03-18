@@ -72,13 +72,11 @@ A user can sign up with name, email, and password, then log in to access the wiz
 
 ### Tasks
 
-### Goal
+(No additional tasks - completed in Phase 2 above: T018-T024)
 
-An authenticated user sees a two-panel wizard layout with a 3/4 width left panel for step-by-step input and a 1/4 width right panel displaying a live preview placeholder.
+---
 
-**Independent Test**: Can be fully tested by logging in and verifying that two-panel layout displays correctly with proper proportions and placeholders. Delivers the core UI framework for wizard experience.
-
-### Tasks
+## Phase 4: User Story 2 - Wizard Layout Skeleton (Priority: P2)
 
 - [X] T025 [P] [US2] Create TypeScript types for wizard in src/types/wizard.ts
 - [X] T026 [P] [US2] Create React Context for wizard state in src/lib/context/WizardContext.tsx
