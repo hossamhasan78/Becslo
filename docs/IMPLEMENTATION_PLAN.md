@@ -10,7 +10,7 @@
 ## Constitutional Priority Order
 
 Implementation strictly follows constitution-mandated priority:
-1. Authentication flow (Google OAuth only)
+1. Authentication flow (email/password only)
 2. Basic wizard placeholder (3/4 + 1/4 layout)
 3. Service selection
 4. Fee calculation engine
@@ -22,16 +22,17 @@ Implementation strictly follows constitution-mandated priority:
 
 ## Phase 0 — MVP Authentication & Wizard Skeleton
 
-**Objective:** Deliver functional Google OAuth authentication and wizard layout placeholder.
+**Objective:** Deliver functional email/password authentication and wizard layout placeholder.
 
 **Tasks:**
 1. Initialize NextJS 14.x project with TypeScript & Tailwind CSS
 2. Configure Supabase project:
-   - Auth: Google OAuth (ONLY permitted method)
+   - Auth: Email/password (ONLY permitted method)
    - Tables: `users`, `admin_users` with RLS
    - Seed initial admin user via SQL migration
 3. Implement authentication pages:
-   - Login/signup with Google OAuth button
+   - Signup page with name, email, password
+   - Login page with email/password
    - Error handling for failed login attempts
    - Protected route wrapper
 4. Post-login redirect:
@@ -44,7 +45,7 @@ Implementation strictly follows constitution-mandated priority:
 6. Deploy MVP skeleton to Vercel for live access
 
 **Constitution Compliance:**
-- ✅ Google OAuth only (Constitution I)
+- ✅ Email/password only (Constitution I)
 - ✅ Authentication before any wizard features (Constitution I, V)
 
 **Deliverables:**
@@ -93,7 +94,7 @@ Implementation strictly follows constitution-mandated priority:
 **Constitution Compliance:**
 - ✅ User calculations stored for admin analytics (Constitution II)
 - ✅ Database schema supports admin-configured pricing (Constitution IV)
-- ✅ Google OAuth integration (Constitution I)
+- ✅ Email/password authentication integration (Constitution I)
 - ✅ Monolithic NextJS + Supabase (Constitution III)
 
 **Deliverables:**
@@ -202,7 +203,7 @@ Implementation strictly follows constitution-mandated priority:
 - ✅ Real-time accumulation <100ms (Constitution)
 - ✅ Manual service hours input only (no templates)
 - ✅ USD currency only
-- ✅ Google OAuth authentication required
+- ✅ Email/password authentication required
 
 **Deliverables:**
 - Fully functioning 7-step wizard
@@ -391,7 +392,7 @@ Implementation strictly follows constitution-mandated priority:
 - ✅ All deployments through Vercel preview before production (Constitution)
 - ✅ Database schema changes via Supabase migrations (Constitution)
 - ✅ Environment variables via Vercel settings (Constitution)
-- ✅ Google OAuth secrets not committed (Constitution)
+- ✅ Email/password auth secrets not committed (Constitution)
 - ✅ Testing requirements met (Constitution)
 
 **Deliverables:**
@@ -455,7 +456,7 @@ Original 14 categories consolidated into 3-5 broad categories:
 
 | Principle | Status | Notes |
 |-----------|--------|-------|
-| I. Authentication-First | ✅ Compliant | Google OAuth only, fully functional before wizard |
+| I. Authentication-First | ✅ Compliant | Email/password only, fully functional before wizard |
 | II. Data Privacy & Analytics | ✅ Compliant | Stores user name/email for admin analytics only |
 | III. Monolithic Architecture | ✅ Compliant | NextJS 14.x + Supabase + Vercel |
 | IV. Admin-Configured Pricing | ✅ Compliant | Full admin dashboard for pricing configuration |

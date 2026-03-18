@@ -1,18 +1,40 @@
-import { createClient as createSupabaseClient } from '@/lib/supabase/client'
-import { cookies } from 'next/headers'
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  const res = NextResponse.next()
-  const supabase = createClient()
+  const supabaseResponse = NextResponse.next({
+    request,
+  })
 
-  const {
-    data: { session: null },
-  } = await supabase.auth.getSession()
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            request.cookies.set(name, value)
+            supabaseResponse.cookies.set(name, value, options)
+          })
+        },
+      },
+    }
+  )
 
-  if (data.session) {
-    // Authenticated - allow access
-  } else {
-    // Not authenticated - redirect to login
-    return NextResponse.redirect(new URL('/login'))
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user && request.nextUrl.pathname.startsWith('/wizard')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
   }
+
+  return supabaseResponse
+}
+
+export const config = {
+  matcher: ['/wizard/:path*'],
 }

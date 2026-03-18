@@ -10,7 +10,7 @@ export default function WizardPage() {
           <ul className="list-disc list-inside space-y-4 ml-6 text-gray-500">
             <li>✓ Authentication</li>
             <li>✓ Wizard Layout</li>
-            <li>✓ Google OAuth Integration</li>
+            <li>✓ Email/Password Authentication</li>
             <li>⏳ Service Selection</li>
             <li>⏳ Fee Calculation</li>
             <li>⏳ PDF Export</li>

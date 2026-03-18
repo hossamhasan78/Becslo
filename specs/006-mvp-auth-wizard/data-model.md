@@ -14,7 +14,7 @@ This document defines the data model for user authentication, admin management, 
 
 ### 1. User
 
-**Description**: Represents an authenticated user who has logged in via Google OAuth. Stores essential profile information for analytics and authentication purposes.
+**Description**: Represents an authenticated user who has registered via email/password. Stores essential profile information for analytics and authentication purposes.
 
 **Table**: `public.users`
 
@@ -23,8 +23,8 @@ This document defines the data model for user authentication, admin management, 
 | Field | Type | Constraints | Description |
 |-------|------|-------------|-------------|
 | `id` | `uuid` | PRIMARY KEY, FOREIGN KEY to `auth.users(id)` | Unique identifier, references Supabase Auth user |
-| `email` | `text` | UNIQUE, NOT NULL | User's email address from Google OAuth |
-| `name` | `text` | NULLABLE | User's display name from Google OAuth |
+| `email` | `text` | UNIQUE, NOT NULL | User's email address from registration |
+| `name` | `text` | NULLABLE | User's display name from registration |
 | `created_at` | `timestamp with time zone` | NOT NULL, DEFAULT `now()` | Timestamp of user creation |
 
 **Relationships**:
@@ -36,7 +36,7 @@ This document defines the data model for user authentication, admin management, 
 - `id` must reference valid Supabase Auth user (enforced by FOREIGN KEY cascade delete)
 
 **State Transitions**:
-- N/A - User record is created once on first successful OAuth login
+- N/A - User record is created once on first successful email/password registration
 
 **Privacy Note**: User data is stored for admin analytics purposes only (Constitution II). No personal save functionality.
 
@@ -106,7 +106,7 @@ interface Session {
 ```
 
 **Lifecycle**:
-- **Created**: User successfully authenticates via Google OAuth
+- **Created**: User successfully authenticates via email/password
 - **Updated**: Token refresh occurs automatically via Supabase
 - **Destroyed**: User signs out, tokens invalidated
 
@@ -409,7 +409,7 @@ export interface WizardState {
 
 ## Data Flow Diagrams
 
-### Google OAuth Authentication Flow
+### Email/Password Authentication Flow
 
 ```
 ┌─────────┐
@@ -419,13 +419,13 @@ export interface WizardState {
      │ 1. Click "Sign in with Google"
      ▼
 ┌──────────────────┐
-│  Google OAuth    │
+│  Email/Password Auth    │
 │  Consent Screen  │
 └────┬─────────────┘
      │ 2. User grants permission
      ▼
 ┌──────────────────┐
-│  Google OAuth    │
+│  Email/Password Auth    │
 │  Callback w/ Code│
 └────┬─────────────┘
      │ 3. Redirect to /auth/callback
@@ -530,7 +530,7 @@ All schema changes must be versioned migrations:
 
 | Constitutional Principle | Data Model Compliance |
 |------------------------|----------------------|
-| I. Authentication-First | User data model supports Google OAuth only |
+| I. Authentication-First | User data model supports email/password only |
 | II. Data Privacy & Analytics | User data stored for analytics only, no personal save |
 | III. Monolithic Architecture | Single PostgreSQL database, no microservices |
 | IV. Admin-Configured Pricing | Admin users table for role-based access (pricing config deferred) |

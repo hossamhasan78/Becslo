@@ -7,7 +7,7 @@
 
 ## Summary
 
-Implement Google OAuth authentication as the only login method, create a monolithic NextJS 14.x application with Supabase backend, establish wizard layout skeleton with 3/4 left panel and 1/4 right panel, and seed an initial admin user for configuration and testing. This is Phase 0 of the MVP implementation and provides the foundation for all subsequent features.
+Implement email/password authentication as the login method, create a monolithic NextJS 14.x application with Supabase backend, establish wizard layout skeleton with 3/4 left panel and 1/4 right panel, and seed an initial admin user for configuration and testing. This is Phase 0 of the MVP implementation and provides the foundation for all subsequent features.
 
 ## Technical Context
 
@@ -18,7 +18,7 @@ Implement Google OAuth authentication as the only login method, create a monolit
 **Target Platform**: Web (modern browsers)
 **Project Type**: web-service (monolithic NextJS application)
 **Performance Goals**: Authentication flow completes within 30 seconds, page load within 2 seconds, 95%+ OAuth success rate
-**Constraints**: Google OAuth only (no alternative auth), monolithic NextJS (no microservices), environment variables for secrets, HTTPS required
+**Constraints**: Email/password only (no alternative auth), monolithic NextJS (no microservices), environment variables for secrets, HTTPS required
 **Scale/Scope**: MVP phase supporting initial user authentication and wizard layout foundation
 
 ## Constitution Check
@@ -29,7 +29,7 @@ Implement Google OAuth authentication as the only login method, create a monolit
 
 | Principle | Status | Notes |
 |-----------|--------|-------|
-| I. Authentication-First | ✅ PASS | Google OAuth implemented before any wizard features |
+| I. Authentication-First | ✅ PASS | Email/password implemented before any wizard features |
 | II. Data Privacy & Analytics | ✅ PASS | User data stored for analytics only (admin) |
 | III. Monolithic Architecture | ✅ PASS | NextJS 14.x + Supabase, no microservices |
 | IV. Admin-Configured Pricing | ⚠️ NOT APPLICABLE | Pricing configuration deferred to later phase |
@@ -40,7 +40,7 @@ Implement Google OAuth authentication as the only login method, create a monolit
 **Status**: ✅ PASSED - All applicable constitutional requirements met
 
 No violations detected. Feature aligns with:
-- Google OAuth as sole authentication method (Principle I)
+- Email/password as sole authentication method (Principle I)
 - Monolithic NextJS + Supabase architecture (Principle III)
 - Authentication-first development approach (Principle V)
 - Data storage limited to analytics requirements (Principle II)
@@ -53,7 +53,7 @@ After completing Phase 1 design (data model, contracts, quickstart), the followi
 
 | Principle | Design Confirmation | Status |
 |-----------|-------------------|--------|
-| I. Authentication-First | Google OAuth integration with Supabase Auth, no alternative methods | ✅ PASS |
+| I. Authentication-First | Email/password integration with Supabase Auth, no alternative methods | ✅ PASS |
 | II. Data Privacy & Analytics | User data (email, name) stored only in users table for analytics, no personal save | ✅ PASS |
 | III. Monolithic Architecture | Single NextJS application with Supabase backend, no microservices | ✅ PASS |
 | IV. Admin-Configured Pricing | Admin users table ready for pricing configuration (deferred to later phase) | ✅ PASS |
@@ -91,7 +91,7 @@ src/                          # NextJS app directory
 ├── app/                       # App Router
 │   ├── (auth)/               # Auth route group
 │   │   ├── login/
-│   │   │   └── page.tsx      # Login page with Google OAuth button
+│   │   │   └── page.tsx      # Login page with Email/password button
 │   │   └── callback/          # OAuth callback handler
 │   │       └── route.ts       # Server action to handle OAuth callback
 │   ├── (wizard)/             # Wizard route group
@@ -142,7 +142,7 @@ public/                        # Static assets
 └── images/
 ```
 
-**Structure Decision**: Monolithic NextJS 14.x application with App Router. Authentication flow implemented using Supabase Auth with Google OAuth provider. State management via React Context (can be upgraded to Zustand if needed). Wizard layout follows constitutional requirement of 3/4 left panel + 1/4 right panel. All protected routes use middleware for authentication verification.
+**Structure Decision**: Monolithic NextJS 14.x application with App Router. Authentication flow implemented using Supabase Auth with Email/password provider. State management via React Context (can be upgraded to Zustand if needed). Wizard layout follows constitutional requirement of 3/4 left panel + 1/4 right panel. All protected routes use middleware for authentication verification.
 
 ## Complexity Tracking
 
@@ -152,7 +152,7 @@ This feature is the foundation implementation that establishes the architectural
 
 | Aspect | Complexity | Rationale |
 |---------|------------|-----------|
-| OAuth Integration | Medium | Requires Google OAuth configuration and callback handling |
+| OAuth Integration | Medium | Requires Email/password configuration and callback handling |
 | Route Protection | Low | Standard middleware pattern for protected routes |
 | Wizard Layout | Low | Basic CSS grid/flexbox layout with placeholders |
 | Database Schema | Low | Two tables (users, admin_users) with RLS policies |

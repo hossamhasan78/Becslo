@@ -1,18 +1,18 @@
 import { AuthForm } from '@/components/auth/AuthForm'
 import Link from 'next/link'
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50">
       <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold mb-8 text-center">Sign In</h1>
+        <h1 className="text-3xl font-bold mb-8 text-center">Create Account</h1>
 
-        <AuthForm mode="login" />
+        <AuthForm mode="signup" />
 
         <p className="mt-4 text-center text-sm text-gray-600">
-          Don&apos;t have an account?{' '}
-          <Link href="/signup" className="text-blue-600 hover:underline">
-            Sign up
+          Already have an account?{' '}
+          <Link href="/login" className="text-blue-600 hover:underline">
+            Sign in
           </Link>
         </p>
       </div>

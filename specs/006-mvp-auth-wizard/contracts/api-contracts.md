@@ -15,8 +15,8 @@ This document defines external interfaces exposed by the application, including 
 The application exposes three categories of interfaces:
 
 1. **User Interfaces**: Browser-based UI for authentication and wizard
-2. **Authentication Flows**: OAuth callback handlers and session management
-3. **External Integrations**: Google OAuth provider (configured in Supabase)
+2. **Authentication Flows**: Email/password signup and login handlers and session management
+3. **External Integrations**: Email/password provider (configured in Supabase)
 
 ---
 
@@ -26,21 +26,21 @@ The application exposes three categories of interfaces:
 
 **URL**: `/login`
 
-**Purpose**: Entry point for users to authenticate via Google OAuth.
+**Purpose**: Entry point for users to authenticate via email/password.
 
 **UI Elements**:
 
 | Component | Type | Behavior |
 |-----------|------|----------|
-| Google Login Button | Button | Triggers Google OAuth flow |
+| Email/Password Login Form | Form | Accepts email and password, submits to auth API |
 | Error Message Display | Text | Shows authentication errors if present |
-| Loading Indicator | Spinner | Displays while redirecting to Google |
+| Loading Indicator | Spinner | Displays while authenticating |
 
 **User Actions**:
 
 | Action | Input | Output |
 |---------|-------|--------|
-| Click Google Login | None | Redirect to Google OAuth consent screen |
+| Submit Credentials | email, password | Authenticates user, redirects to wizard on success |
 | View Error Page | Error parameter (URL query) | Display user-friendly error message |
 
 **Response Times**:
@@ -96,17 +96,15 @@ interface WizardLayout {
 
 ---
 
-### 1.3 OAuth Callback Page
+### 1.3 Signup Page
 
-**URL**: `/auth/callback`
+**Purpose**: Entry point for users to register with email/password.
 
-**Purpose**: Server-side handler for Google OAuth callback.
-
-**Access Control**: Public endpoint (handles OAuth redirect).
+**Access Control**: Public endpoint (new user registration).
 
 **Behavior**:
 
-1. Receives OAuth callback with authorization code
+1. Receives signup form with name, email, password
 2. Exchanges code for session with Supabase
 3. Creates/updates user record in database
 4. Sets session cookie
@@ -120,38 +118,27 @@ interface WizardLayout {
 
 ## 2. Authentication Flow Contracts
 
-### 2.1 Google OAuth Flow
+### 2.1 Email/Password Authentication Flow
 
 **Sequence Diagram**:
 
 ```
-User          Browser         App              Google
+User          Browser         App              Supabase
   │              │                │                  │
-  ├─ Login Click ─┼──────────────────────────────┤
-  │              ├─ Redirect ───┤                │
-  │              │               ├─ OAuth Request ──┤
-  │              │               │                  ├─ Show Consent
-  │              │               │  ────────────────┤
-  │              │               │  User Grants     │
-  │              │               │  ────────────────┤
-  │              │               │  ← Authorization Code
-  │              │  Redirect with Code ──────────┤
-  │              │               │
-  │              │  ─────────────┤  Exchange Code
-  │              │               │  for Tokens
-  │              │               │  ← Access Token
-  │              │  Redirect to /wizard ─────────┤
-  │  ──────────┤
+  ├─ Enter credentials ──────────┤                  │
+  │              ├─ POST /api/auth/login ───────────┤
+  │              │               │  Verify credentials             │
+  │              │               ├──────────────────>│
+  │              │               │<──────────────────│
+  │              │<─────────────┤                  │
+  │  Redirect to wizard          │                  │
+  │<─────────────│               │
   │  Wizard Page  │
 ```
 
-**OAuth Scopes Required**:
-- `profile`: Access user's basic profile information (name)
-- `email`: Access user's email address
-
-**Redirect URIs**:
-- Development: `http://localhost:3000/auth/callback`
-- Production: `https://<your-domain>.vercel.app/auth/callback`
+**Credentials Required**:
+- `email`: User's email address
+- `password`: User's password (min 6 characters)
 
 ---
 
@@ -176,20 +163,23 @@ User          Browser         App              Google
 
 ## 3. External Integration Contracts
 
-### 3.1 Google OAuth Provider
+### 3.1 Email/Password Provider
 
-**Integration Type**: OAuth 2.0 Authorization Code Flow
+**Integration Type**: Email/Password Authentication with Supabase Auth
 
 **Configuration**:
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| Client ID | string | Yes | Google OAuth 2.0 Client ID |
-| Client Secret | string | Yes | Google OAuth 2.0 Client Secret |
+| Configuration | Type | Required | Description |
+|---------------|------|----------|-------------|
+| Email Provider | Provider | Yes | Enabled in Supabase Dashboard |
+| Supabase URL | string | Yes | Your Supabase project URL |
+| Supabase Anon Key | string | Yes | Your Supabase anon key |
 | Redirect URI | string | Yes | Application callback URL |
 | Scopes | array | Yes | `profile`, `email` |
 
-**Provider**: Supabase Auth (manages OAuth flow internally)
+**Provider**: Supabase Auth (manages email/password flow internally)
 
 **Failure Modes**:
 
@@ -206,7 +196,7 @@ User          Browser         App              Google
 
 ### 4.1 User Profile Data
 
-**Direction**: Google → Application → Database
+**Direction**: Application → Supabase Auth → Database
 
 **Data Contract**:
 
@@ -216,7 +206,22 @@ interface UserProfile {
   email: string        // User's email address
   name: string | null  // User's display name (nullable)
   avatar_url?: string   // Profile image URL (optional, not stored in MVP)
-  provider: 'google'    // OAuth provider
+  // Sign up with email/password
+  const { data, error } = await supabase.auth.signUp({
+    email: 'user@example.com',
+    password: 'password123',
+    options: {
+      data: {
+        name: 'John Doe'
+      }
+    }
+  })
+
+  // Or sign in
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: 'user@example.com',
+    password: 'password123'
+  })
   created_at: string    // ISO timestamp
 }
 ```
@@ -319,9 +324,9 @@ interface WizardState {
 
 | Error Type | HTTP Status | User Message |
 |------------|--------------|--------------|
-| OAuth Network Error | N/A (client-side) | "Unable to connect to Google. Please check your internet connection and try again." |
-| OAuth Permission Denied | N/A (client-side) | "You must grant permission to access your Google account to continue." |
-| Invalid Email | N/A (client-side) | "Please use a valid Google account." |
+| Invalid Credentials | 401 | "Invalid email or password. Please try again." | User enters wrong email/password |
+| User Already Exists | 400 | "An account with this email already exists." | User tries to sign up with existing email |
+| Weak Password | 400 | "Password must be at least 6 characters." | Password less than 6 characters |
 | Session Expired | 401 (redirect) | Redirect to login page (auto-handled by middleware) |
 
 **Server-Side Errors** (logged, generic message to user):
@@ -329,7 +334,7 @@ interface WizardState {
 | Error Type | HTTP Status | User Message | Logging |
 |------------|--------------|--------------|----------|
 | Database Connection Error | 500 | "An error occurred. Please try again later." | Error with stack trace |
-| OAuth Configuration Error | 500 | "Authentication system is temporarily unavailable." | Error with stack trace |
+| Auth Configuration Error | 500 | "Authentication system is temporarily unavailable." | Error with stack trace |
 | Admin User Already Exists | 200 | N/A (idempotent) | Warning |
 | RLS Policy Violation | 403 | "You don't have permission to access this resource." | Error with user ID |
 
@@ -402,7 +407,7 @@ interface WizardState {
 
 1. **Happy Path**: User clicks Google login → Grants permission → Redirected to wizard
 2. **Permission Denied**: User denies permission → Redirected to login with error
-3. **Network Failure**: Network error during OAuth → Error message shown
+3. **Network Failure**: Network error during login → Error message shown
 4. **Invalid Token**: Session expires → Auto-refresh or redirect to login
 
 **Route Protection**:
@@ -430,7 +435,7 @@ interface WizardState {
 - Future breaking changes: `/v2/auth/callback`, etc.
 
 **Backward Compatibility**:
-- OAuth callback URLs will remain stable
+- Auth API routes will remain stable
 - Session management unchanged in v1
 - Wizard page structure backward compatible for v1 clients
 
@@ -451,12 +456,13 @@ interface WizardState {
 |------------|------|---------|----------------|
 | `/login` | UI | Entry point for authentication | Public |
 | `/wizard` | UI | Main wizard interface | Authenticated only |
-| `/auth/callback` | Server Action | OAuth callback handler | Public (OAuth redirect) |
-| Google OAuth | External Integration | OAuth 2.0 provider | Configured in Supabase |
+| `/api/auth/signup` | API Route | Create new user account | Public |
+| `/api/auth/login` | API Route | Authenticate user | Public |
+| Email/Password | External Integration | Email/password provider | Configured in Supabase |
 | Supabase Auth | External Service | Session management | Managed by Supabase |
 
 All interfaces comply with constitutional requirements:
-- Google OAuth only (Principle I)
+- Email/password only (Principle I)
 - Monolithic NextJS application (Principle III)
 - User data for analytics only (Principle II)
 - Authentication-first development (Principle V)

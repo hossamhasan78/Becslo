@@ -6,7 +6,7 @@
 
 ## Overview
 
-This guide provides step-by-step instructions for implementing the MVP Authentication & Wizard Skeleton feature, including Google OAuth integration, wizard layout setup, and admin user seeding.
+This guide provides step-by-step instructions for implementing the MVP Authentication & Wizard Skeleton feature, including email/password authentication, wizard layout setup, and admin user seeding.
 
 ---
 
@@ -21,7 +21,6 @@ This guide provides step-by-step instructions for implementing the MVP Authentic
 
 ### Required Accounts
 
-- **Google Cloud Project**: For OAuth client credentials
 - **Supabase Project**: For backend services (auth, database)
 - **Vercel Account**: For deployment (optional for local development)
 
@@ -38,9 +37,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 # Admin Configuration
 ADMIN_EMAIL=admin@yourdomain.com
 
-# Google OAuth (configured in Supabase, not needed locally)
-# GOOGLE_OAUTH_CLIENT_ID=auto-generated_by_supabase
-# GOOGLE_OAUTH_CLIENT_SECRET=auto-generated_by_supabase
+# Email/Password Auth (configured in Supabase, not needed locally)
 ```
 
 ---
@@ -75,18 +72,12 @@ npm install -D @types/node jest @testing-library/react @testing-library/jest-dom
 3. Wait for database initialization (2-3 minutes)
 4. Copy project URL and anon key to `.env.local`
 
-### 2.2 Enable Google OAuth
+### 2.2 Enable Email/Password Authentication
 
 1. In Supabase dashboard, go to **Authentication** → **Providers**
-2. Enable **Google** provider
-3. Click **Get Google Client ID**:
-   - This opens Google Cloud Console
-   - Create or select a project
-   - Configure OAuth consent screen
-   - Add authorized redirect URI: `https://<your-project-ref>.supabase.co/auth/v1/callback`
-   - Copy Client ID and Client Secret
-4. Paste Client ID and Client Secret into Supabase Google provider settings
-5. Save configuration
+2. Enable **Email** provider
+3. Make sure "Confirm email" is disabled for MVP (or enabled if you want email verification)
+4. Save configuration
 
 ### 2.3 Run Database Migrations
 
@@ -306,7 +297,7 @@ export default function LoginPage() {
   const { loading } = useAuth()
   const supabase = createClient()
 
-  const handleGoogleLogin = async () => {
+  const handleEmailLogin = async (email: string, password: string) => {
     try {
       setError(null)
       const { error } = await supabase.auth.signInWithOAuth({
@@ -344,14 +335,14 @@ export default function LoginPage() {
         )}
 
         <button
-          onClick={handleGoogleLogin}
+          onClick={() => handleLogin(email, password)}
           className="w-full px-4 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
         >
-          Sign in with Google
+          Sign in with Email
         </button>
 
         <p className="mt-4 text-sm text-gray-600 text-center">
-          You will be redirected to Google to sign in.
+          Enter your email and password to sign in.
         </p>
       </div>
     </div>
@@ -696,11 +687,11 @@ npm run dev
 
 ## Step 13: Test Authentication Flow
 
-### 13.1 Test Google OAuth Login
+### 13.1 Test Email/Password Login
 
 1. Navigate to `http://localhost:3000/login`
-2. Click "Sign in with Google"
-3. Sign in with your Google account
+2. Enter email and password
+3. Click "Sign in"
 4. Verify redirect to `http://localhost:3000/wizard`
 5. Verify two-panel layout displayed
 
@@ -741,18 +732,18 @@ git push origin 006-mvp-auth-wizard
    - `ADMIN_EMAIL`
 4. Deploy
 
-### 14.3 Update Google OAuth Redirect URIs
+### 14.3 Update Email/Password Provider Settings
 
-In Google Cloud Console, add your Vercel domain to authorized redirect URIs:
+In Supabase dashboard, ensure Email provider is enabled for production:
 - `https://<your-vercel-domain>.vercel.app/auth/callback`
 
 ---
 
 ## Troubleshooting
 
-### Issue: Google OAuth fails with "redirect_uri_mismatch"
+### Issue: Email/password authentication fails
 
-**Solution**: Ensure your redirect URI in Google Cloud Console exactly matches:
+**Solution**: Verify email/password provider is enabled in Supabase dashboard and credentials are correct.
 - Local: `http://localhost:3000/auth/callback`
 - Production: `https://<your-domain>.vercel.app/auth/callback`
 
@@ -795,4 +786,4 @@ After completing this quick start:
 
 **Quick Start Complete!** 🎉
 
-You now have a functioning authentication system with Google OAuth and a wizard layout skeleton. Proceed to implementing individual wizard steps.
+You now have a functioning authentication system with email/password login and a wizard layout skeleton. Proceed to implementing individual wizard steps.
