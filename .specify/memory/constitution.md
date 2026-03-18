@@ -22,7 +22,7 @@ Follow-up TODOs: None
 
 ### I. Authentication-First
 
-User authentication MUST be fully functional before any wizard features are implemented. Google OAuth is the ONLY authentication method permitted for MVP. Rationale: The entire application flow depends on authenticated access; without functional login, no other features can be validated or tested.
+User authentication MUST be fully functional before any wizard features are implemented. Email/password authentication is the ONLY authentication method permitted for MVP. Rationale: The entire application flow depends on authenticated access; without functional login, no other features can be validated or tested.
 
 ### II. Data Privacy & Analytics
 
@@ -45,12 +45,12 @@ Implementation MUST follow a strict priority order: (1) Authentication flow, (2)
 - **Frontend**: NextJS 14.x monolith
 - **Backend**: Supabase (auth, database, storage) + serverless functions
 - **Hosting**: Vercel
-- **Authentication**: Google OAuth only (Supabase Auth)
+- **Authentication**: Email/password only (Supabase Auth)
 - **Database**: Supabase PostgreSQL
 - **Currency**: USD only
 - **Calculation Precision**: Nearest dollar
 
-**Constraints**: All services MUST be accessible through the NextJS monolith; no separate backend services or microservices permitted. All user-facing features MUST work with Google OAuth authentication.
+**Constraints**: All services MUST be accessible through the NextJS monolith; no separate backend services or microservices permitted. All user-facing features MUST work with email/password authentication.
 
 ## Development Workflow
 
@@ -73,7 +73,7 @@ Frontend structure follows NextJS 14.x conventions with app router:
 - All deployments MUST go through Vercel preview environments before production
 - Database schema changes MUST use Supabase migrations
 - Environment variables MUST be configured via Vercel environment settings
-- Google OAuth client secrets MUST NOT be committed to repository
+- Email/password auth secrets MUST NOT be committed to repository
 
 ## Governance
 

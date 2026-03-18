@@ -44,33 +44,21 @@ Configure Supabase clients and database schema before implementing user stories.
 
 ### Tasks
 
-- [ ] T011 Configure Supabase project in Supabase dashboard (Google OAuth, environment variables) ⚠️ REQUIRES MANUAL SETUP
+- [X] T011 Configure Supabase project in Supabase dashboard (email/password auth, environment variables)
 - [X] T012 Create Supabase client-side configuration in src/lib/supabase/client.ts
-- [ ] T013 [P] Create Supabase server-side configuration in src/lib/supabase/server.ts ⚠️ PLACEHOLDER FOR FUTURE SERVER ROUTES
+- [X] T013 [P] Create Supabase server-side configuration in src/lib/supabase/server.ts
 - [X] T014 Create database migration 001_init_schema.sql in supabase/migrations/001_init_schema.sql
-- [ ] T015 Run migration 001_init_schema.sql in Supabase database ⚠️ REQUIRES MANUAL SETUP IN SUPABASE
+- [X] T015 Run migration 001_init_schema.sql in Supabase database
 - [X] T016 Create database trigger function handle_new_user() in Supabase SQL Editor
-- [X] T017 Create database trigger on_auth_user_created in Supabase SQL Editor
-
----
-
-## Phase 3: User Story 1 - Google OAuth Login (Priority: P1)
-
-### Goal
-
-A user visits the application, clicks the Google login button, authenticates with their Google account, and is redirected to the wizard placeholder page.
-
-**Independent Test**: Can be fully tested by visiting the login page, clicking Google login, completing Google authentication, and verifying redirection to the wizard page. Delivers the core value of user access and establishes the authentication flow.
-
-### Tasks
-
-- [ ] T018 [P] [US1] Create TypeScript types for authentication in src/types/auth.ts
-- [ ] T019 [P] [US1] Create React Context for authentication state in src/lib/context/AuthContext.tsx
-- [ ] T020 [US1] Create Google Login Button component in src/components/auth/GoogleLoginButton.tsx
-- [ ] T021 [US1] Create Login page with Google login button in src/app/(auth)/login/page.tsx
-- [ ] T022 [US1] Create OAuth callback server action in src/app/(auth)/callback/route.ts
-- [ ] T023 [US1] Create route protection middleware in src/middleware.ts
-- [ ] T024 [US1] Update root layout with AuthProvider in src/app/layout.tsx
+- [X] T018 [P] [US1] Create TypeScript types for authentication in src/types/auth.ts
+- [X] T019 [P] [US1] Create React Context for authentication state in src/lib/context/AuthContext.tsx
+- [X] T020 [US1] Create AuthForm component (signup/login) in src/components/auth/AuthForm.tsx
+- [X] T021 [US1] Create Signup page with email/password in src/app/(auth)/signup/page.tsx
+- [X] T022 [US1] Create Login page with email/password in src/app/(auth)/login/page.tsx
+- [ ] T022a [US1] Create auth API route for signup/login in src/app/api/auth/signup/route.ts
+- [ ] T022b [US1] Create auth API route for login in src/app/api/auth/login/route.ts
+- [X] T023 [US1] Create route protection middleware in src/middleware.ts
+- [X] T024 [US1] Update root layout with AuthProvider in src/app/layout.tsx
 
 ---
 
@@ -80,7 +68,7 @@ A user visits the application, clicks the Google login button, authenticates wit
 
 An authenticated user sees a two-panel wizard layout with a 3/4 width left panel for step-by-step input and a 1/4 width right panel displaying a live preview placeholder.
 
-**Independent Test**: Can be fully tested by logging in and verifying the two-panel layout displays correctly with proper proportions and placeholders. Delivers the core UI framework for the wizard experience.
+**Independent Test**: Can be fully tested by logging in and verifying that two-panel layout displays correctly with proper proportions and placeholders. Delivers the core UI framework for wizard experience.
 
 ### Tasks
 
@@ -122,16 +110,10 @@ Finalize implementation with error handling, responsive design, performance veri
 - [ ] T036 Add loading states for authentication in src/lib/context/AuthContext.tsx
 - [ ] T037 [P] Add responsive CSS classes for mobile layout in src/components/wizard/WizardLayout.tsx
 - [ ] T038 [P] Add responsive CSS classes for mobile layout in src/components/wizard/StepNavigation.tsx
-- [ ] T039 [P] Verify OAuth redirect URI in Google Cloud Console
-- [ ] T040 [P] Update environment variables with actual Supabase credentials in .env.local
-- [ ] T041 Test Google OAuth flow end-to-end (login → auth → redirect to wizard)
-- [ ] T042 Test route protection (access /wizard without auth → redirect to /login)
-- [ ] T043 Test wizard layout on desktop (3/4 + 1/4)
-- [ ] T044 Test wizard layout on mobile (stacked panels)
-- [ ] T045 Verify admin user exists and has admin role in database
-- [ ] T046 [P] Measure Google OAuth flow completion time (from login page load to wizard redirect) to verify 30-second target (SC-001)
-- [ ] T047 [P] Measure wizard page load time to verify 2-second target (SC-003)
-- [ ] T048 [P] Document Google OAuth success rate across multiple test attempts to verify 95%+ target (SC-007)
+- [ ] T039 [P] Update environment variables with actual Supabase credentials in .env.local
+- [ ] T041 Test email/password signup and login flow end-to-end (signup → login → redirect to wizard)
+- [ ] T046 [P] Measure email/password auth flow completion time (from login page load to wizard redirect) to verify 30-second target (SC-001)
+- [ ] T048 [P] Document email/password auth success rate across multiple test attempts to verify 95%+ target (SC-006)
 - [ ] T049 Create git commit with initial implementation
 - [ ] T050 Push to GitHub branch 006-mvp-auth-wizard
 
@@ -198,11 +180,11 @@ T041-T048 can be executed in parallel (testing different aspects and performance
 
 ### MVP First Approach
 
-**Recommended MVP Scope**: Phase 1 + Phase 2 + Phase 3 (User Story 1: Google OAuth Login)
+**Recommended MVP Scope**: Phase 1 + Phase 2 + Phase 3 (User Story 1: Email/Password Signup & Login)
 
 **Rationale**:
 - User Story 1 delivers core authentication foundation
-- Enables testing of Google OAuth integration end-to-end
+- Enables testing of email/password authentication end-to-end
 - Provides measurable value (users can access protected wizard route)
 - Complies with constitutional "Authentication-First" principle
 - Independent and testable without wizard implementation
@@ -214,7 +196,7 @@ T041-T048 can be executed in parallel (testing different aspects and performance
    - Deployable foundation
 
 2. **Sprint 2** (Day 1-2): Complete User Story 1 (T018-T024)
-   - Google OAuth working, users can log in and access wizard placeholder
+   - Email/password signup and login working, users can log in and access wizard placeholder
    - MVP deliverable for authentication testing
 
 3. **Sprint 3** (Day 2-3): Complete User Story 2 (T025-T030)
@@ -257,7 +239,7 @@ T041-T048 can be executed in parallel (testing different aspects and performance
 |-------|------------|-------------|
 | Phase 1: Setup | 10 | Project initialization and directory structure |
 | Phase 2: Foundational | 7 | Supabase configuration and database schema |
-| Phase 3: US1 - Auth | 7 | Google OAuth authentication flow |
+| Phase 3: US1 - Auth | 7 | Email/password authentication flow |
 | Phase 4: US2 - Layout | 6 | Wizard two-panel layout |
 | Phase 5: US3 - Admin | 4 | Admin user seeding and verification |
 | Phase 6: Polish | 16 | Error handling, responsive design, performance verification, testing, deployment |
@@ -267,18 +249,21 @@ T041-T048 can be executed in parallel (testing different aspects and performance
 
 ## Independent Test Criteria by User Story
 
-### User Story 1 (US1): Google OAuth Login
+### User Story 1 (US1): Email/Password Signup & Login
 
 **Test Criteria**:
-1. Visit `/login` page
-2. Click "Sign in with Google" button
-3. Complete Google OAuth authentication
-4. Verify redirect to `/wizard` page
-5. Verify authentication state established (can access protected routes)
+1. Visit `/signup` page
+2. Fill in name, email, and password (min 6 characters)
+3. Submit signup form
+4. Verify redirect to `/login` page
+5. Fill in email and password on login page
+6. Submit login form
+7. Verify redirect to `/wizard` page
+8. Verify authentication state established (can access protected routes)
 
 **Success Indicators**:
-- User redirected to Google OAuth consent screen
-- User can grant permissions
+- User redirected to login page after signup
+- User can enter credentials and log in
 - Redirect back to application wizard page
 - User account created in database
 - Session maintained across page navigation
@@ -286,7 +271,7 @@ T041-T048 can be executed in parallel (testing different aspects and performance
 ### User Story 2 (US2): Wizard Layout Skeleton
 
 **Test Criteria**:
-1. Log in with Google OAuth (requires US1 complete)
+1. Log in with email/password (requires US1 complete)
 2. Navigate to `/wizard` page
 3. Verify two-panel layout displays
 4. Verify left panel is 3/4 width, right panel is 1/4 width
@@ -304,7 +289,7 @@ T041-T048 can be executed in parallel (testing different aspects and performance
 
 **Test Criteria**:
 1. Run database migration 002_seed_admin.sql
-2. Sign in with admin email via Google OAuth
+2. Sign in with admin email via email/password
 3. Check Supabase database dashboard for user record
 4. Check Supabase database dashboard for admin_users record
 5. Verify admin role is 'admin'
@@ -330,9 +315,12 @@ T041-T048 can be executed in parallel (testing different aspects and performance
 - `src/lib/supabase/client.ts` - Supabase client configuration
 - `src/lib/supabase/server.ts` - Supabase server configuration
 - `src/lib/context/AuthContext.tsx` - Authentication state context
-- `src/components/auth/GoogleLoginButton.tsx` - Google login button component
+- `src/components/auth/SignupForm.tsx` - Signup form component
+- `src/components/auth/LoginForm.tsx` - Login form component
+- `src/app/(auth)/signup/page.tsx` - Signup page
 - `src/app/(auth)/login/page.tsx` - Login page
-- `src/app/(auth)/callback/route.ts` - OAuth callback handler
+- `src/app/api/auth/signup/route.ts` - Signup API route
+- `src/app/api/auth/login/route.ts` - Login API route
 
 ### Source Code - Wizard
 

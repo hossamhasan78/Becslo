@@ -6,7 +6,7 @@
 
 ## Overview
 
-This document consolidates research findings for implementing Google OAuth authentication with Supabase in a NextJS 14.x monolithic application, establishing the foundation for the wizard layout and state management architecture.
+This document consolidates research findings for implementing email/password authentication with Supabase in a NextJS 14.x monolithic application, establishing the foundation for the wizard layout and state management architecture.
 
 ---
 
@@ -15,7 +15,7 @@ This document consolidates research findings for implementing Google OAuth authe
 ### Decision: Use Supabase Auth with Server Components
 
 **Rationale**:
-- Supabase provides built-in Google OAuth integration eliminating need for custom OAuth implementation
+- Supabase provides built-in email/password authentication eliminating need for custom OAuth implementation
 - NextJS 14.x App Router supports server-side auth checks via middleware
 - Supabase client can be instantiated on both client and server for optimal performance
 - Built-in session management eliminates complexity of token handling
@@ -56,9 +56,9 @@ export const createClient = () =>
 
 ---
 
-## 2. Google OAuth Integration with Supabase
+## 2. Email/Password Authentication with Supabase
 
-### Decision: Supabase Auth with Google Provider
+### Decision: Supabase Auth with Email/Password
 
 **Rationale**:
 - Native Google OAuth provider in Supabase
@@ -68,30 +68,40 @@ export const createClient = () =>
 
 **Implementation Steps**:
 
-1. **Configure Google OAuth in Supabase Dashboard**:
-   - Add Google OAuth provider in Authentication > Providers
-   - Provide Google Client ID and Client Secret
-   - Set allowed redirect URLs (e.g., `http://localhost:3000/auth/callback`)
+1. **Enable Email/Password in Supabase Dashboard**:
+   - Enable Email provider in Authentication > Providers
 
-2. **Login Component**:
+2. **Login/Signup Component**:
 ```typescript
-// components/auth/GoogleLoginButton.tsx
+// components/auth/AuthForm.tsx
 'use client'
 import { createClient } from '@/lib/supabase/client'
 
-export function GoogleLoginButton() {
+export function AuthForm() {
   const supabase = createClient()
 
-  const handleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
+  const handleSignup = async (email: string, password: string, name: string) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`
+        data: { name }
       }
     })
   }
 
-  return <button onClick={handleLogin}>Sign in with Google</button>
+  const handleLogin = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    })
+  }
+
+  return (
+    <form>
+      {/* form fields */}
+    </form>
+  )
 }
 ```
 
@@ -427,7 +437,7 @@ where email = lower('${ADMIN_EMAIL}')  -- From environment
 
 | Component | Technology | Justification |
 |-----------|------------|----------------|
-| Authentication | Supabase Auth (Google OAuth) | Constitution requirement, built-in OAuth, session management |
+| Authentication | Supabase Auth (email/password) | Constitution requirement, built-in auth, session management |
 | Framework | NextJS 14.x App Router | Constitution requirement, SSR, server components |
 | Database | Supabase PostgreSQL with RLS | Constitution requirement, user data isolation |
 | State Management | React Context API | Built-in, MVP-sufficient, upgradable |
