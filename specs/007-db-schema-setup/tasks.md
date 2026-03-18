@@ -23,9 +23,9 @@ Verify existing project structure and Supabase connection.
 
 ### Tasks
 
-- [ ] T001 Verify NextJS project structure exists from Phase 0
-- [ ] T002 Verify Supabase configuration in .env.local
-- [ ] T003 Verify Supabase CLI is installed and authenticated
+- [x] T001 Verify NextJS project structure exists from Phase 0
+- [x] T002 Verify Supabase configuration in .env.local
+- [x] T003 Verify Supabase CLI is installed and authenticated
 
 ---
 
@@ -37,10 +37,10 @@ Create all database tables and run migrations.
 
 ### Tasks
 
-- [ ] T004 [P] Create migration 003_create_tables.sql with categories, services, countries, calculations, calculation_services, costs, config tables in supabase/migrations/003_create_tables.sql
-- [ ] T005 [P] Create tables: categories, services, countries, calculations, calculation_services, costs, config
-- [ ] T006 [P] Add foreign key constraints between tables in supabase/migrations/003_create_tables.sql
-- [ ] T007 Run migration 003_create_tables.sql in Supabase database
+- [x] T004 [P] Create migration 003_create_tables.sql with categories, services, countries, calculations, calculation_services, costs, config tables in supabase/migrations/003_create_tables.sql
+- [x] T005 [P] Create tables: categories, services, countries, calculations, calculation_services, costs, config
+- [x] T006 [P] Add foreign key constraints between tables in supabase/migrations/003_create_tables.sql
+- [x] T007 Run migration 003_create_tables.sql in Supabase database
 
 ---
 
@@ -54,14 +54,14 @@ Seed initial data so wizard dropdowns are populated.
 
 ### Tasks
 
-- [ ] T008 [P] [US1] Create seed data migration 004_seed_data.sql in supabase/migrations/004_seed_data.sql
-- [ ] T009 [US1] Seed categories table (3-5 categories) in supabase/migrations/004_seed_data.sql
-- [ ] T010 [US1] Seed services table (120+ services) in supabase/migrations/004_seed_data.sql
-- [ ] T011 [US1] Seed countries table (~200 countries) in supabase/migrations/004_seed_data.sql
-- [ ] T012 [US1] Seed costs table in supabase/migrations/004_seed_data.sql
-- [ ] T013 [US1] Seed config table in supabase/migrations/004_seed_data.sql
-- [ ] T014 Run migration 004_seed_data.sql in Supabase database
-- [ ] T015 Verify seed data counts match requirements (120+ services, 200 countries)
+- [x] T008 [P] [US1] Create seed data migration 004_seed_data.sql in supabase/migrations/004_seed_data.sql
+- [x] T009 [US1] Seed categories table (3-5 categories) in supabase/migrations/004_seed_data.sql
+- [x] T010 [US1] Seed services table (120+ services) in supabase/migrations/004_seed_data.sql
+- [x] T011 [US1] Seed countries table (~200 countries) in supabase/migrations/004_seed_data.sql
+- [x] T012 [US1] Seed costs table in supabase/migrations/004_seed_data.sql
+- [x] T013 [US1] Seed config table in supabase/migrations/004_seed_data.sql
+- [x] T014 Run migration 004_seed_data.sql in Supabase database
+- [x] T015 Verify seed data counts match requirements (120+ services, 200 countries)
 
 ---
 
@@ -75,11 +75,11 @@ Implement Row-Level Security policies to isolate user data.
 
 ### Tasks
 
-- [ ] T016 [P] [US2] Enable RLS on all tables in supabase/migrations/005_enable_rls.sql
-- [ ] T017 [US2] Create RLS policy: users can read their own calculations in supabase/migrations/005_enable_rls.sql
-- [ ] T018 [US2] Create RLS policy: users can insert calculations in supabase/migrations/005_enable_rls.sql
-- [ ] T019 [US2] Create RLS policy: admin users have full access in supabase/migrations/005_enable_rls.sql
-- [ ] T020 [US2] Run migration 005_enable_rls.sql in Supabase database
+- [x] T016 [P] [US2] Enable RLS on all tables in supabase/migrations/005_enable_rls.sql
+- [x] T017 [US2] Create RLS policy: users can read their own calculations in supabase/migrations/005_enable_rls.sql
+- [x] T018 [US2] Create RLS policy: users can insert calculations in supabase/migrations/005_enable_rls.sql
+- [x] T019 [US2] Create RLS policy: admin users have full access in supabase/migrations/005_enable_rls.sql
+- [x] T020 [US2] Run migration 005_enable_rls.sql in Supabase database
 
 ---
 
@@ -93,8 +93,8 @@ Verify admin user exists and can access admin features.
 
 ### Tasks
 
-- [ ] T026 [P] [US4] Verify admin user exists in admin_users table in database
-- [ ] T027 [P] [US4] Verify admin can access all data via RLS policies
+- [x] T026 [P] [US4] Verify admin user exists in admin_users table in database
+- [x] T027 [P] [US4] Verify admin can access all data via RLS policies
 
 ### Performance Verification
 
@@ -112,11 +112,11 @@ Implement API endpoints for wizard data fetching.
 
 ### Tasks
 
-- [ ] T021 [P] [US3] Create GET /api/v1/services route in src/app/api/v1/services/route.ts
-- [ ] T022 [P] [US3] Create GET /api/v1/categories route in src/app/api/v1/categories/route.ts
-- [ ] T023 [P] [US3] Create GET /api/v1/countries route in src/app/api/v1/countries/route.ts
-- [ ] T024 [P] [US3] Create GET /api/v1/costs route in src/app/api/v1/costs/route.ts
-- [ ] T025 [P] [US3] Create GET /api/v1/config route in src/app/api/v1/config/route.ts
+- [x] T021 [P] [US3] Create GET /api/v1/services route in src/app/api/v1/services/route.ts
+- [x] T022 [P] [US3] Create GET /api/v1/categories route in src/app/api/v1/categories/route.ts
+- [x] T023 [P] [US3] Create GET /api/v1/countries route in src/app/api/v1/countries/route.ts
+- [x] T024 [P] [US3] Create GET /api/v1/costs route in src/app/api/v1/costs/route.ts
+- [x] T025 [P] [US3] Create GET /api/v1/config route in src/app/api/v1/config/route.ts
 
 ---
 
