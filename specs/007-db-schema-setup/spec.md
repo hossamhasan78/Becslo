@@ -82,10 +82,10 @@ An admin user exists in the system for dashboard access.
 
 ### Edge Cases
 
-- **FR-017**: System MUST handle empty database gracefully when no seed data exists
-- **FR-018**: System MUST return appropriate error when API endpoint fails
-- **FR-019**: System MUST validate that filtered results return only matching records
-- **FR-020**: System MUST ensure RLS policies cannot be bypassed by direct database access
+- **EC-001**: System MUST handle empty database gracefully when no seed data exists
+- **EC-002**: System MUST return appropriate error when API endpoint fails
+- **EC-003**: System MUST validate that filtered results return only matching records
+- **EC-004**: System MUST ensure RLS policies cannot be bypassed by direct database access
 
 ---
 

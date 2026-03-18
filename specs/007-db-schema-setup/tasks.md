@@ -9,9 +9,9 @@
 
 This task breakdown implements Database & Configuration Setup for Becslo, organized by user story priority to enable independent implementation and testing.
 
-**Total Tasks**: 25
+**Total Tasks**: 27
 **User Stories**: 4 (P1, P1, P2, P2)
-**Parallel Opportunities**: 8 tasks marked with [P] can be executed in parallel
+**Parallel Opportunities**: 10 tasks marked with [P] can be executed in parallel
 
 ---
 
@@ -37,9 +37,9 @@ Create all database tables and run migrations.
 
 ### Tasks
 
-- [ ] T004 [P] Create migration 003_create_tables.sql in supabase/migrations/003_create_tables.sql
+- [ ] T004 [P] Create migration 003_create_tables.sql with categories, services, countries, calculations, calculation_services, costs, config tables in supabase/migrations/003_create_tables.sql
 - [ ] T005 [P] Create tables: categories, services, countries, calculations, calculation_services, costs, config
-- [ ] T006 [P] Add foreign key constraints between tables
+- [ ] T006 [P] Add foreign key constraints between tables in supabase/migrations/003_create_tables.sql
 - [ ] T007 Run migration 003_create_tables.sql in Supabase database
 
 ---
@@ -83,6 +83,25 @@ Implement Row-Level Security policies to isolate user data.
 
 ---
 
+## Phase 6: User Story 4 - Admin User Ready (Priority: P2)
+
+### Goal
+
+Verify admin user exists and can access admin features.
+
+**Independent Test**: Can be tested by logging in as admin and verifying access.
+
+### Tasks
+
+- [ ] T026 [P] [US4] Verify admin user exists in admin_users table in database
+- [ ] T027 [P] [US4] Verify admin can access all data via RLS policies
+
+### Performance Verification
+
+Note: Performance criteria (SC-001: 2s load time, SC-003: 500ms API response) are verified during acceptance testing - no separate performance test tasks required for this phase.
+
+---
+
 ## Phase 5: User Story 3 - API Data Access (Priority: P2)
 
 ### Goal
@@ -106,7 +125,7 @@ Implement API endpoints for wizard data fetching.
 ### Story Completion Order
 
 ```
-Phase 1 (Setup) → Phase 2 (Migrations) → Phase 3 (Seed Data) → Phase 4 (RLS) → Phase 5 (API)
+Phase 1 (Setup) → Phase 2 (Migrations) → Phase 3 (Seed Data) → Phase 4 (RLS) → Phase 5 (API) → Phase 6 (Admin)
 ```
 
 - Phase 2 must complete before Phase 3 (tables must exist)
