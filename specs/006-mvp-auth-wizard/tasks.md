@@ -44,37 +44,17 @@ Configure Supabase clients and database schema before implementing user stories.
 
 ### Tasks
 
-- [ ] T011 Configure Supabase project in Supabase dashboard (Google OAuth, environment variables) ⚠️ REQUIRES MANUAL SETUP
+- [X] T011 Configure Supabase project in Supabase dashboard (Google OAuth, environment variables) ⚠️ COMPLETED BY USER
 - [X] T012 Create Supabase client-side configuration in src/lib/supabase/client.ts
-- [ ] T013 [P] Create Supabase server-side configuration in src/lib/supabase/server.ts ⚠️ PLACEHOLDER FOR FUTURE SERVER ROUTES
+- [X] T013 [P] Create Supabase server-side configuration in src/lib/supabase/server.ts
 - [X] T014 Create database migration 001_init_schema.sql in supabase/migrations/001_init_schema.sql
-- [ ] T015 Run migration 001_init_schema.sql in Supabase database ⚠️ REQUIRES MANUAL SETUP IN SUPABASE
+- [X] T015 Run migration 001_init_schema.sql in Supabase database ⚠️ COMPLETED BY USER
 - [X] T016 Create database trigger function handle_new_user() in Supabase SQL Editor
 - [X] T017 Create database trigger on_auth_user_created in Supabase SQL Editor
 
 ---
 
 ## Phase 3: User Story 1 - Google OAuth Login (Priority: P1)
-
-### Goal
-
-A user visits the application, clicks the Google login button, authenticates with their Google account, and is redirected to the wizard placeholder page.
-
-**Independent Test**: Can be fully tested by visiting the login page, clicking Google login, completing Google authentication, and verifying redirection to the wizard page. Delivers the core value of user access and establishes the authentication flow.
-
-### Tasks
-
-- [ ] T018 [P] [US1] Create TypeScript types for authentication in src/types/auth.ts
-- [ ] T019 [P] [US1] Create React Context for authentication state in src/lib/context/AuthContext.tsx
-- [ ] T020 [US1] Create Google Login Button component in src/components/auth/GoogleLoginButton.tsx
-- [ ] T021 [US1] Create Login page with Google login button in src/app/(auth)/login/page.tsx
-- [ ] T022 [US1] Create OAuth callback server action in src/app/(auth)/callback/route.ts
-- [ ] T023 [US1] Create route protection middleware in src/middleware.ts
-- [ ] T024 [US1] Update root layout with AuthProvider in src/app/layout.tsx
-
----
-
-## Phase 4: User Story 2 - Wizard Layout Skeleton (Priority: P2)
 
 ### Goal
 
