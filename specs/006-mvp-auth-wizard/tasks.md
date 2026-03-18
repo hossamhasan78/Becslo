@@ -28,7 +28,7 @@ Initialize NextJS 14.x project with required dependencies and configuration file
 - [X] T003 Install additional dependencies: clsx, tailwind-merge
 - [X] T004 [P] Create .env.local file with environment variable placeholders in project root
 - [X] T005 [P] Create directory structure: src/app, src/components, src/lib, src/types, tests in project root
-- [X] T006 [P] Create subdirectories: src/app/(auth)/login, src/app/(auth)/callback, src/app/(wizard)/wizard in src/app
+- [X] T006 [P] Create subdirectories: src/app/(auth)/login, src/app/(auth)/signup, src/app/(wizard)/wizard in src/app
 - [X] T007 [P] Create subdirectories: src/components/auth, src/components/wizard, src/components/ui in src/components
 - [X] T008 [P] Create subdirectories: src/lib/supabase, src/lib/context, src/lib/utils in src/lib
 - [X] T009 [P] Create subdirectories: tests/unit/auth, tests/integration/auth, tests/e2e in tests
@@ -55,14 +55,22 @@ Configure Supabase clients and database schema before implementing user stories.
 - [X] T020 [US1] Create AuthForm component (signup/login) in src/components/auth/AuthForm.tsx
 - [X] T021 [US1] Create Signup page with email/password in src/app/(auth)/signup/page.tsx
 - [X] T022 [US1] Create Login page with email/password in src/app/(auth)/login/page.tsx
-- [ ] T022a [US1] Create auth API route for signup/login in src/app/api/auth/signup/route.ts
-- [ ] T022b [US1] Create auth API route for login in src/app/api/auth/login/route.ts
+- [N/A] T022a [US1] Create auth API route for signup/login - Using client-side Supabase
+- [N/A] T022b [US1] Create auth API route for login - Using client-side Supabase
 - [X] T023 [US1] Create route protection middleware in src/middleware.ts
 - [X] T024 [US1] Update root layout with AuthProvider in src/app/layout.tsx
 
 ---
 
-## Phase 4: User Story 2 - Wizard Layout Skeleton (Priority: P2)
+## Phase 3: User Story 1 - Email/Password Authentication (Priority: P1)
+
+### Goal
+
+A user can sign up with name, email, and password, then log in to access the wizard.
+
+**Independent Test**: Can be fully tested by visiting the signup page, creating an account, logging in, and verifying redirection to the wizard page.
+
+### Tasks
 
 ### Goal
 
@@ -72,12 +80,12 @@ An authenticated user sees a two-panel wizard layout with a 3/4 width left panel
 
 ### Tasks
 
-- [ ] T025 [P] [US2] Create TypeScript types for wizard in src/types/wizard.ts
-- [ ] T026 [P] [US2] Create React Context for wizard state in src/lib/context/WizardContext.tsx
-- [ ] T027 [US2] Create Wizard Layout component with 75% left panel + 25% right panel split in src/components/wizard/WizardLayout.tsx
-- [ ] T028 [US2] Create Step Navigation component in src/components/wizard/StepNavigation.tsx
-- [ ] T029 [US2] Create Wizard page with layout and placeholder content in src/app/(wizard)/wizard/page.tsx
-- [ ] T030 [US2] Update root layout with WizardProvider in src/app/layout.tsx
+- [X] T025 [P] [US2] Create TypeScript types for wizard in src/types/wizard.ts
+- [X] T026 [P] [US2] Create React Context for wizard state in src/lib/context/WizardContext.tsx
+- [X] T027 [US2] Create Wizard Layout component with 75% left panel + 25% right panel split in src/components/wizard/WizardLayout.tsx
+- [X] T028 [US2] Create Step Navigation component in src/components/wizard/StepNavigation.tsx
+- [X] T029 [US2] Create Wizard page with layout and placeholder content in src/app/(wizard)/wizard/page.tsx
+- [X] T030 [US2] Update root layout with WizardProvider in src/app/layout.tsx
 
 ---
 
