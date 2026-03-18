@@ -8,18 +8,54 @@ interface AuthFormProps {
   mode: 'login' | 'signup'
 }
 
+function getFriendlyError(message: string): string {
+  const lowerMessage = message.toLowerCase()
+  
+  if (lowerMessage.includes('invalid login') || lowerMessage.includes('invalid email or password')) {
+    return 'Invalid email or password. Please try again.'
+  }
+  if (lowerMessage.includes('user already exists') || lowerMessage.includes('already registered')) {
+    return 'An account with this email already exists.'
+  }
+  if (lowerMessage.includes('password')) {
+    return 'Password must be at least 6 characters.'
+  }
+  if (lowerMessage.includes('network') || lowerMessage.includes('fetch')) {
+    return 'Unable to connect. Please check your internet connection and try again.'
+  }
+  if (lowerMessage.includes('email')) {
+    return 'Please enter a valid email address.'
+  }
+  
+  return message
+}
+
 export function AuthForm({ mode }: AuthFormProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const supabase = getClient()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
+    setSuccess('')
+
+    if (!email || !password) {
+      setError('Please fill in all required fields.')
+      setLoading(false)
+      return
+    }
+
+    if (mode === 'signup' && password.length < 6) {
+      setError('Password must be at least 6 characters.')
+      setLoading(false)
+      return
+    }
 
     try {
       if (mode === 'signup') {
@@ -32,10 +68,10 @@ export function AuthForm({ mode }: AuthFormProps) {
         })
         
         if (error) {
-          setError(error.message)
+          setError(getFriendlyError(error.message))
         } else {
-          alert('Signup successful! Please check your email to verify, or log in if already verified.')
-          redirect('/login')
+          setSuccess('Account created! Please log in.')
+          setTimeout(() => redirect('/login'), 1500)
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -44,14 +80,14 @@ export function AuthForm({ mode }: AuthFormProps) {
         })
 
         if (error) {
-          setError(error.message)
+          setError(getFriendlyError(error.message))
         } else {
           redirect('/wizard')
         }
       }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred'
-      setError(errorMessage)
+      setError(getFriendlyError(errorMessage))
     } finally {
       setLoading(false)
     }
@@ -111,17 +147,31 @@ export function AuthForm({ mode }: AuthFormProps) {
       </div>
 
       {error && (
-        <div className="text-red-600 text-sm p-2 bg-red-50 rounded">
+        <div className="text-red-600 text-sm p-3 bg-red-50 rounded border border-red-200">
           {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="text-green-600 text-sm p-3 bg-green-50 rounded border border-green-200">
+          {success}
         </div>
       )}
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full px-4 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+        className="w-full px-4 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
-        {loading ? 'Processing...' : mode === 'signup' ? 'Sign Up' : 'Sign In'}
+        {loading ? (
+          <span className="flex items-center justify-center gap-2">
+            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            Processing...
+          </span>
+        ) : mode === 'signup' ? 'Sign Up' : 'Sign In'}
       </button>
     </form>
   )
