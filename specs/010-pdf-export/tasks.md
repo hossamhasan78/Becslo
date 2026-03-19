@@ -26,8 +26,8 @@
 
 **Purpose**: Core components that MUST be complete before ANY user story can be implemented
 
-- [ ] T003 Create base PDF document component `src/components/wizard/pdf/QuoteDocument.tsx` with standard `@react-pdf/renderer` structure
-- [ ] T004 Define TypeScript interfaces for PDF data hydration in `src/types/pdf.ts` (based on data-model.md)
+- [x] T003 Create base PDF document component `src/components/wizard/pdf/QuoteDocument.tsx` with standard `@react-pdf/renderer` structure
+- [x] T004 Define TypeScript interfaces for PDF data hydration in `src/types/pdf.ts` (based on data-model.md)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin.
 
