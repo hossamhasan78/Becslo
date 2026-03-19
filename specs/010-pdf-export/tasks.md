@@ -66,14 +66,14 @@
 
 ### Tests for User Story 2
 
-- [ ] T014 [P] [US2] Update Vitest logic to test service breakdown and overheads alignment in `tests/unit/pdf_logic.test.ts`
+- [x] T014 [P] [US2] Update Vitest logic to test service breakdown and overheads alignment in `tests/unit/pdf_logic.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T015 [P] [US2] Implement the Header section in `QuoteDocument.tsx` with Becslo branding, user info, and Calculation ID (FR-002)
-- [ ] T016 [US2] Implement the "Service Breakdown" table in `QuoteDocument.tsx` displaying name, hours, rate, and cost (FR-003)
-- [ ] T017 [US2] Implement "Overhead Costs" and "Price Summary" sections in `QuoteDocument.tsx` (FR-004, FR-005)
-- [ ] T018 [P] [US2] Add Footer with page pagination and generation date to `QuoteDocument.tsx`
+- [x] T015 [P] [US2] Implement the Header section in `QuoteDocument.tsx` with Becslo branding, user info, and Calculation ID (FR-002)
+- [x] T016 [US2] Implement the "Service Breakdown" table in `QuoteDocument.tsx` displaying name, hours, rate, and cost (FR-003)
+- [x] T017 [US2] Implement "Overhead Costs" and "Price Summary" sections in `QuoteDocument.tsx` (FR-004, FR-005)
+- [x] T018 [P] [US2] Add Footer with page pagination and generation date to `QuoteDocument.tsx`
 
 **Checkpoint**: User Story 2 functional - PDF now contains full professional breakdown.
 
@@ -83,10 +83,10 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T019 Ensure USD rounding parity in `QuoteDocument.tsx` to match wizard live preview (FR-006)
-- [ ] T020 [P] Add UTF-8 font support (Inter) to handle special characters in `QuoteDocument.tsx`
-- [ ] T021 Final performance audit: ensure generation starts in <5s (SC-001)
-- [ ] T022 Manual QA: verify the PDF displays core calculation parameters and cross-renders correctly in standard PDF viewers (SC-002, SC-004)
+- [x] T019 Ensure USD rounding parity in `QuoteDocument.tsx` to match wizard live preview (FR-006)
+- [x] T020 [P] Add UTF-8 font support (Inter) to handle special characters in `QuoteDocument.tsx`
+- [x] T021 Final performance audit: ensure generation starts in <5s (SC-001)
+- [x] T022 Manual QA: verify the PDF displays core calculation parameters and cross-renders correctly in standard PDF viewers (SC-002, SC-004)
 
 ---
 

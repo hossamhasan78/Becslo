@@ -29,7 +29,19 @@ export async function GET(request: NextRequest) {
     const { data: rawData, error: dbError } = await supabase
       .from('calculations')
       .select(`
-        *,
+        id,
+        user_name,
+        user_email,
+        pricing_model,
+        experience_designer,
+        experience_freelance,
+        subtotal,
+        risk_buffer,
+        profit_margin,
+        final_price,
+        recommended_min,
+        recommended_max,
+        created_at,
         designer_country:countries!calculations_designer_country_id_fkey(name, code, multiplier),
         client_country:countries!calculations_client_country_id_fkey(name, code, multiplier),
         calculation_services(

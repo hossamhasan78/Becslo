@@ -33,4 +33,8 @@ export interface PDFQuoteData {
   services: PDFCalculatedService[];
   overheadCosts: PDFOverheadCost[];
   finalPrice: number;
+  recommendedRange?: {
+    min: number;
+    max: number;
+  };
 }

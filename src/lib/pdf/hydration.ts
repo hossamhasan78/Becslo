@@ -26,6 +26,8 @@ export interface DBCalculationRecord {
   risk_buffer: number;
   profit_margin: number;
   final_price: number;
+  recommended_min: number;
+  recommended_max: number;
   created_at: string;
   designer_country?: DBCountry;
   client_country?: DBCountry;
@@ -70,5 +72,9 @@ export function mapCalculationToPDFData(record: DBCalculationRecord): PDFQuoteDa
     services,
     overheadCosts,
     finalPrice: Number(record.final_price),
+    recommendedRange: {
+      min: Number(record.recommended_min),
+      max: Number(record.recommended_max),
+    },
   };
 }
