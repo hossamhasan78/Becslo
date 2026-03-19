@@ -69,11 +69,17 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   }
 
   const setExperienceDesigner = (level: number) => {
-    setState((prev) => ({ ...prev, experienceDesigner: level }))
+    const validLevel = Math.max(1, Math.min(10, level))
+    setState((prev) => ({
+      ...prev,
+      experienceDesigner: validLevel,
+      experienceFreelance: Math.min(prev.experienceFreelance, validLevel)
+    }))
   }
 
   const setExperienceFreelance = (level: number) => {
-    setState((prev) => ({ ...prev, experienceFreelance: level }))
+    const validLevel = Math.max(1, Math.min(state.experienceDesigner, level))
+    setState((prev) => ({ ...prev, experienceFreelance: validLevel }))
   }
 
   const setDesignerCountryId = (countryId: number | null) => {

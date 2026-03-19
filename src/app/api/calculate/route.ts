@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase/server';
 import { PricingInputSchema } from '@/lib/types/validation';
 import { calculatePrice } from '@/lib/pricing-engine';
 import { validatePricingInput } from '@/lib/utils/validation';
@@ -7,33 +7,16 @@ import type { CalculateResponse, ErrorResponse } from '@/lib/types/pricing';
 
 export async function POST(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      const errorResponse: ErrorResponse = {
-        success: false,
-        error: {
-          code: 'AUTH_ERROR',
-          message: 'Unauthorized - Missing or invalid authorization header',
-        },
-      };
-      return NextResponse.json(errorResponse, { status: 401 });
-    }
+    const supabase = await createClient();
     
-    const token = authHeader.substring(7);
-    
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-    
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
     
     if (authError || !user) {
       const errorResponse: ErrorResponse = {
         success: false,
         error: {
           code: 'AUTH_ERROR',
-          message: 'Unauthorized - Invalid token',
+          message: 'Unauthorized - Please log in to continue',
         },
       };
       return NextResponse.json(errorResponse, { status: 401 });
@@ -147,7 +130,7 @@ export async function POST(request: NextRequest) {
         .insert({
           user_id: user.id,
           user_email: user.email,
-          user_name: user.user_metadata?.name || 'User',
+          user_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
           pricing_model: 'hourly',
           experience_designer: input.designerExperience,
           experience_freelance: input.freelanceExperience,

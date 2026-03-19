@@ -90,7 +90,7 @@ export function GeographyInput() {
               <option value="">Select a country</option>
               {countries.map(country => (
                 <option key={country.id} value={country.id}>
-                  {country.name} ({country.multiplier}x)
+                  {country.name}
                 </option>
               ))}
             </select>
@@ -109,7 +109,7 @@ export function GeographyInput() {
               <option value="">Select a country</option>
               {countries.map(country => (
                 <option key={country.id} value={country.id}>
-                  {country.name} ({country.multiplier}x)
+                  {country.name}
                 </option>
               ))}
             </select>

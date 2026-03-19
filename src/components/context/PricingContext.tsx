@@ -10,7 +10,7 @@ interface PricingContextType {
   result: PricingOutput | null
   validationErrors: ValidationError[]
   setPricing: (pricing: Partial<PricingInput>) => void
-  calculate: () => void
+  loadPricingData: () => Promise<void>
   clearValidationErrors: () => void
   isLoading: boolean
 }
@@ -31,7 +31,7 @@ const PricingContext = createContext<PricingContextType>({
   result: null,
   validationErrors: [],
   setPricing: () => {},
-  calculate: () => {},
+  loadPricingData: async () => {},
   clearValidationErrors: () => {},
   isLoading: false
 })
@@ -55,6 +55,47 @@ interface ServiceItem {
   baseRate: number
 }
 
+async function fetchPricingData(
+  setCountries: (data: CountryMultiplier[]) => void,
+  setCosts: (data: CostItem[]) => void,
+  setServices: (data: ServiceItem[]) => void,
+  setIsLoading: (loading: boolean) => void
+) {
+  setIsLoading(true)
+  try {
+    const [countriesResponse, costsResponse, servicesResponse] = await Promise.all([
+      fetch('/api/v1/countries').then(res => res.json()),
+      fetch('/api/v1/costs').then(res => res.json()),
+      fetch('/api/v1/services').then(res => res.json())
+    ])
+
+    const countriesData = countriesResponse.map((c: { code: string, multiplier: number }) => ({
+      code: c.code,
+      multiplier: c.multiplier
+    }))
+
+    const costsData = costsResponse.map((c: { id: number, is_fixed_amount: boolean, default_cost: number }) => ({
+      id: String(c.id),
+      isFixedAmount: c.is_fixed_amount,
+      defaultCost: c.default_cost
+    }))
+
+    const servicesData = servicesResponse.map((s: { id: number, name: string, base_rate: number }) => ({
+      id: String(s.id),
+      name: s.name,
+      baseRate: s.base_rate
+    }))
+
+    setCountries(countriesData)
+    setCosts(costsData)
+    setServices(servicesData)
+  } catch (error) {
+    console.error('Failed to load pricing data:', error)
+  } finally {
+    setIsLoading(false)
+  }
+}
+
 export function PricingProvider({ children }: { children: ReactNode }) {
   const [pricing, setPricingState] = useState<PricingInput>(defaultPricing)
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([])
@@ -65,13 +106,12 @@ export function PricingProvider({ children }: { children: ReactNode }) {
 
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  useEffect(() => {
+    fetchPricingData(setCountries, setCosts, setServices, setIsLoading)
+  }, [])
+
   const result = useMemo(() => {
-    const hasRequiredFields = pricing.services.length > 0 &&
-                               pricing.designerCountryCode.length === 2 &&
-                               pricing.clientCountryCode.length === 2 &&
-                               countries.length > 0 &&
-                               costs.length > 0 &&
-                               services.length > 0
+    const hasRequiredFields = countries.length > 0 && costs.length > 0
 
     if (!hasRequiredFields) return null
 
@@ -110,6 +150,10 @@ export function PricingProvider({ children }: { children: ReactNode }) {
     setValidationErrors([])
   }, [])
 
+  const loadPricingData = useCallback(async () => {
+    await fetchPricingData(setCountries, setCosts, setServices, setIsLoading)
+  }, [])
+
   useEffect(() => {
     return () => {
       if (debounceTimeoutRef.current) {
@@ -118,48 +162,12 @@ export function PricingProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const calculate = useCallback(async () => {
-    setIsLoading(true)
-    try {
-      const [countriesResponse, costsResponse, servicesResponse] = await Promise.all([
-        fetch('/api/v1/countries').then(res => res.json()),
-        fetch('/api/v1/costs').then(res => res.json()),
-        fetch('/api/v1/services').then(res => res.json())
-      ])
-
-      const countriesData = countriesResponse.map((c: { code: string, multiplier: number }) => ({
-        code: c.code,
-        multiplier: c.multiplier
-      }))
-
-      const costsData = costsResponse.map((c: { id: number, is_fixed_amount: boolean, default_cost: number }) => ({
-        id: String(c.id),
-        isFixedAmount: c.is_fixed_amount,
-        defaultCost: c.default_cost
-      }))
-
-      const servicesData = servicesResponse.map((s: { id: number, name: string, base_rate: number }) => ({
-        id: String(s.id),
-        name: s.name,
-        baseRate: s.base_rate
-      }))
-
-      setCountries(countriesData)
-      setCosts(costsData)
-      setServices(servicesData)
-    } catch (error) {
-      console.error('Calculation error:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
-
   const contextValue = {
     pricing,
     result,
     validationErrors,
     setPricing,
-    calculate,
+    loadPricingData,
     clearValidationErrors,
     isLoading
   }

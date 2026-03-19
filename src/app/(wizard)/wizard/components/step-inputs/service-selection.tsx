@@ -114,9 +114,6 @@ export function ServiceSelection() {
                     >
                       {service.name}
                     </label>
-                    <p className="text-sm text-zinc-500 mt-1">
-                      Default: {service.defaultHours || 1} hours
-                    </p>
                   </div>
                   {selectedService && (
                     <input
