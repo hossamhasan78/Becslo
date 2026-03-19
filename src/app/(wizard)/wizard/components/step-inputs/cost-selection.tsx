@@ -1,7 +1,6 @@
 'use client'
 
 import { useWizard } from '@/lib/context/WizardContext'
-import { usePricing } from '@/components/context/PricingContext'
 import { useState, useEffect } from 'react'
 
 interface CostData {
@@ -13,7 +12,6 @@ interface CostData {
 
 export function CostSelection() {
   const { state, toggleCost } = useWizard()
-  const { setPricing } = usePricing()
   const [costs, setCosts] = useState<CostData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -31,8 +29,8 @@ export function CostSelection() {
 
         const data = await response.json()
         setCosts(Array.isArray(data) ? data : [])
-      } catch (error) {
-        console.error('Failed to fetch costs:', error)
+      } catch (err) {
+        console.error('Failed to fetch costs:', err)
         setError('Unable to load costs. Please try again.')
         setCosts([])
       } finally {
@@ -41,12 +39,6 @@ export function CostSelection() {
     }
     fetchCosts()
   }, [])
-
-  useEffect(() => {
-    setPricing({
-      selectedCosts: state.costs.map(String)
-    })
-  }, [state.costs, setPricing])
 
   if (isLoading) {
     return (

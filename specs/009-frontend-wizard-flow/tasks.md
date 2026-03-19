@@ -30,11 +30,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T005 Refactor `WizardContext` in `src/lib/context/WizardContext.tsx` to unify wizard state and pricing context — add `highestCompletedStep` tracking, `sessionStorage` sync via `useSessionStorage` hook, `goToNextStep()` / `goToPreviousStep()` actions, `validateStep()` using step-validators, and `resetWizard()` method
-- [ ] T006 Extend `calculatePrice()` in `src/lib/pricing-engine.ts` to accept a `pricingModel` parameter and produce different output formatting for "hourly" (per-hour rate breakdown) vs "project" (lump-sum fee)
-- [ ] T007 Update `StepNavigation` component in `src/components/wizard/StepNavigation.tsx` to support free navigation to completed steps (clickable indicators for steps ≤ `highestCompletedStep`), disable future steps, and show step titles/descriptions inline
-- [ ] T008 Update `WizardLayout` in `src/components/wizard/WizardLayout.tsx` to implement responsive 3/4 + 1/4 layout at ≥768px and stacked layout with mobile preview toggle at <768px
-- [ ] T009 Update `LivePreview` component in `src/components/wizard/LivePreview.tsx` — build the layout slots for both "hourly" (breakdown table) and "project" (lump-sum fee summary) views, showing recommended range and loading/error skeletons. (Wiring is in T023)
+- [x] T005 Refactor `WizardContext` in `src/lib/context/WizardContext.tsx` to unify wizard state and pricing context — add `highestCompletedStep` tracking, `sessionStorage` sync via `useSessionStorage` hook, `goToNextStep()` / `goToPreviousStep()` actions, `validateStep()` using step-validators, and `resetWizard()` method
+- [x] T006 Extend `calculatePrice()` in `src/lib/pricing-engine.ts` to accept a `pricingModel` parameter and produce different output formatting for "hourly" (per-hour rate breakdown) vs "project" (lump-sum fee)
+- [x] T007 Update `StepNavigation` component in `src/components/wizard/StepNavigation.tsx` to support free navigation to completed steps (clickable indicators for steps ≤ `highestCompletedStep`), disable future steps, and show step titles/descriptions inline
+- [x] T008 Update `WizardLayout` in `src/components/wizard/WizardLayout.tsx` to implement responsive 3/4 + 1/4 layout at ≥768px and stacked layout with mobile preview toggle at <768px
+- [x] T009 Update `LivePreview` component in `src/components/wizard/LivePreview.tsx` — build the layout slots for both "hourly" (breakdown table) and "project" (lump-sum fee summary) views, showing recommended range and loading/error skeletons. (Wiring is in T023)
 
 **Checkpoint**: Foundation ready — wizard shell, live preview, and navigation are functional. User story step components can now be built.
 
@@ -48,15 +48,15 @@
 
 ### Implementation for User Story 1
 
-- [ ] T010 [P] [US1] Create `PricingModelStep` component in `src/components/wizard/steps/PricingModelStep.tsx` — radio/card selection for "Hourly" vs "Project-based" with clear visual distinction and description for each option
-- [ ] T011 [P] [US1] Create `ServiceSelectionStep` component in `src/components/wizard/steps/ServiceSelectionStep.tsx` — accordion UI grouped by category (from `GET /api/v1/categories` + `GET /api/v1/services`), each service has a checkbox and a basic number input for hours (enforcement deferred to T019)
-- [ ] T012 [P] [US1] Create `ExperienceStep` component in `src/components/wizard/steps/ExperienceStep.tsx` — two sliders: Designer Experience (1-10) and Freelance Experience (1-10) with numeric labels and current value display
-- [ ] T013 [P] [US1] Create `GeographyStep` component in `src/components/wizard/steps/GeographyStep.tsx` — two searchable dropdowns for Designer Country and Client Country (from `GET /api/v1/countries`), showing country name and multiplier
-- [ ] T014 [P] [US1] Create `CostsStep` component in `src/components/wizard/steps/CostsStep.tsx` — checkbox list of available overhead costs (from `GET /api/v1/costs`) with cost name and default amount displayed; costs are optional (step can be skipped with no selections)
-- [ ] T015 [P] [US1] Create `RiskProfitStep` component in `src/components/wizard/steps/RiskProfitStep.tsx` — two sliders: Risk Buffer (0-50%) and Profit Margin (10-50%) with percentage labels and current value display; ranges sourced from `GET /api/v1/config`
-- [ ] T016 [US1] Create `ReviewStep` placeholder component in `src/components/wizard/steps/ReviewStep.tsx` — displays the complete calculation breakdown from the live preview data (services, costs, multipliers, final price, recommended range); includes a "Calculate & Save" button (wired in US3) and PDF download placeholder
-- [ ] T017 [US1] Integrate all 7 step components into the wizard page at `src/app/(wizard)/page.tsx` — render the active step based on `currentStep` from WizardContext, wire Next/Previous buttons to `goToNextStep()` / `goToPreviousStep()`, and ensure step transitions trigger validation
-- [ ] T018 [US1] Wire each step component to WizardContext's `updateState()` so every input change triggers `calculatePrice()` recalculation and live preview update; verify updates complete in <100ms by testing with browser DevTools Performance tab
+- [x] T010 [P] [US1] Create `PricingModelStep` component in `src/components/wizard/steps/PricingModelStep.tsx` — radio/card selection for "Hourly" vs "Project-based" with clear visual distinction and description for each option
+- [x] T011 [P] [US1] Create `ServiceSelectionStep` component in `src/components/wizard/steps/ServiceSelectionStep.tsx` — accordion UI grouped by category (from `GET /api/v1/categories` + `GET /api/v1/services`), each service has a checkbox and a basic number input for hours (enforcement deferred to T019)
+- [x] T012 [P] [US1] Create `ExperienceStep` component in `src/components/wizard/steps/ExperienceStep.tsx` — two sliders: Designer Experience (1-10) and Freelance Experience (1-10) with numeric labels and current value display
+- [x] T013 [P] [US1] Create `GeographyStep` component in `src/components/wizard/steps/GeographyStep.tsx` — two searchable dropdowns for Designer Country and Client Country (from `GET /api/v1/countries`), showing country name and multiplier
+- [x] T014 [P] [US1] Create `CostsStep` component in `src/components/wizard/steps/CostsStep.tsx` — checkbox list of available overhead costs (from `GET /api/v1/costs`) with cost name and default amount displayed; costs are optional (step can be skipped with no selections)
+- [x] T015 [P] [US1] Create `RiskProfitStep` component in `src/components/wizard/steps/RiskProfitStep.tsx` — two sliders: Risk Buffer (0-50%) and Profit Margin (10-50%) with percentage labels and current value display; ranges sourced from `GET /api/v1/config`
+- [x] T016 [US1] Create `ReviewStep` placeholder component in `src/components/wizard/steps/ReviewStep.tsx` — displays the complete calculation breakdown from the live preview data (services, costs, multipliers, final price, recommended range); includes a "Calculate & Save" button (wired in US3) and PDF download placeholder
+- [x] T017 [US1] Integrate all 7 step components into the wizard page at `src/app/(wizard)/page.tsx` — render the active step based on `currentStep` from WizardContext, wire Next/Previous buttons to `goToNextStep()` / `goToPreviousStep()`, and ensure step transitions trigger validation
+- [x] T018 [US1] Wire each step component to WizardContext's `updateState()` so every input change triggers `calculatePrice()` recalculation and live preview update; verify updates complete in <100ms by testing with browser DevTools Performance tab
 
 **Checkpoint**: At this point, User Story 1 should be fully functional — all 7 steps render, inputs work, live preview updates in real-time, step navigation allows jumping to completed steps, and state persists through page refreshes via sessionStorage.
 
@@ -70,12 +70,12 @@
 
 ### Implementation for User Story 2
 
-- [ ] T019 [P] [US2] Add real-time inline validation to `ServiceSelectionStep` — enforce hours min=1 at the HTML `<input type="number" min={1}>` level plus client-side guard; show error if a service is selected but hours not yet set
-- [ ] T020 [P] [US2] Add real-time inline validation to `ExperienceStep` — clamp slider values to 1-10 via HTML `<input type="range" min={1} max={10}>` attributes; show numeric readout and descriptive labels (e.g., "Junior" to "Expert")
-- [ ] T021 [P] [US2] Add real-time inline validation to `GeographyStep` — mark country dropdowns as required; show validation error if user clicks Next without selecting both countries
-- [ ] T022 [P] [US2] Add real-time inline validation to `RiskProfitStep` — clamp slider values to Risk 0-50% and Profit 10-50% via HTML range attributes; dynamically pull min/max from config API response
-- [ ] T023 [US2] Integrate pricing model wiring into `LivePreview` and `ReviewStep` — add conditional logic so that selecting "Hourly" renders the per-service breakdown and "Project-based" renders the single lump-sum fee (using the structure created in T009). Ensure any pricing model change triggers immediate recalculation across all wizard steps.
-- [ ] T024 [US2] Add "Next" button gating via `validateStep()` — each step's Next button calls the step-specific validator from `step-validators.ts`; if validation fails, display inline errors on the offending fields and prevent step advancement
+- [x] T019 [P] [US2] Add real-time inline validation to `ServiceSelectionStep` — enforce hours min=1 at the HTML `<input type="number" min={1}>` level plus client-side guard; show error if a service is selected but hours not yet set
+- [x] T020 [P] [US2] Add real-time inline validation to `ExperienceStep` — clamp slider values to 1-10 via HTML `<input type="range" min={1} max={10}>` attributes; show numeric readout and descriptive labels (e.g., "Junior" to "Expert")
+- [x] T021 [P] [US2] Add real-time inline validation to `GeographyStep` — mark country dropdowns as required; show validation error if user clicks Next without selecting both countries
+- [x] T022 [P] [US2] Add real-time inline validation to `RiskProfitStep` — clamp slider values to Risk 0-50% and Profit 10-50% via HTML range attributes; dynamically pull min/max from config API response
+- [x] T023 [US2] Integrate pricing model wiring into `LivePreview` and `ReviewStep` — add conditional logic so that selecting "Hourly" renders the per-service breakdown and "Project-based" renders the single lump-sum fee (using the structure created in T009). Ensure any pricing model change triggers immediate recalculation across all wizard steps.
+- [x] T024 [US2] Add "Next" button gating via `validateStep()` — each step's Next button calls the step-specific validator from `step-validators.ts`; if validation fails, display inline errors on the offending fields and prevent step advancement
 
 **Checkpoint**: At this point, all validation constraints are enforced, pricing model correctly changes the calculation, and no invalid data can pass through the wizard.
 
@@ -89,11 +89,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T025 [US3] Create `POST /api/v1/calculate-and-save` API route in `src/app/api/v1/calculate-and-save/route.ts` — validate inputs with Zod schema (including `pricingModel` and hours ≥ 1), run `calculatePrice()` server-side, insert into `calculations` and `calculation_services` tables via Supabase, return `calculationId` + full breakdown; require Supabase Auth JWT
-- [ ] T026 [US3] Add `calculateAndSave()` async method to WizardContext in `src/lib/context/WizardContext.tsx` — calls `POST /api/v1/calculate-and-save`, handles loading/error states, sets `isSaved=true` and `savedCalculationId` on success, clears sessionStorage after successful save
-- [ ] T027 [US3] Complete `ReviewStep` component in `src/components/wizard/steps/ReviewStep.tsx` — wire "Calculate & Save" button to `calculateAndSave()`, show loading spinner during save, on success show final result breakdown with `calculationId`, and reveal the "Download PDF" button
-- [ ] T028 [US3] Add error handling to `ReviewStep` for save failures — display error toast/banner with retry option; maintain wizard state on failure (do not clear sessionStorage)
-- [ ] T029 [US3] Wire "Download PDF" button in `ReviewStep` to call `POST /api/v1/export-pdf` (Phase 4 endpoint); if not yet implemented, show a disabled button with "Coming Soon" tooltip.
+- [x] T025 [US3] Create `POST /api/v1/calculate-and-save` API route in `src/app/api/v1/calculate-and-save/route.ts` — validate inputs with Zod schema (including `pricingModel` and hours ≥ 1), run `calculatePrice()` server-side, insert into `calculations` and `calculation_services` tables via Supabase, return `calculationId` + full breakdown; require Supabase Auth JWT
+- [x] T026 [US3] Add `calculateAndSave()` async method to WizardContext in `src/lib/context/WizardContext.tsx` — calls `POST /api/v1/calculate-and-save`, handles loading/error states, sets `isSaved=true` and `savedCalculationId` on success, clears sessionStorage after successful save
+- [x] T027 [US3] Complete `ReviewStep` component in `src/components/wizard/steps/ReviewStep.tsx` — wire "Calculate & Save" button to `calculateAndSave()`, show loading spinner during save, on success show final result breakdown with `calculationId`, and reveal the "Download PDF" button
+- [x] T028 [US3] Add error handling to `ReviewStep` for save failures — display error toast/banner with retry option; maintain wizard state on failure (do not clear sessionStorage)
+- [x] T029 [US3] Wire "Download PDF" button in `ReviewStep` to call `POST /api/v1/export-pdf` (Phase 4 endpoint); if not yet implemented, show a disabled button with "Coming Soon" tooltip.
 
 **Checkpoint**: Full wizard flow is complete end-to-end — users can enter data, review, save to database, and optionally download PDF.
 

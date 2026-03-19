@@ -1,197 +1,129 @@
 'use client'
 
-import { useState } from 'react'
 import { useWizard } from '@/lib/context/WizardContext'
-import { usePricing } from '@/components/context/PricingContext'
 import { WizardLayout } from '@/components/wizard/WizardLayout'
 import { StepNavigation } from '@/components/wizard/StepNavigation'
 import LivePreview from '@/components/wizard/LivePreview'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
-import { ServiceSelection } from './components/step-inputs/service-selection'
-import { ExperienceInput } from './components/step-inputs/experience-input'
-import { GeographyInput } from './components/step-inputs/geography-input'
-import { CostSelection } from './components/step-inputs/cost-selection'
-import { RiskProfitInput } from './components/step-inputs/risk-profit-input'
 
-const STEPS = [
-  { id: 1, title: 'Pricing Model', component: null },
-  { id: 2, title: 'Services', component: ServiceSelection },
-  { id: 3, title: 'Experience', component: ExperienceInput },
-  { id: 4, title: 'Geography', component: GeographyInput },
-  { id: 5, title: 'Costs', component: CostSelection },
-  { id: 6, title: 'Risk & Profit', component: RiskProfitInput },
-]
+// Import new step components
+import { PricingModelStep } from '@/components/wizard/steps/PricingModelStep'
+import { ServiceSelectionStep } from '@/components/wizard/steps/ServiceSelectionStep'
+import { ExperienceStep } from '@/components/wizard/steps/ExperienceStep'
+import { GeographyStep } from '@/components/wizard/steps/GeographyStep'
+import { CostsStep } from '@/components/wizard/steps/CostsStep'
+import { RiskProfitStep } from '@/components/wizard/steps/RiskProfitStep'
+import { ReviewStep } from '@/components/wizard/steps/ReviewStep'
 
 export default function WizardPage() {
-  const { state, nextStep, prevStep, setPricingModel } = useWizard()
-  const { setPricing, pricing, hasErrors, validationErrors, setServerValidationErrors, clearValidationErrors } = usePricing()
-  const [isCalculating, setIsCalculating] = useState(false)
-  const [calculationMessage, setCalculationMessage] = useState('')
+  const { 
+    state, 
+    isLoading,
+    error,
+    goToNextStep, 
+    goToPreviousStep, 
+    validateCurrentStep 
+  } = useWizard()
 
-  const currentStepIndex = state.currentStep - 1
-  const currentStep = STEPS[currentStepIndex]
-  const CurrentComponent = currentStep?.component
-
-  const syncPricingFromWizard = () => {
-    setPricing({
-      services: state.services.map(s => ({ serviceId: String(s.id), hours: s.hours })),
-      designerExperience: state.experienceDesigner,
-      freelanceExperience: state.experienceFreelance,
-      designerCountryCode: state.designerCountryCode,
-      clientCountryCode: state.clientCountryCode,
-      selectedCosts: state.costs.map(String),
-      riskBufferPercent: state.riskBuffer,
-      profitMarginPercent: state.profitMargin
-    })
-  }
-
-  const handleCalculate = async () => {
-    if (hasErrors()) {
-      setCalculationMessage('Please fix validation errors before calculating.')
-      return
-    }
-
-    setIsCalculating(true)
-    setCalculationMessage('')
-    clearValidationErrors()
-    setServerValidationErrors({})
-
-    syncPricingFromWizard()
-
-    try {
-      const response = await fetch('/api/calculate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...pricing, save: true })
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        setCalculationMessage('Calculation saved successfully!')
-      } else {
-        if (data.error?.details) {
-          setServerValidationErrors(data.error.details)
-          setCalculationMessage('Please fix validation errors.')
-        } else {
-          setCalculationMessage(data.error?.message || 'Calculation failed. Please try again.')
+  if (isLoading) {
+    return (
+      <WizardLayout
+        leftPanel={
+          <div className="flex flex-col items-center justify-center min-h-[500px]">
+            <div className="w-12 h-12 border-4 border-zinc-100 border-t-zinc-900 rounded-full animate-spin mb-4" />
+            <p className="text-zinc-500 font-medium animate-pulse">Initializing your bespoke pricing engine...</p>
+          </div>
         }
-      }
-    } catch (error) {
-      console.error('Save error:', error)
-      setCalculationMessage('An error occurred. Please try again.')
-    } finally {
-      setIsCalculating(false)
+        rightPanel={<div className="animate-pulse bg-zinc-50 rounded-3xl h-full w-full" />}
+      />
+    )
+  }
+
+  if (error) {
+    return (
+      <WizardLayout
+        leftPanel={
+          <div className="flex flex-col items-center justify-center min-h-[500px] text-center px-6">
+            <div className="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center text-3xl mb-6">⚠️</div>
+            <h2 className="text-2xl font-black text-zinc-900 mb-2">Something went wrong</h2>
+            <p className="text-zinc-500 mb-8 max-w-md">{error}</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-8 py-3 bg-zinc-900 text-white rounded-full font-bold hover:bg-black transition-all"
+            >
+              Try Again
+            </button>
+          </div>
+        }
+        rightPanel={<div className="bg-zinc-50 rounded-3xl h-full w-full" />}
+      />
+    )
+  }
+
+  const renderStep = () => {
+    switch (state.currentStep) {
+      case 1: return <PricingModelStep />
+      case 2: return <ServiceSelectionStep />
+      case 3: return <ExperienceStep />
+      case 4: return <GeographyStep />
+      case 5: return <CostsStep />
+      case 6: return <RiskProfitStep />
+      case 7: return <ReviewStep />
+      default: return <PricingModelStep />
     }
   }
 
-  const canProceed = () => {
-    switch (state.currentStep) {
-      case 1:
-        return state.pricingModel !== null
-      case 2:
-        return state.services.length > 0
-      case 3:
-        return !hasErrors('designerExperience') && !hasErrors('freelanceExperience')
-      case 4:
-        return !hasErrors('designerCountryCode') && !hasErrors('clientCountryCode')
-      case 5:
-        return true
-      case 6:
-        return !hasErrors('riskBufferPercent') && !hasErrors('profitMarginPercent')
-      default:
-        return false
-    }
-  }
+  const validation = validateCurrentStep()
+  const canProceed = validation.isValid
 
   return (
     <ErrorBoundary>
       <WizardLayout
         leftPanel={
-          <div>
+          <div className="space-y-6 max-w-2xl mx-auto">
             <StepNavigation />
 
-            <div className="bg-white border border-zinc-200 rounded-lg p-6">
-              {state.currentStep === 1 && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold mb-4">Choose Pricing Model</h3>
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
-                      <input
-                        type="radio"
-                        name="pricingModel"
-                        checked={state.pricingModel === 'hourly'}
-                        onChange={() => setPricingModel('hourly')}
-                        className="h-4 w-4"
-                      />
-                      <div>
-                        <div className="font-medium">Hourly Rate</div>
-                        <div className="text-sm text-zinc-500">Charge based on hours worked</div>
-                      </div>
-                    </label>
-                    <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
-                      <input
-                        type="radio"
-                        name="pricingModel"
-                        checked={state.pricingModel === 'project'}
-                        onChange={() => setPricingModel('project')}
-                        className="h-4 w-4"
-                      />
-                      <div>
-                        <div className="font-medium">Project-Based</div>
-                        <div className="text-sm text-zinc-500">Fixed price for entire project</div>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-              )}
+            <div className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-10 shadow-sm min-h-[500px] flex flex-col">
+              <div className="flex-1 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                {renderStep()}
+              </div>
 
-              {CurrentComponent && <CurrentComponent />}
-            </div>
-
-            <div className="flex justify-between mt-4">
-              <button
-                onClick={prevStep}
-                disabled={state.currentStep <= 1}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Previous
-              </button>
-              <button
-                onClick={nextStep}
-                disabled={state.currentStep >= 6 || !canProceed()}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
-            </div>
-
-            {state.currentStep === 6 && (
-              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-600 mb-2">
-                  Click to calculate your final price and save:
-                </p>
+              {/* Navigation Buttons */}
+              <div className="flex justify-between items-center mt-10 pt-8 border-t border-zinc-100">
                 <button
-                  onClick={handleCalculate}
-                  disabled={isCalculating || hasErrors() || validationErrors.length > 0}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={goToPreviousStep}
+                  disabled={state.currentStep <= 1}
+                  className="px-8 py-3 font-bold text-zinc-500 hover:text-zinc-900 disabled:opacity-20 disabled:cursor-not-allowed transition-all flex items-center gap-2 group"
                 >
-                  {isCalculating ? 'Calculating...' : 'Calculate & Save'}
+                  <span className="group-hover:-translate-x-1 transition-transform">←</span>
+                  Back
                 </button>
-
-                {calculationMessage && (
-                  <div className={`p-2 rounded mt-2 ${
-                    calculationMessage.includes('success') 
-                      ? 'bg-green-50 border-green-200 text-green-600' 
-                      : calculationMessage.includes('fix')
-                        ? 'bg-red-50 border-red-200 text-red-600'
-                        : 'bg-yellow-50 border-yellow-200 text-yellow-600'
-                  }`}>
-                    {calculationMessage}
-                  </div>
+                
+                {state.currentStep < 7 && (
+                  <button
+                    onClick={goToNextStep}
+                    disabled={!canProceed}
+                    className={`
+                      px-10 py-3 rounded-full font-black text-white transition-all shadow-lg active:scale-95 flex items-center gap-2 group
+                      ${canProceed 
+                        ? 'bg-zinc-900 hover:bg-black hover:shadow-xl' 
+                        : 'bg-zinc-200 cursor-not-allowed text-zinc-400 shadow-none'}
+                    `}
+                  >
+                    Next Step
+                    <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  </button>
                 )}
+              </div>
+            </div>
+
+            {/* Validation Message */}
+            {!canProceed && validation.errors.length > 0 && (
+              <div className="bg-red-50 border border-red-100 p-4 rounded-2xl flex items-start gap-3 animate-in shake-in-1 duration-300">
+                <span className="text-red-600 font-bold">⚠️</span>
+                <p className="text-sm text-red-700 font-medium">
+                  {validation.errors[0].message}
+                </p>
               </div>
             )}
           </div>

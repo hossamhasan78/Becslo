@@ -1,30 +1,19 @@
 'use client'
 
 import { useWizard } from '@/lib/context/WizardContext'
-import { usePricing } from '@/components/context/PricingContext'
-import { useEffect } from 'react'
 
 export function ExperienceInput() {
-  const { state, setExperienceDesigner, setExperienceFreelance } = useWizard()
-  const { setPricing, validationErrors, clearValidationErrors, hasErrors } = usePricing()
+  const { state, setExperienceDesigner, setExperienceFreelance, validateCurrentStep } = useWizard()
 
-  const overallError = validationErrors.find(e => e.field === 'designerExperience')?.message
-  const freelanceError = validationErrors.find(e => e.field === 'freelanceExperience')?.message
-
-  useEffect(() => {
-    setPricing({
-      designerExperience: state.experienceDesigner,
-      freelanceExperience: state.experienceFreelance
-    })
-  }, [state.experienceDesigner, state.experienceFreelance, setPricing])
+  const validation = validateCurrentStep()
+  const overallError = validation.errors.find(e => e.field === 'experienceDesigner')?.message
+  const freelanceError = validation.errors.find(e => e.field === 'experienceFreelance')?.message
 
   const handleOverallChange = (value: number) => {
-    clearValidationErrors('designerExperience')
     setExperienceDesigner(value)
   }
 
   const handleFreelanceChange = (value: number) => {
-    clearValidationErrors('freelanceExperience')
     setExperienceFreelance(value)
   }
 
@@ -45,7 +34,7 @@ export function ExperienceInput() {
           value={state.experienceDesigner}
           onChange={(e) => handleOverallChange(parseInt(e.target.value) || 1)}
           className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${
-            hasErrors('designerExperience') ? 'border-red-500' : 'border-gray-300'
+            overallError ? 'border-red-500' : 'border-gray-300'
           }`}
         />
         <p className="text-xs text-zinc-500 mt-1">Total years of professional experience (1-10)</p>
@@ -67,7 +56,7 @@ export function ExperienceInput() {
           value={state.experienceFreelance}
           onChange={(e) => handleFreelanceChange(parseInt(e.target.value) || 1)}
           className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${
-            hasErrors('freelanceExperience') ? 'border-red-500' : 'border-gray-300'
+            freelanceError ? 'border-red-500' : 'border-gray-300'
           }`}
         />
         <p className="text-xs text-zinc-500 mt-1">Years of freelance experience (max: {state.experienceDesigner})</p>

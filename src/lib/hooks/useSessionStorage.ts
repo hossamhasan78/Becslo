@@ -32,20 +32,20 @@ export function useSessionStorage<T>(key: string, initialValue: T): [T, (value: 
   // Return a wrapped version of useState's setter function that persists to sessionStorage
   const setValue = useCallback((value: T | ((val: T) => T)) => {
     try {
-      // Allow value to be a function so we have same API as useState
-      const valueToStore = value instanceof Function ? value(storedValue) : value
-      
-      // Save state
-      setStoredValue(valueToStore)
-      
-      // Save to sessionStorage
-      if (typeof window !== 'undefined') {
-        window.sessionStorage.setItem(key, JSON.stringify(valueToStore))
-      }
+      setStoredValue(prev => {
+        const valueToStore = value instanceof Function ? value(prev) : value
+        
+        // Persist to sessionStorage immediately
+        if (typeof window !== 'undefined') {
+          window.sessionStorage.setItem(key, JSON.stringify(valueToStore))
+        }
+        
+        return valueToStore
+      })
     } catch (error) {
       console.warn(`Error setting sessionStorage key "${key}":`, error)
     }
-  }, [key, storedValue])
+  }, [key])
 
   return [storedValue, setValue]
 }
