@@ -112,7 +112,7 @@
 
 ### Implementation for User Story 3
 
-- [ ] T040 [P] Add validation error state in PricingContext in components/context/PricingContext.tsx (useState for validationErrors object)
+- [X] T040 [X] Add validation error state in PricingContext in components/context/PricingContext.tsx (useState for validationErrors object)
 - [ ] T041 [P] Add real-time validation in PricingContext in components/context/PricingContext.tsx (call validatePricingInput from lib/utils/validation.ts when pricing state changes, update validationErrors)
 - [ ] T042 [P] Display inline error messages in service-hours.tsx in app/wizard/components/step-inputs/service-hours.tsx (show error if hours < 0 or > maxHours)
 - [ ] T043 [P] Display inline error messages in experience-input.tsx in app/wizard/components/step-inputs/experience-input.tsx (show error if experience < 1 or > 10)
