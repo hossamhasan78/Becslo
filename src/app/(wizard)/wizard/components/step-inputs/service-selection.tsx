@@ -1,7 +1,6 @@
 'use client'
 
 import { useWizard } from '@/lib/context/WizardContext'
-import { usePricing } from '@/components/context/PricingContext'
 import { useState, useEffect } from 'react'
 
 interface ServiceData {
@@ -13,8 +12,7 @@ interface ServiceData {
 }
 
 export function ServiceSelection() {
-  const { state, addService, removeService, updateServiceHours } = useWizard()
-  const { setPricing, validationErrors, hasErrors } = usePricing()
+  const { state, addService, removeService, updateServiceHours, validateCurrentStep } = useWizard()
   const [services, setServices] = useState<ServiceData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -43,14 +41,8 @@ export function ServiceSelection() {
     fetchServices()
   }, [])
 
-  useEffect(() => {
-    setPricing({
-      services: state.services.map(s => ({
-        serviceId: String(s.id),
-        hours: s.hours
-      }))
-    })
-  }, [state.services, setPricing])
+  // Removal of legacy sync useEffect
+
 
   const handleServiceToggle = (serviceId: number) => {
     const service = services.find(s => s.id === serviceId)
@@ -69,8 +61,9 @@ export function ServiceSelection() {
     updateServiceHours(serviceId, hours)
   }
 
-  const servicesError = validationErrors.find(e => e.field === 'services')?.message
-  const hasServiceError = hasErrors('services')
+  const validation = validateCurrentStep()
+  const servicesError = validation.errors.find(e => e.field === 'services')?.message
+  const hasServiceError = !!servicesError
 
   return (
     <div className="space-y-4">

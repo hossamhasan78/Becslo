@@ -30,11 +30,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T005 Refactor `WizardContext` in `src/lib/context/WizardContext.tsx` to unify wizard state and pricing context — add `highestCompletedStep` tracking, `sessionStorage` sync via `useSessionStorage` hook, `goToNextStep()` / `goToPreviousStep()` actions, `validateStep()` using step-validators, and `resetWizard()` method
-- [ ] T006 Extend `calculatePrice()` in `src/lib/pricing-engine.ts` to accept a `pricingModel` parameter and produce different output formatting for "hourly" (per-hour rate breakdown) vs "project" (lump-sum fee)
-- [ ] T007 Update `StepNavigation` component in `src/components/wizard/StepNavigation.tsx` to support free navigation to completed steps (clickable indicators for steps ≤ `highestCompletedStep`), disable future steps, and show step titles/descriptions inline
-- [ ] T008 Update `WizardLayout` in `src/components/wizard/WizardLayout.tsx` to implement responsive 3/4 + 1/4 layout at ≥768px and stacked layout with mobile preview toggle at <768px
-- [ ] T009 Update `LivePreview` component in `src/components/wizard/LivePreview.tsx` — build the layout slots for both "hourly" (breakdown table) and "project" (lump-sum fee summary) views, showing recommended range and loading/error skeletons. (Wiring is in T023)
+- [x] T005 Refactor `WizardContext` in `src/lib/context/WizardContext.tsx` to unify wizard state and pricing context — add `highestCompletedStep` tracking, `sessionStorage` sync via `useSessionStorage` hook, `goToNextStep()` / `goToPreviousStep()` actions, `validateStep()` using step-validators, and `resetWizard()` method
+- [x] T006 Extend `calculatePrice()` in `src/lib/pricing-engine.ts` to accept a `pricingModel` parameter and produce different output formatting for "hourly" (per-hour rate breakdown) vs "project" (lump-sum fee)
+- [x] T007 Update `StepNavigation` component in `src/components/wizard/StepNavigation.tsx` to support free navigation to completed steps (clickable indicators for steps ≤ `highestCompletedStep`), disable future steps, and show step titles/descriptions inline
+- [x] T008 Update `WizardLayout` in `src/components/wizard/WizardLayout.tsx` to implement responsive 3/4 + 1/4 layout at ≥768px and stacked layout with mobile preview toggle at <768px
+- [x] T009 Update `LivePreview` component in `src/components/wizard/LivePreview.tsx` — build the layout slots for both "hourly" (breakdown table) and "project" (lump-sum fee summary) views, showing recommended range and loading/error skeletons. (Wiring is in T023)
 
 **Checkpoint**: Foundation ready — wizard shell, live preview, and navigation are functional. User story step components can now be built.
 

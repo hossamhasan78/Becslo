@@ -1,7 +1,6 @@
 'use client'
 
 import { useWizard } from '@/lib/context/WizardContext'
-import { usePricing } from '@/components/context/PricingContext'
 import { useState, useEffect } from 'react'
 
 interface CountryData {
@@ -12,8 +11,7 @@ interface CountryData {
 }
 
 export function GeographyInput() {
-  const { state, setDesignerCountryId, setClientCountryId, setDesignerCountryCode, setClientCountryCode } = useWizard()
-  const { setPricing, validationErrors, clearValidationErrors, hasErrors } = usePricing()
+  const { state, setDesignerCountryId, setClientCountryId, setDesignerCountryCode, setClientCountryCode, validateCurrentStep } = useWizard()
   const [countries, setCountries] = useState<CountryData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -31,8 +29,8 @@ export function GeographyInput() {
 
         const data = await response.json()
         setCountries(Array.isArray(data) ? data : [])
-      } catch (error) {
-        console.error('Failed to fetch countries:', error)
+      } catch (err) {
+        console.error('Failed to fetch countries:', err)
         setError('Unable to load countries. Please try again.')
         setCountries([])
       } finally {
@@ -49,24 +47,19 @@ export function GeographyInput() {
     const clientCode = client?.code || ''
     setDesignerCountryCode(designerCode)
     setClientCountryCode(clientCode)
-    setPricing({
-      designerCountryCode: designerCode,
-      clientCountryCode: clientCode
-    })
-  }, [state.designerCountryId, state.clientCountryId, countries, setPricing, setDesignerCountryCode, setClientCountryCode])
+  }, [state.designerCountryId, state.clientCountryId, countries, setDesignerCountryCode, setClientCountryCode])
 
   const handleDesignerChange = (countryId: number | null) => {
-    clearValidationErrors('designerCountryCode')
     setDesignerCountryId(countryId)
   }
 
   const handleClientChange = (countryId: number | null) => {
-    clearValidationErrors('clientCountryCode')
     setClientCountryId(countryId)
   }
 
-  const designerError = validationErrors.find(e => e.field === 'designerCountryCode')?.message
-  const clientError = validationErrors.find(e => e.field === 'clientCountryCode')?.message
+  const validation = validateCurrentStep()
+  const designerError = validation.errors.find(e => e.field === 'designerCountryCode')?.message
+  const clientError = validation.errors.find(e => e.field === 'clientCountryCode')?.message
 
   return (
     <div className="space-y-4">
@@ -99,7 +92,7 @@ export function GeographyInput() {
               value={state.designerCountryId || ''}
               onChange={(e) => handleDesignerChange(e.target.value ? parseInt(e.target.value) : null)}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${
-                hasErrors('designerCountryCode') ? 'border-red-500' : 'border-gray-300'
+                designerError ? 'border-red-500' : 'border-gray-300'
               }`}
             >
               <option value="">Select a country</option>
@@ -123,7 +116,7 @@ export function GeographyInput() {
               value={state.clientCountryId || ''}
               onChange={(e) => handleClientChange(e.target.value ? parseInt(e.target.value) : null)}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${
-                hasErrors('clientCountryCode') ? 'border-red-500' : 'border-gray-300'
+                clientError ? 'border-red-500' : 'border-gray-300'
               }`}
             >
               <option value="">Select a country</option>

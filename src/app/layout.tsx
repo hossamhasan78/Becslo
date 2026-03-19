@@ -32,9 +32,7 @@ export default function RootLayout({
         <GlobalErrorBoundary>
           <AuthProvider>
             <WizardProvider>
-              <PricingProvider>
-                {children}
-              </PricingProvider>
+              {children}
             </WizardProvider>
           </AuthProvider>
         </GlobalErrorBoundary>
