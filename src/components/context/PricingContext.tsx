@@ -1,17 +1,25 @@
 'use client'
 
 import { createContext, useContext, useState, useCallback, ReactNode, useMemo, useRef, useEffect } from 'react'
-import type { PricingInput, PricingOutput, ValidationError } from '@/lib/types/pricing'
+import type { PricingInput, PricingOutput } from '@/lib/types/pricing'
 import { calculatePrice } from '@/lib/pricing-engine'
 import { validatePricingInput } from '@/lib/utils/validation'
+
+export interface FieldValidationError {
+  field: string
+  message: string
+}
 
 interface PricingContextType {
   pricing: PricingInput
   result: PricingOutput | null
-  validationErrors: ValidationError[]
+  validationErrors: FieldValidationError[]
+  serverValidationErrors: Record<string, string>
   setPricing: (pricing: Partial<PricingInput>) => void
   loadPricingData: () => Promise<void>
-  clearValidationErrors: () => void
+  clearValidationErrors: (field?: string) => void
+  setServerValidationErrors: (errors: Record<string, string>) => void
+  hasErrors: (field?: string) => boolean
   isLoading: boolean
 }
 
@@ -30,9 +38,12 @@ const PricingContext = createContext<PricingContextType>({
   pricing: defaultPricing,
   result: null,
   validationErrors: [],
+  serverValidationErrors: {},
   setPricing: () => {},
   loadPricingData: async () => {},
   clearValidationErrors: () => {},
+  setServerValidationErrors: () => {},
+  hasErrors: () => false,
   isLoading: false
 })
 
@@ -98,7 +109,8 @@ async function fetchPricingData(
 
 export function PricingProvider({ children }: { children: ReactNode }) {
   const [pricing, setPricingState] = useState<PricingInput>(defaultPricing)
-  const [validationErrors, setValidationErrors] = useState<ValidationError[]>([])
+  const [validationErrors, setValidationErrors] = useState<FieldValidationError[]>([])
+  const [serverValidationErrors, setServerValidationErrors] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(false)
   const [countries, setCountries] = useState<CountryMultiplier[]>([])
   const [costs, setCosts] = useState<CostItem[]>([])
@@ -131,24 +143,29 @@ export function PricingProvider({ children }: { children: ReactNode }) {
     debounceTimeoutRef.current = setTimeout(() => {
       setPricingState(prev => {
         const updated = { ...prev, ...updates }
-        const hasRequiredFields = updated.services.length > 0 &&
-                                 updated.designerCountryCode.length === 2 &&
-                                 updated.clientCountryCode.length === 2
-
-        if (hasRequiredFields) {
-          const errors = validatePricingInput(updated)
-          setValidationErrors(errors)
-        } else {
-          setValidationErrors([])
-        }
+        const errors = validatePricingInput(updated)
+        setValidationErrors(errors)
         return updated
       })
     }, 100)
   }, [])
 
-  const clearValidationErrors = useCallback(() => {
-    setValidationErrors([])
+  const clearValidationErrors = useCallback((field?: string) => {
+    if (field) {
+      setValidationErrors(prev => prev.filter(err => err.field !== field))
+    } else {
+      setValidationErrors([])
+    }
   }, [])
+
+  const hasErrors = useCallback((field?: string) => {
+    if (field) {
+      const hasFieldError = validationErrors.some(err => err.field === field) ||
+                           !!serverValidationErrors[field]
+      return hasFieldError
+    }
+    return validationErrors.length > 0 || Object.keys(serverValidationErrors).length > 0
+  }, [validationErrors, serverValidationErrors])
 
   const loadPricingData = useCallback(async () => {
     await fetchPricingData(setCountries, setCosts, setServices, setIsLoading)
@@ -166,9 +183,12 @@ export function PricingProvider({ children }: { children: ReactNode }) {
     pricing,
     result,
     validationErrors,
+    serverValidationErrors,
     setPricing,
     loadPricingData,
     clearValidationErrors,
+    setServerValidationErrors,
+    hasErrors,
     isLoading
   }
 

@@ -13,7 +13,7 @@ interface CountryData {
 
 export function GeographyInput() {
   const { state, setDesignerCountryId, setClientCountryId, setDesignerCountryCode, setClientCountryCode } = useWizard()
-  const { setPricing } = usePricing()
+  const { setPricing, validationErrors, clearValidationErrors, hasErrors } = usePricing()
   const [countries, setCountries] = useState<CountryData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -55,6 +55,19 @@ export function GeographyInput() {
     })
   }, [state.designerCountryId, state.clientCountryId, countries, setPricing, setDesignerCountryCode, setClientCountryCode])
 
+  const handleDesignerChange = (countryId: number | null) => {
+    clearValidationErrors('designerCountryCode')
+    setDesignerCountryId(countryId)
+  }
+
+  const handleClientChange = (countryId: number | null) => {
+    clearValidationErrors('clientCountryCode')
+    setClientCountryId(countryId)
+  }
+
+  const designerError = validationErrors.find(e => e.field === 'designerCountryCode')?.message
+  const clientError = validationErrors.find(e => e.field === 'clientCountryCode')?.message
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold mb-4">Geographic Location</h3>
@@ -84,8 +97,10 @@ export function GeographyInput() {
             <select
               id="designerCountry"
               value={state.designerCountryId || ''}
-              onChange={(e) => setDesignerCountryId(e.target.value ? parseInt(e.target.value) : null)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500"
+              onChange={(e) => handleDesignerChange(e.target.value ? parseInt(e.target.value) : null)}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${
+                hasErrors('designerCountryCode') ? 'border-red-500' : 'border-gray-300'
+              }`}
             >
               <option value="">Select a country</option>
               {countries.map(country => (
@@ -94,6 +109,9 @@ export function GeographyInput() {
                 </option>
               ))}
             </select>
+            {designerError && (
+              <p className="text-sm text-red-600 mt-1">{designerError}</p>
+            )}
           </div>
 
           <div>
@@ -103,8 +121,10 @@ export function GeographyInput() {
             <select
               id="clientCountry"
               value={state.clientCountryId || ''}
-              onChange={(e) => setClientCountryId(e.target.value ? parseInt(e.target.value) : null)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500"
+              onChange={(e) => handleClientChange(e.target.value ? parseInt(e.target.value) : null)}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${
+                hasErrors('clientCountryCode') ? 'border-red-500' : 'border-gray-300'
+              }`}
             >
               <option value="">Select a country</option>
               {countries.map(country => (
@@ -113,6 +133,9 @@ export function GeographyInput() {
                 </option>
               ))}
             </select>
+            {clientError && (
+              <p className="text-sm text-red-600 mt-1">{clientError}</p>
+            )}
           </div>
         </>
       )}

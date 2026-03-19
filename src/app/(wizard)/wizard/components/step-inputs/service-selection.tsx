@@ -14,7 +14,7 @@ interface ServiceData {
 
 export function ServiceSelection() {
   const { state, addService, removeService, updateServiceHours } = useWizard()
-  const { setPricing } = usePricing()
+  const { setPricing, validationErrors, hasErrors } = usePricing()
   const [services, setServices] = useState<ServiceData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -69,6 +69,9 @@ export function ServiceSelection() {
     updateServiceHours(serviceId, hours)
   }
 
+  const servicesError = validationErrors.find(e => e.field === 'services')?.message
+  const hasServiceError = hasErrors('services')
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold mb-4">Select Services</h3>
@@ -97,7 +100,9 @@ export function ServiceSelection() {
             return (
               <div
                 key={service.id}
-                className="p-4 border rounded-lg hover:shadow-md transition-shadow"
+                className={`p-4 border rounded-lg hover:shadow-md transition-shadow ${
+                  hasServiceError ? 'border-red-300' : ''
+                }`}
               >
                 <div className="flex items-start gap-3">
                   <input
@@ -116,15 +121,18 @@ export function ServiceSelection() {
                     </label>
                   </div>
                   {selectedService && (
-                    <input
-                      type="number"
-                      min={service.minHours || 1}
-                      max={service.maxHours || 100}
-                      step={0.5}
-                      value={selectedService.hours}
-                      onChange={(e) => handleHoursChange(service.id, parseFloat(e.target.value) || 1)}
-                      className="w-24 px-2 py-1 border rounded"
-                    />
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min={service.minHours || 1}
+                        max={service.maxHours || 100}
+                        step={0.5}
+                        value={selectedService.hours}
+                        onChange={(e) => handleHoursChange(service.id, parseFloat(e.target.value) || 1)}
+                        className="w-24 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      />
+                      <span className="text-sm text-zinc-500">hours</span>
+                    </div>
                   )}
                 </div>
               </div>
@@ -135,6 +143,10 @@ export function ServiceSelection() {
 
       {!isLoading && !error && services.length === 0 && (
         <p className="text-zinc-500">No services available.</p>
+      )}
+
+      {servicesError && (
+        <p className="text-sm text-red-600 mt-2">{servicesError}</p>
       )}
     </div>
   )

@@ -6,7 +6,10 @@ import { useEffect } from 'react'
 
 export function ExperienceInput() {
   const { state, setExperienceDesigner, setExperienceFreelance } = useWizard()
-  const { setPricing } = usePricing()
+  const { setPricing, validationErrors, clearValidationErrors, hasErrors } = usePricing()
+
+  const overallError = validationErrors.find(e => e.field === 'designerExperience')?.message
+  const freelanceError = validationErrors.find(e => e.field === 'freelanceExperience')?.message
 
   useEffect(() => {
     setPricing({
@@ -14,6 +17,16 @@ export function ExperienceInput() {
       freelanceExperience: state.experienceFreelance
     })
   }, [state.experienceDesigner, state.experienceFreelance, setPricing])
+
+  const handleOverallChange = (value: number) => {
+    clearValidationErrors('designerExperience')
+    setExperienceDesigner(value)
+  }
+
+  const handleFreelanceChange = (value: number) => {
+    clearValidationErrors('freelanceExperience')
+    setExperienceFreelance(value)
+  }
 
   return (
     <div className="space-y-4">
@@ -30,10 +43,15 @@ export function ExperienceInput() {
           max="10"
           step="1"
           value={state.experienceDesigner}
-          onChange={(e) => setExperienceDesigner(parseInt(e.target.value) || 1)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          onChange={(e) => handleOverallChange(parseInt(e.target.value) || 1)}
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${
+            hasErrors('designerExperience') ? 'border-red-500' : 'border-gray-300'
+          }`}
         />
         <p className="text-xs text-zinc-500 mt-1">Total years of professional experience (1-10)</p>
+        {overallError && (
+          <p className="text-sm text-red-600 mt-1">{overallError}</p>
+        )}
       </div>
 
       <div>
@@ -47,10 +65,15 @@ export function ExperienceInput() {
           max={state.experienceDesigner}
           step="1"
           value={state.experienceFreelance}
-          onChange={(e) => setExperienceFreelance(parseInt(e.target.value) || 1)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          onChange={(e) => handleFreelanceChange(parseInt(e.target.value) || 1)}
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${
+            hasErrors('freelanceExperience') ? 'border-red-500' : 'border-gray-300'
+          }`}
         />
         <p className="text-xs text-zinc-500 mt-1">Years of freelance experience (max: {state.experienceDesigner})</p>
+        {freelanceError && (
+          <p className="text-sm text-red-600 mt-1">{freelanceError}</p>
+        )}
       </div>
     </div>
   )

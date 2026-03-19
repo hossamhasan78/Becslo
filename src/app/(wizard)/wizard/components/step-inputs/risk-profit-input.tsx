@@ -6,7 +6,10 @@ import { useEffect } from 'react'
 
 export function RiskProfitInput() {
   const { state, setRiskBuffer, setProfitMargin } = useWizard()
-  const { setPricing } = usePricing()
+  const { setPricing, validationErrors, clearValidationErrors, hasErrors } = usePricing()
+
+  const riskError = validationErrors.find(e => e.field === 'riskBufferPercent')?.message
+  const profitError = validationErrors.find(e => e.field === 'profitMarginPercent')?.message
 
   useEffect(() => {
     setPricing({
@@ -14,6 +17,16 @@ export function RiskProfitInput() {
       profitMarginPercent: state.profitMargin
     })
   }, [state.riskBuffer, state.profitMargin, setPricing])
+
+  const handleRiskChange = (value: number) => {
+    clearValidationErrors('riskBufferPercent')
+    setRiskBuffer(Math.max(0, Math.min(50, value)))
+  }
+
+  const handleProfitChange = (value: number) => {
+    clearValidationErrors('profitMarginPercent')
+    setProfitMargin(Math.max(10, Math.min(50, value)))
+  }
 
   return (
     <div className="space-y-4">
@@ -30,10 +43,15 @@ export function RiskProfitInput() {
           max="50"
           step="1"
           value={state.riskBuffer}
-          onChange={(e) => setRiskBuffer(Math.max(0, Math.min(50, parseInt(e.target.value) || 0)))}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          onChange={(e) => handleRiskChange(parseInt(e.target.value) || 0)}
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${
+            hasErrors('riskBufferPercent') ? 'border-red-500' : 'border-gray-300'
+          }`}
         />
         <p className="text-xs text-zinc-500 mt-1">Buffer for unexpected costs (0-50%)</p>
+        {riskError && (
+          <p className="text-sm text-red-600 mt-1">{riskError}</p>
+        )}
       </div>
 
       <div>
@@ -47,10 +65,15 @@ export function RiskProfitInput() {
           max="50"
           step="1"
           value={state.profitMargin}
-          onChange={(e) => setProfitMargin(Math.max(10, Math.min(50, parseInt(e.target.value) || 10)))}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          onChange={(e) => handleProfitChange(parseInt(e.target.value) || 10)}
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${
+            hasErrors('profitMarginPercent') ? 'border-red-500' : 'border-gray-300'
+          }`}
         />
         <p className="text-xs text-zinc-500 mt-1">Your profit margin (10-50%)</p>
+        {profitError && (
+          <p className="text-sm text-red-600 mt-1">{profitError}</p>
+        )}
       </div>
     </div>
   )

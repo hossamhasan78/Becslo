@@ -24,7 +24,7 @@ const STEPS = [
 
 export default function WizardPage() {
   const { state, nextStep, prevStep, setPricingModel } = useWizard()
-  const { setPricing, pricing } = usePricing()
+  const { setPricing, pricing, hasErrors, validationErrors, setServerValidationErrors, clearValidationErrors } = usePricing()
   const [isCalculating, setIsCalculating] = useState(false)
   const [calculationMessage, setCalculationMessage] = useState('')
 
@@ -46,8 +46,15 @@ export default function WizardPage() {
   }
 
   const handleCalculate = async () => {
+    if (hasErrors()) {
+      setCalculationMessage('Please fix validation errors before calculating.')
+      return
+    }
+
     setIsCalculating(true)
     setCalculationMessage('')
+    clearValidationErrors()
+    setServerValidationErrors({})
 
     syncPricingFromWizard()
 
@@ -60,15 +67,21 @@ export default function WizardPage() {
         body: JSON.stringify({ ...pricing, save: true })
       })
 
+      const data = await response.json()
+
       if (response.ok) {
         setCalculationMessage('Calculation saved successfully!')
       } else {
-        const errorData = await response.json()
-        setCalculationMessage(errorData.error?.message || 'Calculation complete (save failed)')
+        if (data.error?.details) {
+          setServerValidationErrors(data.error.details)
+          setCalculationMessage('Please fix validation errors.')
+        } else {
+          setCalculationMessage(data.error?.message || 'Calculation failed. Please try again.')
+        }
       }
     } catch (error) {
       console.error('Save error:', error)
-      setCalculationMessage('Calculation complete')
+      setCalculationMessage('An error occurred. Please try again.')
     } finally {
       setIsCalculating(false)
     }
@@ -81,13 +94,13 @@ export default function WizardPage() {
       case 2:
         return state.services.length > 0
       case 3:
-        return true
+        return !hasErrors('designerExperience') && !hasErrors('freelanceExperience')
       case 4:
-        return state.designerCountryId !== null && state.clientCountryId !== null
+        return !hasErrors('designerCountryCode') && !hasErrors('clientCountryCode')
       case 5:
         return true
       case 6:
-        return true
+        return !hasErrors('riskBufferPercent') && !hasErrors('profitMarginPercent')
       default:
         return false
     }
@@ -162,14 +175,20 @@ export default function WizardPage() {
                 </p>
                 <button
                   onClick={handleCalculate}
-                  disabled={isCalculating}
+                  disabled={isCalculating || hasErrors() || validationErrors.length > 0}
                   className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isCalculating ? 'Calculating...' : 'Calculate & Save'}
                 </button>
 
                 {calculationMessage && (
-                  <div className={`p-2 rounded mt-2 ${calculationMessage.includes('success') ? 'bg-green-50 border-green-200 text-green-600' : 'bg-yellow-50 border-yellow-200 text-yellow-600'}`}>
+                  <div className={`p-2 rounded mt-2 ${
+                    calculationMessage.includes('success') 
+                      ? 'bg-green-50 border-green-200 text-green-600' 
+                      : calculationMessage.includes('fix')
+                        ? 'bg-red-50 border-red-200 text-red-600'
+                        : 'bg-yellow-50 border-yellow-200 text-yellow-600'
+                  }`}>
                     {calculationMessage}
                   </div>
                 )}
