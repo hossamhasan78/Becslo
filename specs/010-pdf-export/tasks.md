@@ -41,18 +41,18 @@
 
 ### Tests for User Story 1
 
-- [ ] T005 [P] [US1] Write Vitest logic tests for PDF hydration data mapping in `tests/unit/pdf_logic.test.ts`
-- [ ] T006 [P] [US1] Write Playwright E2E flow test for the PDF download interaction in `tests/e2e/pdf_export.spec.ts`
+- [x] T005 [P] [US1] Write Vitest logic tests for PDF hydration data mapping in `tests/unit/pdf_logic.test.ts`
+- [x] T006 [P] [US1] Write Playwright E2E flow test for the PDF download interaction in `tests/e2e/pdf_export.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T007 [P] [US1] Create the Next.js Route Handler `src/app/api/v1/export-pdf/route.ts` with basic binary streaming response
-- [ ] T008 [US1] Implement session-based authentication check in the API route handler `src/app/api/v1/export-pdf/route.ts` (FR-009)
-- [ ] T009 [US1] Implement server-side calculation hydration from Supabase using the provided ID in `src/app/api/v1/export-pdf/route.ts`
-- [ ] T010 [US1] Integrate `QuoteDocument.tsx` into the API route to generate the PDF buffer for streaming
-- [ ] T011 [P] [US1] Add "Download PDF" button and loading state management to `src/app/(wizard)/wizard/page.tsx` (Final Step UI)
-- [ ] T012 [US1] Implement `handleDownloadPDF` client-side logic in `src/app/(wizard)/wizard/page.tsx` to call the export API and trigger browser download
-- [ ] T013 [US1] Implement error catching, toast message UI, and retry logic for network timeouts during download in `src/app/(wizard)/wizard/page.tsx` (Edge Case 3)
+- [x] T007 [P] [US1] Create the Next.js Route Handler `src/app/api/v1/export-pdf/route.ts` with basic binary streaming response
+- [x] T008 [US1] Implement session-based authentication check in the API route handler `src/app/api/v1/export-pdf/route.ts` (FR-009)
+- [x] T009 [US1] Implement server-side calculation hydration from Supabase using the provided ID in `src/app/api/v1/export-pdf/route.ts`
+- [x] T010 [US1] Integrate `QuoteDocument.tsx` into the API route to generate the PDF buffer for streaming
+- [x] T011 [P] [US1] Add "Download PDF" button and loading state management to `src/app/(wizard)/wizard/page.tsx` (Final Step UI)
+- [x] T012 [US1] Implement `handleDownloadPDF` client-side logic in `src/app/(wizard)/wizard/page.tsx` to call the export API and trigger browser download
+- [x] T013 [US1] Implement error catching, toast message UI, and retry logic for network timeouts during download in `src/app/(wizard)/wizard/page.tsx` (Edge Case 3)
 
 **Checkpoint**: User Story 1 functional - basic PDF download with final price is available without silent failures.
 

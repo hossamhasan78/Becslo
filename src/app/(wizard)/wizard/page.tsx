@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 import { useWizard } from '@/lib/context/WizardContext'
 import { WizardLayout } from '@/components/wizard/WizardLayout'
 import { StepNavigation } from '@/components/wizard/StepNavigation'
@@ -21,10 +23,55 @@ export default function WizardPage() {
     isLoading,
     error,
     goToNextStep, 
-    goToPreviousStep, 
+    goToPreviousStep,
     validateCurrentStep,
-    loadPricingData
+    loadPricingData,
+    calculateAndSave
   } = useWizard()
+
+  const [isDownloading, setIsDownloading] = useState(false)
+  const [downloadError, setDownloadError] = useState<string | null>(null)
+
+  const handleDownloadPDF = async () => {
+    try {
+      setIsDownloading(true)
+      setDownloadError(null)
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let id = (state as any).savedCalculationId;
+      
+      if (!id) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const res = await (calculateAndSave as any)()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        id = res?.calculationId || (state as any).savedCalculationId
+      }
+
+      if (!id) throw new Error('Could not generate Calculation ID')
+
+      const response = await fetch(`/api/v1/export-pdf?id=${id}`)
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF. Please try again.')
+      }
+      
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `Becslo_Quote_${id.slice(0, 8)}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      console.error('Download error:', err)
+      setDownloadError(err.message || 'Network timeout or error downloading PDF. Please try again.')
+    } finally {
+      setIsDownloading(false)
+    }
+  }
 
   if (isLoading) {
     return (
@@ -115,8 +162,42 @@ export default function WizardPage() {
                     <span className="group-hover:translate-x-1 transition-transform">→</span>
                   </button>
                 )}
+
+                {state.currentStep === 7 && (
+                  <button
+                    onClick={handleDownloadPDF}
+                    disabled={isDownloading || !canProceed}
+                    className={`
+                      px-10 py-3 rounded-full font-black text-white transition-all shadow-lg active:scale-95 flex items-center gap-2 group
+                      ${(canProceed && !isDownloading)
+                        ? 'bg-blue-600 hover:bg-blue-700 hover:shadow-xl' 
+                        : 'bg-zinc-200 cursor-not-allowed text-zinc-400 shadow-none'}
+                    `}
+                  >
+                    {isDownloading ? (
+                      <span className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        Generating...
+                      </span>
+                    ) : (
+                      <>
+                        Download PDF
+                        <span className="group-hover:-translate-y-1 transition-transform">↓</span>
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
+
+            {/* Error Toast for PDF Download */}
+            {downloadError && (
+              <div className="bg-red-50 border border-red-100 p-4 rounded-2xl flex items-start gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <span className="text-red-600 font-bold">⚠️</span>
+                <p className="text-sm text-red-700 font-medium">{downloadError}</p>
+                <button onClick={() => setDownloadError(null)} className="ml-auto text-red-500 hover:text-red-700">✕</button>
+              </div>
+            )}
 
             {/* Validation Message */}
             {!canProceed && validation.errors.length > 0 && (
