@@ -1,4 +1,5 @@
 export interface PricingInput {
+  pricingModel: 'hourly' | 'project';
   services: Array<{
     serviceId: string;
     hours: number;
