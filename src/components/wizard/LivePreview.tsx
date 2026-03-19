@@ -2,13 +2,8 @@
 
 import { usePricing } from '@/components/context/PricingContext'
 import { formatCurrency } from '@/lib/utils/formatting'
-import { useMemo, memo } from 'react'
+import { memo } from 'react'
 import type { PricingOutput, ServiceBreakdown } from '@/lib/types/pricing'
-
-interface DerivedValues {
-  riskBufferPercent: string
-  profitMarginPercent: string
-}
 
 function PriceDisplay({ result }: { result: PricingOutput }) {
   return (
@@ -41,7 +36,10 @@ function PriceDisplay({ result }: { result: PricingOutput }) {
   )
 }
 
-function CostBreakdown({ result, derivedValues }: { result: PricingOutput; derivedValues: DerivedValues }) {
+function CostBreakdown({ result }: { result: PricingOutput }) {
+  const riskPercent = result.subtotal > 0 ? ((result.riskBufferAmount / result.subtotal) * 100).toFixed(1) : '0'
+  const profitPercent = (result.subtotal + result.riskBufferAmount) > 0 ? ((result.profitMarginAmount / (result.subtotal + result.riskBufferAmount)) * 100).toFixed(1) : '0'
+
   return (
     <div>
       <h4 className="font-semibold mb-2">Cost Breakdown</h4>
@@ -59,11 +57,11 @@ function CostBreakdown({ result, derivedValues }: { result: PricingOutput; deriv
           <span className="font-semibold">{formatCurrency(result.subtotal)}</span>
         </div>
         <div className="flex justify-between py-2 border-b">
-          <span>Risk Buffer ({derivedValues?.riskBufferPercent}%)</span>
+          <span>Risk Buffer ({riskPercent}%)</span>
           <span className="font-semibold">{formatCurrency(result.riskBufferAmount)}</span>
         </div>
         <div className="flex justify-between py-2">
-          <span>Profit Margin ({derivedValues?.profitMarginPercent}%)</span>
+          <span>Profit Margin ({profitPercent}%)</span>
           <span className="font-semibold">{formatCurrency(result.profitMarginAmount)}</span>
         </div>
       </div>
@@ -80,7 +78,7 @@ const ServiceBreakdownItem = memo(function ServiceBreakdownItem({ item }: { item
   )
 })
 
-function ServiceBreakdown({ result }: { result: PricingOutput }) {
+function ServiceBreakdownList({ result }: { result: PricingOutput }) {
   return (
     <div>
       <h4 className="font-semibold mb-2">Service Breakdown</h4>
@@ -94,22 +92,51 @@ function ServiceBreakdown({ result }: { result: PricingOutput }) {
 }
 
 function LivePreview() {
-  const { result } = usePricing()
+  const { result, pricing, isLoading } = usePricing()
 
-  const derivedValues = useMemo((): DerivedValues | null => {
-    if (!result) return null
+  const servicesSelected = pricing.services.length > 0
+  const countriesSelected = pricing.designerCountryCode.length === 2 && pricing.clientCountryCode.length === 2
 
-    return {
-      riskBufferPercent: result.riskBufferAmount ? (result.riskBufferAmount / result.subtotal * 100).toFixed(1) : '0',
-      profitMarginPercent: result.profitMarginAmount ? ((result.subtotal + result.riskBufferAmount) / result.profitMarginAmount * 100).toFixed(1) : '0'
-    }
-  }, [result])
+  if (isLoading) {
+    return (
+      <div className="bg-white border border-zinc-200 rounded-lg p-6">
+        <h3 className="text-lg font-semibold mb-4">Price Preview</h3>
+        <div className="flex items-center justify-center py-8">
+          <div className="animate-pulse text-zinc-500">Loading pricing data...</div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!servicesSelected) {
+    return (
+      <div className="bg-white border border-zinc-200 rounded-lg p-6">
+        <h3 className="text-lg font-semibold mb-4">Price Preview</h3>
+        <p className="text-zinc-500 text-sm text-center py-4">
+          Select services to see price calculation
+        </p>
+      </div>
+    )
+  }
+
+  if (!countriesSelected) {
+    return (
+      <div className="bg-white border border-zinc-200 rounded-lg p-6">
+        <h3 className="text-lg font-semibold mb-4">Price Preview</h3>
+        <p className="text-zinc-500 text-sm text-center py-4">
+          Select countries to see price calculation
+        </p>
+      </div>
+    )
+  }
 
   if (!result) {
     return (
       <div className="bg-white border border-zinc-200 rounded-lg p-6">
         <h3 className="text-lg font-semibold mb-4">Price Preview</h3>
-        <p className="text-zinc-500 text-sm">Select services to see price calculation</p>
+        <p className="text-zinc-500 text-sm text-center py-4">
+          Unable to calculate. Please check your selections.
+        </p>
       </div>
     )
   }
@@ -120,8 +147,8 @@ function LivePreview() {
 
       <div className="space-y-4">
         <PriceDisplay result={result} />
-        {derivedValues && <CostBreakdown result={result} derivedValues={derivedValues} />}
-        <ServiceBreakdown result={result} />
+        <CostBreakdown result={result} />
+        <ServiceBreakdownList result={result} />
       </div>
     </div>
   )

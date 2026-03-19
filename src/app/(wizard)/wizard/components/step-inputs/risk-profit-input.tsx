@@ -21,34 +21,36 @@ export function RiskProfitInput() {
       
       <div>
         <label htmlFor="riskBuffer" className="block text-sm font-medium text-gray-700 mb-2">
-          Risk Buffer: <span className="text-zinc-500 ml-1">{state.riskBuffer}%</span>
+          Risk Buffer (%) <span className="text-zinc-500 ml-1">[{state.riskBuffer}%]</span>
         </label>
         <input
           id="riskBuffer"
-          type="range"
+          type="number"
           min="0"
           max="50"
           step="1"
           value={state.riskBuffer}
-          onChange={(e) => setRiskBuffer(parseInt(e.target.value))}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          onChange={(e) => setRiskBuffer(Math.max(0, Math.min(50, parseInt(e.target.value) || 0)))}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
+        <p className="text-xs text-zinc-500 mt-1">Buffer for unexpected costs (0-50%)</p>
       </div>
 
       <div>
         <label htmlFor="profitMargin" className="block text-sm font-medium text-gray-700 mb-2">
-          Profit Margin: <span className="text-zinc-500 ml-1">{state.profitMargin}%</span>
+          Profit Margin (%) <span className="text-zinc-500 ml-1">[{state.profitMargin}%]</span>
         </label>
         <input
           id="profitMargin"
-          type="range"
+          type="number"
           min="10"
           max="50"
           step="1"
           value={state.profitMargin}
-          onChange={(e) => setProfitMargin(parseInt(e.target.value))}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          onChange={(e) => setProfitMargin(Math.max(10, Math.min(50, parseInt(e.target.value) || 10)))}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
+        <p className="text-xs text-zinc-500 mt-1">Your profit margin (10-50%)</p>
       </div>
     </div>
   )

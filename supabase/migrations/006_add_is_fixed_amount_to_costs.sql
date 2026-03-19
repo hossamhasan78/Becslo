@@ -3,13 +3,18 @@
 -- Created: 2026-03-19
 -- Purpose: Fix schema mismatch - costs table needs is_fixed_amount column
 
--- Add is_fixed_amount column to costs table
-alter table public.costs add column if not exists is_fixed_amount boolean default false not null;
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'costs' AND column_name = 'is_fixed_amount'
+  ) THEN
+    ALTER TABLE public.costs ADD COLUMN is_fixed_amount boolean DEFAULT false NOT NULL;
+  END IF;
+END $$;
 
--- Update existing costs to have appropriate values
--- Fixed amount costs (dollar values)
-update public.costs set is_fixed_amount = true 
-where lower(name) in (
+UPDATE public.costs SET is_fixed_amount = true 
+WHERE lower(name) IN (
   'software licenses',
   'stock photos/videos',
   'domain names',
@@ -26,8 +31,7 @@ where lower(name) in (
   'ssl certificates'
 );
 
--- Percentage-based costs
-update public.costs set is_fixed_amount = false 
-where lower(name) like '%fee%' 
-   or lower(name) like '%percent%'
-   or lower(name) like '%commission%';
+UPDATE public.costs SET is_fixed_amount = false 
+WHERE lower(name) LIKE '%fee%' 
+   OR lower(name) LIKE '%percent%'
+   OR lower(name) LIKE '%commission%';
