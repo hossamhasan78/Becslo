@@ -14,6 +14,8 @@ interface WizardContextValue {
   setExperienceFreelance: (level: number) => void
   setDesignerCountryId: (countryId: number | null) => void
   setClientCountryId: (countryId: number | null) => void
+  setDesignerCountryCode: (code: string) => void
+  setClientCountryCode: (code: string) => void
   toggleCost: (costId: number) => void
   setRiskBuffer: (value: number) => void
   setProfitMargin: (value: number) => void
@@ -82,6 +84,14 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     setState((prev) => ({ ...prev, clientCountryId: countryId }))
   }
 
+  const setDesignerCountryCode = (code: string) => {
+    setState((prev) => ({ ...prev, designerCountryCode: code }))
+  }
+
+  const setClientCountryCode = (code: string) => {
+    setState((prev) => ({ ...prev, clientCountryCode: code }))
+  }
+
   const toggleCost = (costId: number) => {
     setState((prev) => {
       const exists = prev.costs.includes(costId)
@@ -133,6 +143,8 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         setExperienceFreelance,
         setDesignerCountryId,
         setClientCountryId,
+        setDesignerCountryCode,
+        setClientCountryCode,
         toggleCost,
         setRiskBuffer,
         setProfitMargin,

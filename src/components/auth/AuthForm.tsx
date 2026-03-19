@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { getClient } from '@/lib/supabase/client'
-import { redirect } from 'next/navigation'
 
 interface AuthFormProps {
   mode: 'login' | 'signup'
@@ -10,12 +9,12 @@ interface AuthFormProps {
 
 function getFriendlyError(message: string): string {
   const lowerMessage = message.toLowerCase()
-  
+
   if (lowerMessage.includes('invalid login') || lowerMessage.includes('invalid email or password')) {
     return 'Invalid email or password. Please try again.'
   }
   if (lowerMessage.includes('user already exists') || lowerMessage.includes('already registered')) {
-    return 'An account with this email already exists.'
+    return 'An account with this email already exists. Please log in instead.'
   }
   if (lowerMessage.includes('password')) {
     return 'Password must be at least 6 characters.'
@@ -26,8 +25,14 @@ function getFriendlyError(message: string): string {
   if (lowerMessage.includes('email')) {
     return 'Please enter a valid email address.'
   }
-  
-  return message
+  if (lowerMessage.includes('email not confirmed')) {
+    return 'Please confirm your email address before logging in.'
+  }
+  if (lowerMessage.includes('too many requests')) {
+    return 'Too many attempts. Please wait a few minutes and try again.'
+  }
+
+  return 'An unexpected error occurred. Please try again.'
 }
 
 export function AuthForm({ mode }: AuthFormProps) {
@@ -37,10 +42,10 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const supabase = getClient()
+  
+  const supabase = useMemo(() => getClient(), [])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleLogin = async () => {
     setLoading(true)
     setError('')
     setSuccess('')
@@ -51,45 +56,65 @@ export function AuthForm({ mode }: AuthFormProps) {
       return
     }
 
-    if (mode === 'signup' && password.length < 6) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    })
+
+    if (error) {
+      setError(getFriendlyError(error.message))
+    } else if (data.session) {
+      window.location.href = '/wizard'
+    } else if (data.user) {
+      setError('Please check your email to confirm your account before logging in.')
+    } else {
+      setError('Login failed. Please try again.')
+    }
+    setLoading(false)
+  }
+
+  const handleSignup = async () => {
+    setLoading(true)
+    setError('')
+    setSuccess('')
+
+    if (!email || !password || !name) {
+      setError('Please fill in all required fields.')
+      setLoading(false)
+      return
+    }
+
+    if (password.length < 6) {
       setError('Password must be at least 6 characters.')
       setLoading(false)
       return
     }
 
-    try {
-      if (mode === 'signup') {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { name }
-          }
-        })
-        
-        if (error) {
-          setError(getFriendlyError(error.message))
-        } else {
-          setSuccess('Account created! Please log in.')
-          setTimeout(() => redirect('/login'), 1500)
-        }
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password
-        })
-
-        if (error) {
-          setError(getFriendlyError(error.message))
-        } else {
-          redirect('/wizard')
-        }
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name }
       }
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred'
-      setError(getFriendlyError(errorMessage))
-    } finally {
-      setLoading(false)
+    })
+    
+    if (error) {
+      setError(getFriendlyError(error.message))
+    } else {
+      setSuccess('Account created! Please log in.')
+      setTimeout(() => {
+        window.location.href = '/login'
+      }, 1500)
+    }
+    setLoading(false)
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (mode === 'login') {
+      handleLogin()
+    } else {
+      handleSignup()
     }
   }
 

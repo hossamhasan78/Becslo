@@ -8,6 +8,8 @@ export interface WizardState {
   experienceFreelance: number
   designerCountryId: number | null
   clientCountryId: number | null
+  designerCountryCode: string
+  clientCountryCode: string
   costs: number[]
   riskBuffer: number
   profitMargin: number
@@ -44,6 +46,8 @@ export const DEFAULT_WIZARD_STATE: WizardState = {
   experienceFreelance: 5,
   designerCountryId: null,
   clientCountryId: null,
+  designerCountryCode: '',
+  clientCountryCode: '',
   costs: [],
   riskBuffer: 15,
   profitMargin: 20,

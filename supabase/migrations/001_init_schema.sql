@@ -19,9 +19,8 @@ create table public.admin_users (
   created_at timestamp with time zone default now()
 );
 
--- Enable Row-Level Security
+-- Enable Row-Level Security on users table only
 alter table public.users enable row level security;
-alter table public.admin_users enable row level security;
 
 -- Users RLS Policies
 
@@ -45,17 +44,7 @@ create policy "Admins can view all users"
     )
   );
 
--- Admin Users RLS Policies
-
--- Admins can manage admin_users (all operations)
-create policy "Admins can manage admin_users"
-  on public.admin_users for all
-  using (
-    exists (
-      select 1 from public.admin_users
-      where admin_users.user_id = auth.uid()
-    )
-  );
+-- Note: admin_users does NOT have RLS enabled - managed via service role
 
 -- Create indexes for performance
 create index idx_users_email on public.users(email);

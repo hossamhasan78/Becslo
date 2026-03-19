@@ -1,56 +1,130 @@
 'use client'
 
-import { useWizard } from '@/lib/context/WizardContext'
+import { usePricing } from '@/components/context/PricingContext'
+import { formatCurrency } from '@/lib/utils/formatting'
+import { useMemo, memo } from 'react'
+import type { PricingOutput, ServiceBreakdown } from '@/lib/types/pricing'
 
-export function LivePreview() {
-  const { state } = useWizard()
+interface DerivedValues {
+  riskBufferPercent: string
+  profitMarginPercent: string
+}
 
+function PriceDisplay({ result }: { result: PricingOutput }) {
   return (
-    <div className="sticky top-8">
-      <h2 className="text-lg font-semibold mb-4">Live Preview</h2>
-      <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-4 min-h-[300px]">
-        <p className="text-zinc-500 text-sm mb-4">
-          Your fee calculation will appear here as you complete each step.
-        </p>
-        
-        <div className="space-y-3 text-sm">
-          <div className="flex justify-between">
-            <span className="text-zinc-600">Pricing Model:</span>
-            <span className="font-medium">
-              {state.pricingModel || '-'}
-            </span>
+    <>
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="text-sm text-zinc-600 mb-1">Final Price</div>
+        <div className="text-3xl font-bold text-blue-600">{formatCurrency(result.finalPrice)}</div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-4">
+          <div className="text-sm text-zinc-600 mb-1">Recommended Range</div>
+          <div className="flex gap-2">
+            <div>
+              <div className="text-xs text-zinc-500">Min</div>
+              <div className="font-semibold">{formatCurrency(result.recommendedMin)}</div>
+            </div>
+            <div>
+              <div className="text-xs text-zinc-500">Max</div>
+              <div className="font-semibold">{formatCurrency(result.recommendedMax)}</div>
+            </div>
           </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-600">Services:</span>
-            <span className="font-medium">
-              {state.services.length || 0} selected
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-600">Designer Exp:</span>
-            <span className="font-medium">{state.experienceDesigner}/10</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-600">Freelance Exp:</span>
-            <span className="font-medium">{state.experienceFreelance}/10</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-600">Risk Buffer:</span>
-            <span className="font-medium">{state.riskBuffer}%</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-zinc-600">Profit Margin:</span>
-            <span className="font-medium">{state.profitMargin}%</span>
-          </div>
-          
-          <hr className="my-4" />
-          
-          <div className="flex justify-between text-base font-bold">
-            <span>Estimated Total:</span>
-            <span>$0</span>
-          </div>
+        </div>
+        <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-4">
+          <div className="text-sm text-zinc-600 mb-1">Base Cost</div>
+          <div className="font-semibold">{formatCurrency(result.baseCost)}</div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+function CostBreakdown({ result, derivedValues }: { result: PricingOutput; derivedValues: DerivedValues }) {
+  return (
+    <div>
+      <h4 className="font-semibold mb-2">Cost Breakdown</h4>
+      <div className="space-y-2">
+        <div className="flex justify-between py-2 border-b">
+          <span>Base Cost</span>
+          <span className="font-semibold">{formatCurrency(result.baseCost)}</span>
+        </div>
+        <div className="flex justify-between py-2 border-b">
+          <span>Overhead Costs</span>
+          <span className="font-semibold">{formatCurrency(result.overheadCosts)}</span>
+        </div>
+        <div className="flex justify-between py-2 border-b">
+          <span>Subtotal</span>
+          <span className="font-semibold">{formatCurrency(result.subtotal)}</span>
+        </div>
+        <div className="flex justify-between py-2 border-b">
+          <span>Risk Buffer ({derivedValues?.riskBufferPercent}%)</span>
+          <span className="font-semibold">{formatCurrency(result.riskBufferAmount)}</span>
+        </div>
+        <div className="flex justify-between py-2">
+          <span>Profit Margin ({derivedValues?.profitMarginPercent}%)</span>
+          <span className="font-semibold">{formatCurrency(result.profitMarginAmount)}</span>
         </div>
       </div>
     </div>
   )
 }
+
+const ServiceBreakdownItem = memo(function ServiceBreakdownItem({ item }: { item: ServiceBreakdown }) {
+  return (
+    <div className="py-2 border-b">
+      <div className="font-medium">{item.serviceName}</div>
+      <div className="text-sm text-zinc-600">{item.hours}h × ${item.adjustedRate}/h = {formatCurrency(item.cost)}</div>
+    </div>
+  )
+})
+
+function ServiceBreakdown({ result }: { result: PricingOutput }) {
+  return (
+    <div>
+      <h4 className="font-semibold mb-2">Service Breakdown</h4>
+      <div className="space-y-2 max-h-64 overflow-y-auto">
+        {result.breakdown.map(item => (
+          <ServiceBreakdownItem key={item.serviceId} item={item} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function LivePreview() {
+  const { result } = usePricing()
+
+  const derivedValues = useMemo((): DerivedValues | null => {
+    if (!result) return null
+
+    return {
+      riskBufferPercent: result.riskBufferAmount ? (result.riskBufferAmount / result.subtotal * 100).toFixed(1) : '0',
+      profitMarginPercent: result.profitMarginAmount ? ((result.subtotal + result.riskBufferAmount) / result.profitMarginAmount * 100).toFixed(1) : '0'
+    }
+  }, [result])
+
+  if (!result) {
+    return (
+      <div className="bg-white border border-zinc-200 rounded-lg p-6">
+        <h3 className="text-lg font-semibold mb-4">Price Preview</h3>
+        <p className="text-zinc-500 text-sm">Select services to see price calculation</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="bg-white border border-zinc-200 rounded-lg p-6">
+      <h3 className="text-lg font-semibold mb-4">Price Preview</h3>
+
+      <div className="space-y-4">
+        <PriceDisplay result={result} />
+        {derivedValues && <CostBreakdown result={result} derivedValues={derivedValues} />}
+        <ServiceBreakdown result={result} />
+      </div>
+    </div>
+  )
+}
+
+export default memo(LivePreview)
