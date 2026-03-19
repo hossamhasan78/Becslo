@@ -154,15 +154,26 @@ export function ServiceSelectionStep() {
                         </div>
 
                         {selected && (
-                          <div className="flex items-center gap-2 animate-in zoom-in-95 duration-200">
-                            <input
-                              type="number"
-                              min={1}
-                              value={selected.hours}
-                              onChange={(e) => updateServiceHours(service.id, parseInt(e.target.value) || 1)}
-                              className="w-20 px-3 py-1.5 text-sm font-bold bg-white border border-zinc-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                            />
-                            <span className="text-xs font-bold text-zinc-400 uppercase">hrs</span>
+                          <div className="flex flex-col items-end gap-1 animate-in zoom-in-95 duration-200">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="number"
+                                min="1"
+                                value={selected.hours}
+                                onChange={(e) => updateServiceHours(service.id, parseInt(e.target.value) || 0)}
+                                className={`w-20 px-3 py-1.5 text-sm font-bold bg-white border rounded-lg focus:ring-2 outline-none transition-all ${
+                                  selected.hours < 1 
+                                    ? 'border-red-500 focus:ring-red-500' 
+                                    : 'border-zinc-200 focus:ring-blue-500 focus:border-blue-500'
+                                }`}
+                              />
+                              <span className="text-xs font-bold text-zinc-400 uppercase">hrs</span>
+                            </div>
+                            {selected.hours < 1 && (
+                              <span className="text-[10px] font-bold text-red-600 animate-in fade-in slide-in-from-top-1">
+                                Min 1h required
+                              </span>
+                            )}
                           </div>
                         )}
                       </div>

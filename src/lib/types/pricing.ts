@@ -39,55 +39,55 @@ export interface PricingOutput {
 }
 
 export interface Service {
-  id: string;
+  id: number;
   name: string;
-  categoryId: string;
-  categoryName?: string;
-  defaultHours: number;
-  minHours: number;
-  maxHours: number;
-  baseRate: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  category_id: number;
+  category_name?: string;
+  default_hours: number;
+  min_hours: number;
+  max_hours: number;
+  base_rate: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Category {
-  id: string;
+  id: number;
   name: string;
-  displayOrder: number;
-  createdAt: string;
+  display_order: number;
+  created_at: string;
 }
 
 export interface Country {
-  id: string;
+  id: number;
   name: string;
   code: string;
   multiplier: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Cost {
-  id: string;
+  id: number;
   name: string;
-  isFixedAmount: boolean;
-  defaultCost: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  is_fixed_amount: boolean;
+  default_cost: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Config {
-  id: string;
-  baseRate: number;
-  riskBufferMin: number;
-  riskBufferMax: number;
-  profitMarginMin: number;
-  profitMarginMax: number;
-  createdAt: string;
-  updatedAt: string;
+  id: number;
+  base_rate: number;
+  risk_buffer_min: number;
+  risk_buffer_max: number;
+  profit_margin_min: number;
+  profit_margin_max: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface ValidationError {

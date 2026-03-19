@@ -76,7 +76,11 @@ export function GeographyStep() {
           <div className="relative group">
             <div className={`
               flex items-center gap-4 p-4 border-2 rounded-2xl transition-all
-              ${state.designerCountryId ? 'border-zinc-200 bg-white' : 'border-zinc-100 bg-zinc-50'}
+              ${state.designerCountryId 
+                ? 'border-zinc-200 bg-white' 
+                : !isLoading && !state.designerCountryId && state.currentStep === 4 
+                  ? 'border-red-100 bg-red-50/50' 
+                  : 'border-zinc-100 bg-zinc-50'}
             `}>
               <div className="flex-1">
                 <input
@@ -128,7 +132,11 @@ export function GeographyStep() {
           <div className="relative group">
             <div className={`
               flex items-center gap-4 p-4 border-2 rounded-2xl transition-all
-              ${state.clientCountryId ? 'border-zinc-200 bg-white' : 'border-zinc-100 bg-zinc-50'}
+              ${state.clientCountryId 
+                ? 'border-zinc-200 bg-white' 
+                : !isLoading && !state.clientCountryId && state.currentStep === 4 
+                  ? 'border-red-100 bg-red-50/50' 
+                  : 'border-zinc-100 bg-zinc-50'}
             `}>
               <div className="flex-1">
                 <input

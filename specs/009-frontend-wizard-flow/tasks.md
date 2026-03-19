@@ -70,12 +70,12 @@
 
 ### Implementation for User Story 2
 
-- [ ] T019 [P] [US2] Add real-time inline validation to `ServiceSelectionStep` — enforce hours min=1 at the HTML `<input type="number" min={1}>` level plus client-side guard; show error if a service is selected but hours not yet set
-- [ ] T020 [P] [US2] Add real-time inline validation to `ExperienceStep` — clamp slider values to 1-10 via HTML `<input type="range" min={1} max={10}>` attributes; show numeric readout and descriptive labels (e.g., "Junior" to "Expert")
-- [ ] T021 [P] [US2] Add real-time inline validation to `GeographyStep` — mark country dropdowns as required; show validation error if user clicks Next without selecting both countries
-- [ ] T022 [P] [US2] Add real-time inline validation to `RiskProfitStep` — clamp slider values to Risk 0-50% and Profit 10-50% via HTML range attributes; dynamically pull min/max from config API response
-- [ ] T023 [US2] Integrate pricing model wiring into `LivePreview` and `ReviewStep` — add conditional logic so that selecting "Hourly" renders the per-service breakdown and "Project-based" renders the single lump-sum fee (using the structure created in T009). Ensure any pricing model change triggers immediate recalculation across all wizard steps.
-- [ ] T024 [US2] Add "Next" button gating via `validateStep()` — each step's Next button calls the step-specific validator from `step-validators.ts`; if validation fails, display inline errors on the offending fields and prevent step advancement
+- [x] T019 [P] [US2] Add real-time inline validation to `ServiceSelectionStep` — enforce hours min=1 at the HTML `<input type="number" min={1}>` level plus client-side guard; show error if a service is selected but hours not yet set
+- [x] T020 [P] [US2] Add real-time inline validation to `ExperienceStep` — clamp slider values to 1-10 via HTML `<input type="range" min={1} max={10}>` attributes; show numeric readout and descriptive labels (e.g., "Junior" to "Expert")
+- [x] T021 [P] [US2] Add real-time inline validation to `GeographyStep` — mark country dropdowns as required; show validation error if user clicks Next without selecting both countries
+- [x] T022 [P] [US2] Add real-time inline validation to `RiskProfitStep` — clamp slider values to Risk 0-50% and Profit 10-50% via HTML range attributes; dynamically pull min/max from config API response
+- [x] T023 [US2] Integrate pricing model wiring into `LivePreview` and `ReviewStep` — add conditional logic so that selecting "Hourly" renders the per-service breakdown and "Project-based" renders the single lump-sum fee (using the structure created in T009). Ensure any pricing model change triggers immediate recalculation across all wizard steps.
+- [x] T024 [US2] Add "Next" button gating via `validateStep()` — each step's Next button calls the step-specific validator from `step-validators.ts`; if validation fails, display inline errors on the offending fields and prevent step advancement
 
 **Checkpoint**: At this point, all validation constraints are enforced, pricing model correctly changes the calculation, and no invalid data can pass through the wizard.
 

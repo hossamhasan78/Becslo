@@ -87,6 +87,31 @@ function ServiceBreakdownList({ result }: { result: PricingOutput }) {
   )
 }
 
+function ProjectBreakdown({ result }: { result: PricingOutput }) {
+  return (
+    <div className="mt-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">Project Summary</h4>
+      <div className="bg-white rounded-xl border border-zinc-100 p-5 space-y-4">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-zinc-500 font-medium">Included Services</span>
+          <span className="font-bold text-zinc-900">{result.breakdown.length}</span>
+        </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-zinc-500 font-medium">Total Resource Hours</span>
+          <span className="font-bold text-zinc-900">
+            {result.breakdown.reduce((sum, item) => sum + item.hours, 0)}h
+          </span>
+        </div>
+        <div className="pt-4 border-t border-zinc-100">
+          <p className="text-xs text-zinc-500 leading-relaxed italic">
+            This lump-sum estimate includes all labor, overhead costs, and risk buffers as a single fixed fee.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function LivePreview() {
   const { result, state, isLoading, error } = useWizard()
   const { pricingModel, services, designerCountryCode, clientCountryCode } = state
@@ -131,11 +156,17 @@ function LivePreview() {
 
   if (!result) return null
 
+  const isProject = pricingModel === 'project'
+
   return (
     <div className="animate-in fade-in slide-in-from-right-4 duration-500">
       <PriceDisplay result={result} pricingModel={pricingModel || 'hourly'} />
       <CostBreakdown result={result} />
-      {pricingModel !== 'project' && <ServiceBreakdownList result={result} />}
+      {isProject ? (
+        <ProjectBreakdown result={result} />
+      ) : (
+        <ServiceBreakdownList result={result} />
+      )}
     </div>
   )
 }

@@ -5,7 +5,7 @@ import { WizardState, DEFAULT_WIZARD_STATE, PricingModel, SelectedService } from
 import { useSessionStorage } from '@/lib/hooks/useSessionStorage'
 import { validateStep, StepValidationResult } from '@/lib/validation/step-validators'
 import { calculatePrice } from '@/lib/pricing-engine'
-import { PricingInput, PricingOutput } from '@/lib/types/pricing'
+import { PricingInput, PricingOutput, Category, Service, Country, Cost, Config } from '@/lib/types/pricing'
 
 interface WizardContextValue {
   state: WizardState
@@ -13,11 +13,11 @@ interface WizardContextValue {
   isLoading: boolean
   error: string | null
   // Reference data
-  categories: any[]
-  allServices: any[]
-  allCountries: any[]
-  allCosts: any[]
-  config: any | null
+  categories: Category[]
+  allServices: Service[]
+  allCountries: Country[]
+  allCosts: Cost[]
+  config: Config | null
   // Actions
   updateState: (updates: Partial<WizardState>) => void
   setCurrentStep: (step: number) => void
@@ -108,7 +108,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   )
   
   const engineServices = useMemo(() => 
-    allServices.map(s => ({ id: String(s.id), name: s.name, baseRate: s.base_rate })),
+    allServices.map((s: Service) => ({ id: String(s.id), name: s.name, baseRate: s.base_rate })),
     [allServices]
   )
 
