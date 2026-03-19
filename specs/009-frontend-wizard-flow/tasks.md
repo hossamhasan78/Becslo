@@ -89,11 +89,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T025 [US3] Create `POST /api/v1/calculate-and-save` API route in `src/app/api/v1/calculate-and-save/route.ts` — validate inputs with Zod schema (including `pricingModel` and hours ≥ 1), run `calculatePrice()` server-side, insert into `calculations` and `calculation_services` tables via Supabase, return `calculationId` + full breakdown; require Supabase Auth JWT
-- [ ] T026 [US3] Add `calculateAndSave()` async method to WizardContext in `src/lib/context/WizardContext.tsx` — calls `POST /api/v1/calculate-and-save`, handles loading/error states, sets `isSaved=true` and `savedCalculationId` on success, clears sessionStorage after successful save
-- [ ] T027 [US3] Complete `ReviewStep` component in `src/components/wizard/steps/ReviewStep.tsx` — wire "Calculate & Save" button to `calculateAndSave()`, show loading spinner during save, on success show final result breakdown with `calculationId`, and reveal the "Download PDF" button
-- [ ] T028 [US3] Add error handling to `ReviewStep` for save failures — display error toast/banner with retry option; maintain wizard state on failure (do not clear sessionStorage)
-- [ ] T029 [US3] Wire "Download PDF" button in `ReviewStep` to call `POST /api/v1/export-pdf` (Phase 4 endpoint); if not yet implemented, show a disabled button with "Coming Soon" tooltip.
+- [x] T025 [US3] Create `POST /api/v1/calculate-and-save` API route in `src/app/api/v1/calculate-and-save/route.ts` — validate inputs with Zod schema (including `pricingModel` and hours ≥ 1), run `calculatePrice()` server-side, insert into `calculations` and `calculation_services` tables via Supabase, return `calculationId` + full breakdown; require Supabase Auth JWT
+- [x] T026 [US3] Add `calculateAndSave()` async method to WizardContext in `src/lib/context/WizardContext.tsx` — calls `POST /api/v1/calculate-and-save`, handles loading/error states, sets `isSaved=true` and `savedCalculationId` on success, clears sessionStorage after successful save
+- [x] T027 [US3] Complete `ReviewStep` component in `src/components/wizard/steps/ReviewStep.tsx` — wire "Calculate & Save" button to `calculateAndSave()`, show loading spinner during save, on success show final result breakdown with `calculationId`, and reveal the "Download PDF" button
+- [x] T028 [US3] Add error handling to `ReviewStep` for save failures — display error toast/banner with retry option; maintain wizard state on failure (do not clear sessionStorage)
+- [x] T029 [US3] Wire "Download PDF" button in `ReviewStep` to call `POST /api/v1/export-pdf` (Phase 4 endpoint); if not yet implemented, show a disabled button with "Coming Soon" tooltip.
 
 **Checkpoint**: Full wizard flow is complete end-to-end — users can enter data, review, save to database, and optionally download PDF.
 

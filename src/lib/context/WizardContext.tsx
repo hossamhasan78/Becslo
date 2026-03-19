@@ -26,6 +26,7 @@ interface WizardContextValue {
   resetWizard: () => void
   validateCurrentStep: () => StepValidationResult
   loadPricingData: () => Promise<void>
+  calculateAndSave: () => Promise<void>
   // Helper setters for convenience
   setPricingModel: (model: PricingModel | null) => void
   setExperienceDesigner: (level: number) => void
@@ -57,11 +58,11 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useSessionStorage<WizardState>('becslo_wizard_state', DEFAULT_WIZARD_STATE)
   
   // Reference data state
-  const [categories, setCategories] = useState<any[]>([])
-  const [allServices, setAllServices] = useState<any[]>([])
-  const [allCountries, setAllCountries] = useState<any[]>([])
-  const [allCosts, setAllCosts] = useState<any[]>([])
-  const [config, setConfig] = useState<any | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [allServices, setAllServices] = useState<Service[]>([])
+  const [allCountries, setAllCountries] = useState<Country[]>([])
+  const [allCosts, setAllCosts] = useState<Cost[]>([])
+  const [config, setConfig] = useState<Config | null>(null)
   
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -170,9 +171,54 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   const resetWizard = useCallback(() => {
     setState(DEFAULT_WIZARD_STATE)
     if (typeof window !== 'undefined') {
-      window.sessionStorage.removeItem('becslo_wizard_state')
     }
   }, [setState])
+  
+  const calculateAndSave = useCallback(async () => {
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      const pricingInput: PricingInput = {
+        pricingModel: state.pricingModel || 'hourly',
+        services: state.services.map(s => ({ serviceId: String(s.id), hours: s.hours })),
+        designerExperience: state.experienceDesigner,
+        freelanceExperience: state.experienceFreelance,
+        designerCountryCode: state.designerCountryCode,
+        clientCountryCode: state.clientCountryCode,
+        selectedCosts: state.costs.map(String),
+        riskBufferPercent: state.riskBuffer,
+        profitMarginPercent: state.profitMargin
+      }
+
+      const response = await fetch('/api/v1/calculate-and-save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pricingInput)
+      })
+
+      const resultData = await response.json()
+
+      if (!response.ok) {
+        throw new Error(resultData.error || 'Failed to save calculation')
+      }
+
+      // Success! Update local state
+      updateState({
+        isSaved: true,
+        savedCalculationId: resultData.calculationId
+      })
+      
+      return resultData
+    } catch (err: unknown) {
+      console.error('Save error:', err)
+      const message = err instanceof Error ? err.message : 'An error occurred while saving'
+      setError(message)
+      throw err
+    } finally {
+      setIsLoading(false)
+    }
+  }, [state, updateState])
 
   // Convenience setters
   const setPricingModel = (model: PricingModel | null) => updateState({ pricingModel: model })
@@ -232,7 +278,8 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         setProfitMargin,
         addService,
         removeService,
-        updateServiceHours
+        updateServiceHours,
+        calculateAndSave
       }}
     >
       {children}

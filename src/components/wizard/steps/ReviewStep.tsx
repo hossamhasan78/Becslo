@@ -4,43 +4,16 @@ import { useWizard } from '@/lib/context/WizardContext'
 import { useState } from 'react'
 
 export function ReviewStep() {
-  const { state, result, validateCurrentStep } = useWizard()
-  const [isSaving, setIsSaving] = useState(false)
+  const { state, result, validateCurrentStep, calculateAndSave, isLoading } = useWizard()
   const [saveMessage, setSaveMessage] = useState('')
 
   const handleCalculateSave = async () => {
-    setIsSaving(true)
     setSaveMessage('')
-
     try {
-      const response = await fetch('/api/v1/calculate-and-save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          pricingModel: state.pricingModel || 'hourly',
-          services: state.services.map(s => ({ serviceId: String(s.id), hours: s.hours })),
-          designerExperience: state.experienceDesigner,
-          freelanceExperience: state.experienceFreelance,
-          designerCountryCode: state.designerCountryCode,
-          clientCountryCode: state.clientCountryCode,
-          selectedCosts: state.costs.map(String),
-          riskBufferPercent: state.riskBuffer,
-          profitMarginPercent: state.profitMargin
-        })
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        setSaveMessage('Calculation saved successfully!')
-      } else {
-        setSaveMessage(data.error?.message || 'Save failed. Please try again.')
-      }
-    } catch (error) {
-      console.error('Save error:', error)
-      setSaveMessage('An unexpected error occurred. Please try again.')
-    } finally {
-      setIsSaving(false)
+      await calculateAndSave()
+      setSaveMessage('Success! Your calculation has been persisted.')
+    } catch (error: any) {
+      setSaveMessage(error.message || 'Save failed. Please try again.')
     }
   }
 
@@ -111,13 +84,13 @@ export function ReviewStep() {
       <div className="flex flex-col gap-4">
         <button
           onClick={handleCalculateSave}
-          disabled={isSaving || !canFinalize}
+          disabled={isLoading || !canFinalize || state.isSaved}
           className={`
             w-full py-5 rounded-2xl text-white font-black text-lg transition-all shadow-xl hover:shadow-2xl active:scale-[0.98]
-            ${isSaving ? 'bg-zinc-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
+            ${(isLoading || state.isSaved) ? 'bg-zinc-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
           `}
         >
-          {isSaving ? 'Persisting Quote...' : 'Calculate & Save'}
+          {isLoading ? 'Persisting Quote...' : state.isSaved ? 'Quote Saved' : 'Calculate & Save'}
         </button>
 
         <button
@@ -127,10 +100,23 @@ export function ReviewStep() {
           <span>Download PDF (Coming Soon)</span>
         </button>
 
-        {saveMessage && (
-          <div className={`p-4 rounded-xl text-center font-bold animate-in zoom-in-95 duration-200 ${
-            saveMessage.includes('success') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-          }`}>
+        {state.isSaved && (
+          <div className="p-6 bg-zinc-900 border border-zinc-700 rounded-3xl flex items-center justify-between text-white animate-in zoom-in-95 duration-500">
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] font-bold uppercase opacity-40 tracking-[0.2em] text-zinc-300">Reference ID</span>
+              <span className="text-xs font-black font-mono text-zinc-100">{state.savedCalculationId}</span>
+            </div>
+            <div className="bg-emerald-500/20 text-emerald-400 rounded-full px-4 py-2 flex items-center gap-2 border border-emerald-500/30">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-xs font-bold uppercase tracking-widest">Persisted</span>
+            </div>
+          </div>
+        )}
+
+        {saveMessage && !state.isSaved && (
+          <div className="p-4 rounded-2xl text-center font-bold animate-in zoom-in-95 duration-200 bg-red-50 text-red-700 border border-red-100">
             {saveMessage}
           </div>
         )}
