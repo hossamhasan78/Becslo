@@ -13,6 +13,9 @@ export interface WizardState {
   costs: number[]
   riskBuffer: number
   profitMargin: number
+  highestCompletedStep: number
+  isSaved: boolean
+  savedCalculationId: string | null
 }
 
 export interface SelectedService {
@@ -51,4 +54,7 @@ export const DEFAULT_WIZARD_STATE: WizardState = {
   costs: [],
   riskBuffer: 15,
   profitMargin: 20,
+  highestCompletedStep: 0,
+  isSaved: false,
+  savedCalculationId: null,
 }
