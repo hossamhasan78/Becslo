@@ -2,6 +2,7 @@
 
 import { useWizard } from '@/lib/context/WizardContext'
 import { useState, useEffect } from 'react'
+import { StepSkeleton } from '../Skeleton'
 
 interface Config {
   risk_buffer_min: number
@@ -11,13 +12,17 @@ interface Config {
 }
 
 export function RiskProfitStep() {
-  const { state, setRiskBuffer, setProfitMargin, config } = useWizard()
+  const { state, setRiskBuffer, setProfitMargin, config, isLoading } = useWizard()
 
   // Use values from context config, or fallback to spec defaults
   const riskMin = config?.risk_buffer_min ?? 0
   const riskMax = config?.risk_buffer_max ?? 50
   const profitMin = config?.profit_margin_min ?? 10
   const profitMax = config?.profit_margin_max ?? 50
+  
+  if (isLoading) {
+    return <StepSkeleton />
+  }
 
   return (
     <div className="space-y-8">
@@ -42,12 +47,14 @@ export function RiskProfitStep() {
           <div className="relative pt-2">
             <input
               type="range"
+              id="risk-buffer"
               min={riskMin}
               max={riskMax}
               step="1"
               value={state.riskBuffer}
               onChange={(e) => setRiskBuffer(parseInt(e.target.value))}
-              className="w-full h-2 bg-zinc-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              className="w-full h-2 bg-zinc-100 rounded-lg appearance-none cursor-pointer accent-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              aria-label="Risk Buffer Percentage"
             />
             <div className="flex justify-between mt-2">
               <span className="text-xs font-medium text-zinc-400">{riskMin}%</span>
@@ -77,12 +84,14 @@ export function RiskProfitStep() {
           <div className="relative pt-2">
             <input
               type="range"
+              id="profit-margin"
               min={profitMin}
               max={profitMax}
               step="1"
               value={state.profitMargin}
               onChange={(e) => setProfitMargin(parseInt(e.target.value))}
-              className="w-full h-2 bg-zinc-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              className="w-full h-2 bg-zinc-100 rounded-lg appearance-none cursor-pointer accent-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              aria-label="Profit Margin Percentage"
             />
             <div className="flex justify-between mt-2">
               <span className="text-xs font-medium text-zinc-400">{profitMin}%</span>
