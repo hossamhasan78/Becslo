@@ -22,7 +22,8 @@ export default function WizardPage() {
     error,
     goToNextStep, 
     goToPreviousStep, 
-    validateCurrentStep 
+    validateCurrentStep,
+    loadPricingData
   } = useWizard()
 
   if (isLoading) {
@@ -48,7 +49,7 @@ export default function WizardPage() {
             <h2 className="text-2xl font-black text-zinc-900 mb-2">Something went wrong</h2>
             <p className="text-zinc-500 mb-8 max-w-md">{error}</p>
             <button 
-              onClick={() => window.location.reload()}
+              onClick={loadPricingData}
               className="px-8 py-3 bg-zinc-900 text-white rounded-full font-bold hover:bg-black transition-all"
             >
               Try Again
@@ -84,7 +85,7 @@ export default function WizardPage() {
             <StepNavigation />
 
             <div className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-10 shadow-sm min-h-[500px] flex flex-col">
-              <div className="flex-1 animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <div key={state.currentStep} className="flex-1 animate-in fade-in slide-in-from-bottom-2 duration-500">
                 {renderStep()}
               </div>
 

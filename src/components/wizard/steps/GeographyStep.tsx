@@ -2,6 +2,8 @@
 
 import { useWizard } from '@/lib/context/WizardContext'
 import { useState, useEffect, useMemo } from 'react'
+import { StepSkeleton } from '../Skeleton'
+import { cn } from '@/lib/utils'
 
 interface Country {
   id: number
@@ -51,13 +53,7 @@ export function GeographyStep() {
   const selectedClientCountry = allCountries.find((c: Country) => c.id === state.clientCountryId)
 
   if (isLoading) {
-    return (
-      <div className="space-y-6 animate-pulse">
-        <div className="h-8 w-48 bg-zinc-100 rounded-lg" />
-        <div className="h-24 bg-zinc-50 rounded-2xl" />
-        <div className="h-24 bg-zinc-50 rounded-2xl" />
-      </div>
-    )
+    return <StepSkeleton />
   }
 
   return (
@@ -85,10 +81,14 @@ export function GeographyStep() {
               <div className="flex-1">
                 <input
                   type="text"
+                  id="designer-country"
                   placeholder={selectedDesignerCountry ? selectedDesignerCountry.name : "Search for a country..."}
                   value={searchDesigner}
                   onChange={(e) => setSearchDesigner(e.target.value)}
-                  className="w-full bg-transparent border-none outline-none text-zinc-900 font-semibold placeholder:text-zinc-400"
+                  aria-autocomplete="list"
+                  aria-expanded={searchDesigner.length > 0}
+                  aria-haspopup="listbox"
+                  className="w-full bg-transparent border-none outline-none text-zinc-900 font-semibold placeholder:text-zinc-400 focus:ring-0"
                 />
               </div>
               {selectedDesignerCountry && (
@@ -141,10 +141,14 @@ export function GeographyStep() {
               <div className="flex-1">
                 <input
                   type="text"
+                  id="client-country"
                   placeholder={selectedClientCountry ? selectedClientCountry.name : "Search for a country..."}
                   value={searchClient}
                   onChange={(e) => setSearchClient(e.target.value)}
-                  className="w-full bg-transparent border-none outline-none text-zinc-900 font-semibold placeholder:text-zinc-400"
+                  aria-autocomplete="list"
+                  aria-expanded={searchClient.length > 0}
+                  aria-haspopup="listbox"
+                  className="w-full bg-transparent border-none outline-none text-zinc-900 font-semibold placeholder:text-zinc-400 focus:ring-0"
                 />
               </div>
               {selectedClientCountry && (

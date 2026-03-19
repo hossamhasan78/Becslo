@@ -2,6 +2,7 @@
 
 import { useWizard } from '@/lib/context/WizardContext'
 import { useState, useEffect } from 'react'
+import { StepSkeleton } from '../Skeleton'
 
 interface Cost {
   id: number
@@ -14,13 +15,7 @@ export function CostsStep() {
   const { state, toggleCost, allCosts, isLoading } = useWizard()
 
   if (isLoading) {
-    return (
-      <div className="space-y-4 animate-pulse">
-        <div className="h-8 w-40 bg-zinc-100 rounded-lg" />
-        <div className="h-16 bg-zinc-50 rounded-xl" />
-        <div className="h-16 bg-zinc-50 rounded-xl" />
-      </div>
-    )
+    return <StepSkeleton />
   }
 
   return (
@@ -39,11 +34,18 @@ export function CostsStep() {
               <label
                 key={cost.id}
                 className={`
-                  flex items-center gap-4 p-5 border-2 rounded-2xl cursor-pointer transition-all
+                  flex items-center gap-4 p-5 border-2 rounded-2xl cursor-pointer transition-all focus-within:ring-2 focus-within:ring-blue-500/50
                   ${isSelected 
                     ? 'border-blue-600 bg-blue-50 ring-2 ring-blue-500/10' 
                     : 'border-zinc-100 hover:border-zinc-200 hover:bg-zinc-50'}
                 `}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault()
+                    toggleCost(cost.id)
+                  }
+                }}
               >
                 <div className="flex items-center h-5">
                   <input

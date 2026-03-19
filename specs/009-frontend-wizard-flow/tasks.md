@@ -103,13 +103,13 @@
 
 **Purpose**: UX improvements, accessibility, and refinements that affect multiple user stories.
 
-- [ ] T030 [P] Add keyboard navigation support to all step components — Tab/Shift+Tab between fields, Enter to advance, Escape to go back; add proper `aria-label`, `aria-describedby`, and `role` attributes in all wizard step components
-- [ ] T031 [P] Add smooth CSS transitions between wizard steps — fade-in/slide-in animations for step content swap in `src/components/wizard/WizardLayout.tsx`; ensure transitions are < 200ms
-- [ ] T032 [P] Add loading skeletons for async data fetches (services, categories, countries, costs, config) — show shimmer placeholders in each step while data loads from Supabase APIs
-- [ ] T033 [P] Add network error retry UI — if any API fetch fails (services, countries, costs, config), show an inline "Failed to load. Retry?" message with a retry button instead of crashing; implement in `WizardContext.tsx`
-- [ ] T034 Review and verify pricing model switch edge case — when user goes back to Step 1 and changes the pricing model after completing later steps, confirm all intermediate values recalculate immediately and the live preview reflects the new model
-- [ ] T035 Run full wizard flow end-to-end manually — test all 7 steps with various inputs, page refresh mid-wizard, step jumping, pricing model switch, Calculate & Save, and PDF download; document any issues found
-- [ ] T036 Perform sub-100ms real-time calculation audit — confirm all input changes consistently update result in browser console under <100ms on a standard throttled environment; verify no DOM reload metrics between steps. (SC-001, SC-004)
+- [x] T030 [P] Add keyboard navigation support to all step components — Tab/Shift+Tab between fields, Enter to advance, Escape to go back; add proper `aria-label`, `aria-describedby`, and `role` attributes in all wizard step components
+- [x] T031 [P] Add smooth CSS transitions between wizard steps — fade-in/slide-in animations for step content swap in `src/components/wizard/WizardLayout.tsx`; ensure transitions are < 200ms
+- [x] T032 [P] Add loading skeletons for async data fetches (services, categories, countries, costs, config) — show shimmer placeholders in each step while data loads from Supabase APIs
+- [x] T033 [P] Add network error retry UI — if any API fetch fails (services, countries, costs, config), show an inline "Failed to load. Retry?" message with a retry button instead of crashing; implement in `WizardContext.tsx`
+- [x] T034 Review and verify pricing model switch edge case — when user goes back to Step 1 and changes the pricing model after completing later steps, confirm all intermediate values recalculate immediately and the live preview reflects the new model
+- [x] T035 Run full wizard flow end-to-end manually — test all 7 steps with various inputs, page refresh mid-wizard, step jumping, pricing model switch, Calculate & Save, and PDF download; document any issues found
+- [x] T036 Perform sub-100ms real-time calculation audit — confirm all input changes consistently update result in browser console under <100ms on a standard throttled environment; verify no DOM reload metrics between steps. (SC-001, SC-004)
 
 ---
 

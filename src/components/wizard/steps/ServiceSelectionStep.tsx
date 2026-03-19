@@ -3,6 +3,7 @@
 import { useWizard } from '@/lib/context/WizardContext'
 import { useState, useEffect, useMemo } from 'react'
 import { SelectedService } from '@/types/wizard'
+import { StepSkeleton } from '../Skeleton'
 
 interface Category {
   id: number
@@ -21,7 +22,7 @@ interface Service {
 }
 
 export function ServiceSelectionStep() {
-  const { state, addService, removeService, updateServiceHours, categories, allServices, isLoading, error } = useWizard()
+  const { state, addService, removeService, updateServiceHours, categories, allServices, isLoading, error, loadPricingData } = useWizard()
   const [openCategories, setOpenCategories] = useState<Record<number, boolean>>({})
 
   // Open first category by default when data loads
@@ -59,23 +60,18 @@ export function ServiceSelectionStep() {
   }
 
   if (isLoading) {
-    return (
-      <div className="space-y-4 animate-pulse">
-        <div className="h-8 w-48 bg-zinc-100 rounded-lg" />
-        {[1, 2, 3].map(i => (
-          <div key={i} className="h-16 bg-zinc-50 rounded-xl" />
-        ))}
-      </div>
-    )
+    return <StepSkeleton />
   }
 
   if (error) {
     return (
-      <div className="p-6 bg-red-50 border border-red-100 rounded-2xl text-center">
-        <p className="text-red-600 font-medium">{error}</p>
+      <div className="p-10 bg-red-50/50 border border-red-100 rounded-3xl text-center animate-in fade-in duration-300">
+        <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">⚠️</div>
+        <p className="text-red-900 font-bold mb-2">Failed to load services</p>
+        <p className="text-red-700 text-sm mb-6">{error}</p>
         <button 
-          onClick={() => window.location.reload()}
-          className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          onClick={loadPricingData}
+          className="px-6 py-2 bg-red-600 text-white rounded-full font-bold hover:bg-red-700 transition-all shadow-md active:scale-95"
         >
           Try Again
         </button>
@@ -101,10 +97,12 @@ export function ServiceSelectionStep() {
           ).length
 
           return (
-            <div key={category.id} className="border border-zinc-100 rounded-2xl overflow-hidden shadow-sm">
+            <div key={category.id} className="border border-zinc-100 rounded-2xl overflow-hidden shadow-sm transition-all hover:shadow-md">
               <button
                 onClick={() => toggleCategory(category.id)}
-                className={`w-full flex items-center justify-between p-5 text-left transition-colors ${
+                aria-expanded={isOpen}
+                aria-controls={`category-panel-${category.id}`}
+                className={`w-full flex items-center justify-between p-5 text-left transition-colors focus:bg-zinc-50 outline-none ${
                   isOpen ? 'bg-zinc-50' : 'bg-white hover:bg-zinc-50/50'
                 }`}
               >
@@ -122,7 +120,12 @@ export function ServiceSelectionStep() {
               </button>
 
               {isOpen && (
-                <div className="p-4 bg-white space-y-2 border-t border-zinc-100 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div 
+                  id={`category-panel-${category.id}`}
+                  role="region"
+                  aria-labelledby={`category-btn-${category.id}`}
+                  className="p-4 bg-white space-y-2 border-t border-zinc-100 animate-in fade-in slide-in-from-top-2 duration-200"
+                >
                   {categoryServices.map(service => {
                     const selected = state.services.find(s => s.id === service.id)
                     
