@@ -14,6 +14,8 @@ interface WizardContextValue {
   setExperienceFreelance: (level: number) => void
   setDesignerCountryId: (countryId: number | null) => void
   setClientCountryId: (countryId: number | null) => void
+  setDesignerCountryCode: (code: string) => void
+  setClientCountryCode: (code: string) => void
   toggleCost: (costId: number) => void
   setRiskBuffer: (value: number) => void
   setProfitMargin: (value: number) => void
@@ -67,11 +69,17 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   }
 
   const setExperienceDesigner = (level: number) => {
-    setState((prev) => ({ ...prev, experienceDesigner: level }))
+    const validLevel = Math.max(1, Math.min(10, level))
+    setState((prev) => ({
+      ...prev,
+      experienceDesigner: validLevel,
+      experienceFreelance: Math.min(prev.experienceFreelance, validLevel)
+    }))
   }
 
   const setExperienceFreelance = (level: number) => {
-    setState((prev) => ({ ...prev, experienceFreelance: level }))
+    const validLevel = Math.max(1, Math.min(state.experienceDesigner, level))
+    setState((prev) => ({ ...prev, experienceFreelance: validLevel }))
   }
 
   const setDesignerCountryId = (countryId: number | null) => {
@@ -80,6 +88,14 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
 
   const setClientCountryId = (countryId: number | null) => {
     setState((prev) => ({ ...prev, clientCountryId: countryId }))
+  }
+
+  const setDesignerCountryCode = (code: string) => {
+    setState((prev) => ({ ...prev, designerCountryCode: code }))
+  }
+
+  const setClientCountryCode = (code: string) => {
+    setState((prev) => ({ ...prev, clientCountryCode: code }))
   }
 
   const toggleCost = (costId: number) => {
@@ -133,6 +149,8 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         setExperienceFreelance,
         setDesignerCountryId,
         setClientCountryId,
+        setDesignerCountryCode,
+        setClientCountryCode,
         toggleCost,
         setRiskBuffer,
         setProfitMargin,
