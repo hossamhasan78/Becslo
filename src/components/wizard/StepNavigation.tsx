@@ -14,21 +14,24 @@ export function StepNavigation() {
         <ol className="flex flex-wrap gap-1 md:gap-2">
           {WIZARD_STEPS.map((step) => {
             const isCompleted = step.id < currentStep
+            const isClickable = step.id <= state.highestCompletedStep || step.id <= currentStep
             const isCurrent = step.id === currentStep
 
             return (
               <li key={step.id} className="flex-shrink-0">
                 <button
                   onClick={() => setCurrentStep(step.id)}
-                  disabled={step.id > currentStep}
+                  disabled={!isClickable}
                   className={`
                     flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full text-xs md:text-sm font-medium
                     transition-colors duration-200
-                    ${isCompleted 
-                      ? 'bg-green-600 text-white hover:bg-green-700' 
-                      : isCurrent 
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-zinc-200 text-zinc-500 cursor-not-allowed'
+                    ${isClickable 
+                      ? isCurrent 
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : isCompleted
+                          ? 'bg-green-600 text-white hover:bg-green-700'
+                          : 'bg-zinc-100 text-zinc-900 hover:bg-zinc-200' 
+                      : 'bg-zinc-200 text-zinc-400 cursor-not-allowed'
                     }
                   `}
                   aria-current={isCurrent ? 'step' : undefined}

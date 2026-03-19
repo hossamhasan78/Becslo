@@ -102,6 +102,8 @@ export function calculatePrice(
     finalPrice,
     recommendedMin,
     recommendedMax,
+    experienceMultiplier,
+    geographyMultiplier,
     breakdown
   }
 }

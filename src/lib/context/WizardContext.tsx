@@ -12,6 +12,13 @@ interface WizardContextValue {
   result: PricingOutput | null
   isLoading: boolean
   error: string | null
+  // Reference data
+  categories: any[]
+  allServices: any[]
+  allCountries: any[]
+  allCosts: any[]
+  config: any | null
+  // Actions
   updateState: (updates: Partial<WizardState>) => void
   setCurrentStep: (step: number) => void
   goToNextStep: () => void
@@ -49,10 +56,13 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   // Use sessionStorage for persistence
   const [state, setState] = useSessionStorage<WizardState>('becslo_wizard_state', DEFAULT_WIZARD_STATE)
   
-  // Pricing data state
-  const [countries, setCountries] = useState<{ code: string; multiplier: number }[]>([])
-  const [costs, setCosts] = useState<{ id: string; isFixedAmount: boolean; defaultCost: number }[]>([])
-  const [services, setServices] = useState<{ id: string; name: string; baseRate: number }[]>([])
+  // Reference data state
+  const [categories, setCategories] = useState<any[]>([])
+  const [allServices, setAllServices] = useState<any[]>([])
+  const [allCountries, setAllCountries] = useState<any[]>([])
+  const [allCosts, setAllCosts] = useState<any[]>([])
+  const [config, setConfig] = useState<any | null>(null)
+  
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -61,16 +71,19 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true)
     setError(null)
     try {
-      const [countriesRes, costsRes, servicesRes] = await Promise.all([
+      const [catsRes, servsRes, countriesRes, costsRes, configRes] = await Promise.all([
+        fetch('/api/v1/categories').then(res => res.ok ? res.json() : Promise.reject('Failed to load categories')),
+        fetch('/api/v1/services').then(res => res.ok ? res.json() : Promise.reject('Failed to load services')),
         fetch('/api/v1/countries').then(res => res.ok ? res.json() : Promise.reject('Failed to load countries')),
         fetch('/api/v1/costs').then(res => res.ok ? res.json() : Promise.reject('Failed to load costs')),
-        fetch('/api/v1/services').then(res => res.ok ? res.json() : Promise.reject('Failed to load services'))
+        fetch('/api/v1/config').then(res => res.ok ? res.json() : Promise.reject('Failed to load config'))
       ])
 
-      // Map Supabase response to engine format
-      setCountries(countriesRes.map((c: { code: string; multiplier: number }) => ({ code: c.code, multiplier: c.multiplier })))
-      setCosts(costsRes.map((c: { id: number; is_fixed_amount: boolean; default_cost: number }) => ({ id: String(c.id), isFixedAmount: c.is_fixed_amount, defaultCost: c.default_cost })))
-      setServices(servicesRes.map((s: { id: number; name: string; base_rate: number }) => ({ id: String(s.id), name: s.name, baseRate: s.base_rate })))
+      setCategories(catsRes)
+      setAllServices(servsRes)
+      setAllCountries(countriesRes)
+      setAllCosts(costsRes)
+      setConfig(configRes)
     } catch (err: any) {
       console.error('Data fetch error:', err)
       setError(err.message || 'Error loading pricing data')
@@ -83,12 +96,27 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     loadPricingData()
   }, [loadPricingData])
 
+  // Map to engine formats for calculation
+  const engineCountries = useMemo(() => 
+    allCountries.map(c => ({ code: c.code, multiplier: c.multiplier })),
+    [allCountries]
+  )
+  
+  const engineCosts = useMemo(() => 
+    allCosts.map(c => ({ id: String(c.id), isFixedAmount: c.is_fixed_amount, defaultCost: c.default_cost })),
+    [allCosts]
+  )
+  
+  const engineServices = useMemo(() => 
+    allServices.map(s => ({ id: String(s.id), name: s.name, baseRate: s.base_rate })),
+    [allServices]
+  )
+
   // Compute pricing result
   const result = useMemo(() => {
-    if (countries.length === 0 || services.length === 0) return null
+    if (engineCountries.length === 0 || engineServices.length === 0) return null
     if (state.services.length === 0) return null
 
-    // Map WizardState to PricingInput format
     const pricingInput: PricingInput = {
       pricingModel: state.pricingModel || 'hourly',
       services: state.services.map(s => ({ serviceId: String(s.id), hours: s.hours })),
@@ -102,12 +130,12 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      return calculatePrice(pricingInput, countries, costs, services)
+      return calculatePrice(pricingInput, engineCountries, engineCosts, engineServices)
     } catch (err) {
       console.error('Calculation error:', err)
       return null
     }
-  }, [state, countries, costs, services])
+  }, [state, engineCountries, engineCosts, engineServices])
 
   const updateState = useCallback((updates: Partial<WizardState>) => {
     setState(prev => ({ ...prev, ...updates }))
@@ -180,6 +208,11 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         result,
         isLoading,
         error,
+        categories,
+        allServices,
+        allCountries,
+        allCosts,
+        config,
         updateState,
         setCurrentStep,
         goToNextStep,

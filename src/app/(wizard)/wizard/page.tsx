@@ -1,77 +1,75 @@
 'use client'
 
-import { useState } from 'react'
 import { useWizard } from '@/lib/context/WizardContext'
 import { WizardLayout } from '@/components/wizard/WizardLayout'
 import { StepNavigation } from '@/components/wizard/StepNavigation'
 import LivePreview from '@/components/wizard/LivePreview'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
-import { ServiceSelection } from './components/step-inputs/service-selection'
-import { ExperienceInput } from './components/step-inputs/experience-input'
-import { GeographyInput } from './components/step-inputs/geography-input'
-import { CostSelection } from './components/step-inputs/cost-selection'
-import { RiskProfitInput } from './components/step-inputs/risk-profit-input'
 
-const STEPS = [
-  { id: 1, title: 'Pricing Model', component: null },
-  { id: 2, title: 'Services', component: ServiceSelection },
-  { id: 3, title: 'Experience', component: ExperienceInput },
-  { id: 4, title: 'Geography', component: GeographyInput },
-  { id: 5, title: 'Costs', component: CostSelection },
-  { id: 6, title: 'Risk & Profit', component: RiskProfitInput },
-  { id: 7, title: 'Review', component: null },
-]
+// Import new step components
+import { PricingModelStep } from '@/components/wizard/steps/PricingModelStep'
+import { ServiceSelectionStep } from '@/components/wizard/steps/ServiceSelectionStep'
+import { ExperienceStep } from '@/components/wizard/steps/ExperienceStep'
+import { GeographyStep } from '@/components/wizard/steps/GeographyStep'
+import { CostsStep } from '@/components/wizard/steps/CostsStep'
+import { RiskProfitStep } from '@/components/wizard/steps/RiskProfitStep'
+import { ReviewStep } from '@/components/wizard/steps/ReviewStep'
 
 export default function WizardPage() {
   const { 
     state, 
+    isLoading,
+    error,
     goToNextStep, 
     goToPreviousStep, 
-    setPricingModel,
-    validateCurrentStep
+    validateCurrentStep 
   } = useWizard()
 
-  const [isSaving, setIsSaving] = useState(false)
-  const [calculationMessage, setCalculationMessage] = useState('')
+  if (isLoading) {
+    return (
+      <WizardLayout
+        leftPanel={
+          <div className="flex flex-col items-center justify-center min-h-[500px]">
+            <div className="w-12 h-12 border-4 border-zinc-100 border-t-zinc-900 rounded-full animate-spin mb-4" />
+            <p className="text-zinc-500 font-medium animate-pulse">Initializing your bespoke pricing engine...</p>
+          </div>
+        }
+        rightPanel={<div className="animate-pulse bg-zinc-50 rounded-3xl h-full w-full" />}
+      />
+    )
+  }
 
-  const currentStep = STEPS.find(s => s.id === state.currentStep)
-  const CurrentComponent = currentStep?.component
+  if (error) {
+    return (
+      <WizardLayout
+        leftPanel={
+          <div className="flex flex-col items-center justify-center min-h-[500px] text-center px-6">
+            <div className="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center text-3xl mb-6">⚠️</div>
+            <h2 className="text-2xl font-black text-zinc-900 mb-2">Something went wrong</h2>
+            <p className="text-zinc-500 mb-8 max-w-md">{error}</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-8 py-3 bg-zinc-900 text-white rounded-full font-bold hover:bg-black transition-all"
+            >
+              Try Again
+            </button>
+          </div>
+        }
+        rightPanel={<div className="bg-zinc-50 rounded-3xl h-full w-full" />}
+      />
+    )
+  }
 
-  const handleCalculate = async () => {
-    setIsSaving(true)
-    setCalculationMessage('')
-
-    try {
-      const response = await fetch('/api/v1/calculate-and-save', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          pricingModel: state.pricingModel || 'hourly',
-          services: state.services.map((s: any) => ({ serviceId: String(s.id), hours: s.hours })),
-          designerExperience: state.experienceDesigner,
-          freelanceExperience: state.experienceFreelance,
-          designerCountryCode: state.designerCountryCode,
-          clientCountryCode: state.clientCountryCode,
-          selectedCosts: state.costs.map(String),
-          riskBufferPercent: state.riskBuffer,
-          profitMarginPercent: state.profitMargin
-        })
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        setCalculationMessage('Calculation saved successfully!')
-      } else {
-        setCalculationMessage(data.error?.message || 'Save failed. Please try again.')
-      }
-    } catch (error) {
-      console.error('Save error:', error)
-      setCalculationMessage('An error occurred. Please try again.')
-    } finally {
-      setIsSaving(false)
+  const renderStep = () => {
+    switch (state.currentStep) {
+      case 1: return <PricingModelStep />
+      case 2: return <ServiceSelectionStep />
+      case 3: return <ExperienceStep />
+      case 4: return <GeographyStep />
+      case 5: return <CostsStep />
+      case 6: return <RiskProfitStep />
+      case 7: return <ReviewStep />
+      default: return <PricingModelStep />
     }
   }
 
@@ -82,98 +80,52 @@ export default function WizardPage() {
     <ErrorBoundary>
       <WizardLayout
         leftPanel={
-          <div className="space-y-6">
+          <div className="space-y-6 max-w-2xl mx-auto">
             <StepNavigation />
 
-            <div className="bg-white border border-zinc-200 rounded-2xl p-6 md:p-8 shadow-sm">
-              {state.currentStep === 1 && (
-                <div className="space-y-6">
-                  <h3 className="text-xl font-bold text-zinc-800">Choose Pricing Model</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <label className={`
-                      flex flex-col gap-2 p-6 border-2 rounded-2xl cursor-pointer transition-all
-                      ${state.pricingModel === 'hourly' ? 'border-blue-600 bg-blue-50' : 'border-zinc-100 hover:border-zinc-200'}
-                    `}>
-                      <input
-                        type="radio"
-                        name="pricingModel"
-                        checked={state.pricingModel === 'hourly'}
-                        onChange={() => setPricingModel('hourly')}
-                        className="sr-only"
-                      />
-                      <div className="font-bold text-lg">Hourly Rate</div>
-                      <div className="text-sm text-zinc-500">Calculate based on total hours per service.</div>
-                    </label>
-                    <label className={`
-                      flex flex-col gap-2 p-6 border-2 rounded-2xl cursor-pointer transition-all
-                      ${state.pricingModel === 'project' ? 'border-blue-600 bg-blue-50' : 'border-zinc-100 hover:border-zinc-200'}
-                    `}>
-                      <input
-                        type="radio"
-                        name="pricingModel"
-                        checked={state.pricingModel === 'project'}
-                        onChange={() => setPricingModel('project')}
-                        className="sr-only"
-                      />
-                      <div className="font-bold text-lg">Project-Based</div>
-                      <div className="text-sm text-zinc-500">Fixed lump-sum price for the whole project.</div>
-                    </label>
-                  </div>
-                </div>
-              )}
+            <div className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-10 shadow-sm min-h-[500px] flex flex-col">
+              <div className="flex-1 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                {renderStep()}
+              </div>
 
-              {state.currentStep > 1 && state.currentStep < 7 && CurrentComponent && (
-                <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                  <CurrentComponent />
-                </div>
-              )}
-
-              {state.currentStep === 7 && (
-                <div className="text-center py-10">
-                  <h3 className="text-2xl font-bold mb-4">Ready to Calculate?</h3>
-                  <p className="text-zinc-500 mb-8 max-w-md mx-auto">
-                    Review your inputs in the preview panel. Click the button below to persist your quote.
-                  </p>
-                  <button
-                    onClick={handleCalculate}
-                    disabled={isSaving || !canProceed}
-                    className="px-10 py-4 bg-blue-600 text-white font-bold rounded-full hover:bg-blue-700 disabled:opacity-50 transition-all shadow-lg hover:shadow-xl active:scale-95"
-                  >
-                    {isSaving ? 'Saving...' : 'Calculate & Save'}
-                  </button>
-
-                  {calculationMessage && (
-                    <div className={`mt-6 p-4 rounded-xl font-medium ${
-                      calculationMessage.includes('success') 
-                        ? 'bg-green-50 text-green-700 border border-green-100' 
-                        : 'bg-red-50 text-red-700 border border-red-100'
-                    }`}>
-                      {calculationMessage}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            <div className="flex justify-between items-center px-4 md:px-0">
-              <button
-                onClick={goToPreviousStep}
-                disabled={state.currentStep <= 1}
-                className="px-6 py-3 font-semibold text-zinc-600 hover:text-zinc-900 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-              >
-                ← Previous
-              </button>
-              
-              {state.currentStep < 7 && (
+              {/* Navigation Buttons */}
+              <div className="flex justify-between items-center mt-10 pt-8 border-t border-zinc-100">
                 <button
-                  onClick={goToNextStep}
-                  disabled={!canProceed}
-                  className="px-10 py-3 bg-zinc-900 text-white font-bold rounded-full hover:bg-black disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-md active:scale-95"
+                  onClick={goToPreviousStep}
+                  disabled={state.currentStep <= 1}
+                  className="px-8 py-3 font-bold text-zinc-500 hover:text-zinc-900 disabled:opacity-20 disabled:cursor-not-allowed transition-all flex items-center gap-2 group"
                 >
-                  Next Step →
+                  <span className="group-hover:-translate-x-1 transition-transform">←</span>
+                  Back
                 </button>
-              )}
+                
+                {state.currentStep < 7 && (
+                  <button
+                    onClick={goToNextStep}
+                    disabled={!canProceed}
+                    className={`
+                      px-10 py-3 rounded-full font-black text-white transition-all shadow-lg active:scale-95 flex items-center gap-2 group
+                      ${canProceed 
+                        ? 'bg-zinc-900 hover:bg-black hover:shadow-xl' 
+                        : 'bg-zinc-200 cursor-not-allowed text-zinc-400 shadow-none'}
+                    `}
+                  >
+                    Next Step
+                    <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  </button>
+                )}
+              </div>
             </div>
+
+            {/* Validation Message */}
+            {!canProceed && validation.errors.length > 0 && (
+              <div className="bg-red-50 border border-red-100 p-4 rounded-2xl flex items-start gap-3 animate-in shake-in-1 duration-300">
+                <span className="text-red-600 font-bold">⚠️</span>
+                <p className="text-sm text-red-700 font-medium">
+                  {validation.errors[0].message}
+                </p>
+              </div>
+            )}
           </div>
         }
         rightPanel={<LivePreview />}

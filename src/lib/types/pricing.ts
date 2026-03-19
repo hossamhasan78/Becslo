@@ -33,6 +33,8 @@ export interface PricingOutput {
   finalPrice: number;
   recommendedMin: number;
   recommendedMax: number;
+  experienceMultiplier: number;
+  geographyMultiplier: number;
   breakdown: ServiceBreakdown[];
 }
 
