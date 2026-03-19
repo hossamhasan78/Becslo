@@ -17,8 +17,8 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Install `@react-pdf/renderer` dependency in `package.json`
-- [ ] T002 [P] Create directory structure for PDF generation: `src/app/api/v1/export-pdf/` and `src/components/wizard/pdf/`
+- [x] T001 Install `@react-pdf/renderer` dependency in `package.json`
+- [x] T002 [P] Create directory structure for PDF generation: `src/app/api/v1/export-pdf/` and `src/components/wizard/pdf/`
 
 ---
 
