@@ -9,7 +9,9 @@ export function useSessionStorage<T>(key: string, initialValue: T): [T, (value: 
     if (typeof window === 'undefined') return
     try {
       const item = window.sessionStorage.getItem(key)
-      if (item) setStoredValue(JSON.parse(item))
+      if (item) {
+        setStoredValue(JSON.parse(item))
+      }
     } catch (error) {
       console.warn(`Error reading sessionStorage key "${key}":`, error)
     }

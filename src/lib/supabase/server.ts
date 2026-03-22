@@ -1,7 +1,11 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-export async function createClient() {
+/**
+ * Create a Supabase server client for use in Server Components and API routes
+ * @returns Supabase client instance with cookie-based session management
+ */
+export async function createSupabaseServerClient() {
   const cookieStore = await cookies()
 
   return createServerClient(
@@ -18,10 +22,15 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             })
           } catch {
-            // Called from Server Component
+            // Called from Server Component - cookies cannot be set in read-only context
           }
         },
       },
     }
   )
 }
+
+/**
+ * Type alias for the server client function
+ */
+export const createClient = createSupabaseServerClient

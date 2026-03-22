@@ -2,30 +2,23 @@
 
 import { useWizard } from '@/lib/context/WizardContext'
 import { useState, useEffect, useMemo } from 'react'
-import { SelectedService } from '@/types/wizard'
 import { StepSkeleton } from '../Skeleton'
-
-interface Category {
-  id: number
-  name: string
-  display_order: number
-}
 
 interface Service {
   id: number
   name: string
+  category_id: number
   default_hours: number
   min_hours: number
   max_hours: number
   base_rate: number
-  category_id: number
 }
 
 export function ServiceSelectionStep() {
   const { state, addService, removeService, updateServiceHours, categories, allServices, isLoading, error, loadPricingData } = useWizard()
+
   const [openCategories, setOpenCategories] = useState<Record<number, boolean>>({})
 
-  // Open first category by default when data loads
   useEffect(() => {
     if (categories.length > 0 && Object.keys(openCategories).length === 0) {
       setOpenCategories({ [categories[0].id]: true })
@@ -69,7 +62,7 @@ export function ServiceSelectionStep() {
         <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">⚠️</div>
         <p className="text-red-900 font-bold mb-2">Failed to load services</p>
         <p className="text-red-700 text-sm mb-6">{error}</p>
-        <button 
+        <button
           onClick={loadPricingData}
           className="px-6 py-2 bg-red-600 text-white rounded-full font-bold hover:bg-red-700 transition-all shadow-md active:scale-95"
         >
@@ -83,16 +76,16 @@ export function ServiceSelectionStep() {
     <div className="space-y-6">
       <div className="flex flex-col gap-1">
         <h3 className="text-xl font-bold text-zinc-900">Select Services</h3>
-        <p className="text-sm text-zinc-500">Pick the services you'll provide and estimate hours.</p>
+        <p className="text-sm text-zinc-500">Pick the services you&apos;ll provide and estimate hours.</p>
       </div>
 
       <div className="space-y-3">
         {categories.map(category => {
           const categoryServices = groupedServices[category.id] || []
           if (categoryServices.length === 0) return null
-          
+
           const isOpen = !!openCategories[category.id]
-          const selectedInCategory = categoryServices.filter(s => 
+          const selectedInCategory = categoryServices.filter(s =>
             state.services.some(ss => ss.id === s.id)
           ).length
 
@@ -120,7 +113,7 @@ export function ServiceSelectionStep() {
               </button>
 
               {isOpen && (
-                <div 
+                <div
                   id={`category-panel-${category.id}`}
                   role="region"
                   aria-labelledby={`category-btn-${category.id}`}
@@ -128,13 +121,13 @@ export function ServiceSelectionStep() {
                 >
                   {categoryServices.map(service => {
                     const selected = state.services.find(s => s.id === service.id)
-                    
+
                     return (
-                      <div 
+                      <div
                         key={service.id}
                         className={`flex items-center gap-4 p-4 rounded-xl transition-all border ${
-                          selected 
-                            ? 'border-blue-200 bg-blue-50/30' 
+                          selected
+                            ? 'border-blue-200 bg-blue-50/30'
                             : 'border-transparent hover:border-zinc-100 hover:bg-zinc-50'
                         }`}
                       >
@@ -146,9 +139,9 @@ export function ServiceSelectionStep() {
                             className="h-5 w-5 rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
                           />
                         </div>
-                        
+
                         <div className="flex-1 min-w-0">
-                          <label 
+                          <label
                             className="text-sm font-semibold text-zinc-900 cursor-pointer block truncate"
                             onClick={() => handleToggleService(service)}
                           >
@@ -165,8 +158,8 @@ export function ServiceSelectionStep() {
                                 value={selected.hours}
                                 onChange={(e) => updateServiceHours(service.id, parseInt(e.target.value) || 0)}
                                 className={`w-20 px-3 py-1.5 text-sm font-bold bg-white border rounded-lg focus:ring-2 outline-none transition-all ${
-                                  selected.hours < 1 
-                                    ? 'border-red-500 focus:ring-red-500' 
+                                  selected.hours < 1
+                                    ? 'border-red-500 focus:ring-red-500'
                                     : 'border-zinc-200 focus:ring-blue-500 focus:border-blue-500'
                                 }`}
                               />
@@ -187,6 +180,12 @@ export function ServiceSelectionStep() {
             </div>
           )
         })}
+      </div>
+
+      <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100 mt-6">
+        <p className="text-xs text-zinc-500 italic leading-relaxed text-center">
+          Services are required. You must select at least one service to proceed.
+        </p>
       </div>
     </div>
   )

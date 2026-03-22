@@ -7,6 +7,7 @@ import { WizardLayout } from '@/components/wizard/WizardLayout'
 import { StepNavigation } from '@/components/wizard/StepNavigation'
 import LivePreview from '@/components/wizard/LivePreview'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import WizardLogoutButton from '@/components/wizard/WizardLogoutButton'
 
 // Import new step components
 import { PricingModelStep } from '@/components/wizard/steps/PricingModelStep'
@@ -129,7 +130,10 @@ export default function WizardPage() {
       <WizardLayout
         leftPanel={
           <div className="space-y-6 max-w-2xl mx-auto">
-            <StepNavigation />
+            <div className="flex justify-between items-center">
+              <StepNavigation />
+              <WizardLogoutButton />
+            </div>
 
             <div className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-10 shadow-sm min-h-[500px] flex flex-col">
               <div key={state.currentStep} className="flex-1 animate-in fade-in slide-in-from-bottom-2 duration-500">

@@ -1,7 +1,8 @@
 'use client'
 
 import { useWizard } from '@/lib/context/WizardContext'
-import { PricingModel } from '@/types/wizard'
+import { useState, useMemo } from 'react'
+import { StepSkeleton } from '../Skeleton'
 
 export function PricingModelStep() {
   const { state, setPricingModel } = useWizard()
@@ -33,7 +34,7 @@ export function PricingModelStep() {
             checked={state.pricingModel === 'hourly'}
             onChange={() => setPricingModel('hourly')}
             className="sr-only"
-            tabIndex={-1}
+            tabIndex={1}
           />
           <div className="font-bold text-lg text-zinc-900">Hourly Rate</div>
           <div className="text-sm text-zinc-500 leading-relaxed">
@@ -46,7 +47,7 @@ export function PricingModelStep() {
             </div>
           )}
         </label>
-
+        
         <label 
           className={`
             flex flex-col gap-2 p-6 border-2 rounded-2xl cursor-pointer transition-all focus-within:ring-2 focus-within:ring-blue-500/50
@@ -70,11 +71,11 @@ export function PricingModelStep() {
             checked={state.pricingModel === 'project'}
             onChange={() => setPricingModel('project')}
             className="sr-only"
-            tabIndex={-1}
+            tabIndex={1}
           />
           <div className="font-bold text-lg text-zinc-900">Project-Based</div>
           <div className="text-sm text-zinc-500 leading-relaxed">
-            Fixed lump-sum price for the whole project. 
+            Fixed lump-sum price for whole project. 
             Standard for agencies and larger project deliverables.
           </div>
           {state.pricingModel === 'project' && (

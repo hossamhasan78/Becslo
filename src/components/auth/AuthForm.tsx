@@ -64,7 +64,8 @@ export function AuthForm({ mode }: AuthFormProps) {
     if (error) {
       setError(getFriendlyError(error.message))
     } else if (data.session) {
-      window.location.href = '/wizard'
+      const isAdmin = data.user?.user_metadata?.role === 'admin'
+      window.location.href = isAdmin ? '/admin' : '/wizard'
     } else if (data.user) {
       setError('Please check your email to confirm your account before logging in.')
     } else {
