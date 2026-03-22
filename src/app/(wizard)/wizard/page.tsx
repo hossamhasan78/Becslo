@@ -1,10 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { useWizard } from '@/lib/context/WizardContext'
 import { WizardLayout } from '@/components/wizard/WizardLayout'
 import { StepNavigation } from '@/components/wizard/StepNavigation'
+import { WizardStepWrapper } from '@/components/wizard/WizardStepWrapper'
+import { ProgressBar } from '@/components/wizard/ProgressBar'
+import { AsyncStatus } from '@/components/wizard/AsyncStatus'
 import LivePreview from '@/components/wizard/LivePreview'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import WizardLogoutButton from '@/components/wizard/WizardLogoutButton'
@@ -32,6 +35,30 @@ export default function WizardPage() {
 
   const [isDownloading, setIsDownloading] = useState(false)
   const [downloadError, setDownloadError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return
+      }
+
+      if (e.key === 'Enter' && state.currentStep < 7) {
+        const validation = validateCurrentStep()
+        if (validation.isValid) {
+          goToNextStep()
+        }
+      }
+
+      if (e.key === 'Escape') {
+        if (state.currentStep > 1) {
+          goToPreviousStep()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [state.currentStep, validateCurrentStep, goToNextStep, goToPreviousStep])
 
   const handleDownloadPDF = async () => {
     try {
@@ -127,18 +154,25 @@ export default function WizardPage() {
 
   return (
     <ErrorBoundary>
+      <a href="#wizard-content" className="skip-link">
+        Skip to main content
+      </a>
       <WizardLayout
         leftPanel={
-          <div className="space-y-6 max-w-2xl mx-auto">
+          <div id="wizard-content" className="space-y-6 max-w-2xl mx-auto">
             <div className="flex justify-between items-center">
               <StepNavigation />
               <WizardLogoutButton />
             </div>
 
             <div className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-10 shadow-sm min-h-[500px] flex flex-col">
-              <div key={state.currentStep} className="flex-1 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                {renderStep()}
-              </div>
+              <ProgressBar currentStep={state.currentStep} />
+              
+              <WizardStepWrapper stepKey={state.currentStep}>
+                <div className="flex-1">
+                  {renderStep()}
+                </div>
+              </WizardStepWrapper>
 
               {/* Navigation Buttons */}
               <div className="flex justify-between items-center mt-10 pt-8 border-t border-zinc-100">
