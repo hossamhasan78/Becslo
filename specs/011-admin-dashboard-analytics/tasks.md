@@ -127,16 +127,16 @@
 
 ### Implementation for User Story 4
 
-- [ ] T036 [P] [US4] Create CalculationsList component in src/components/admin/CalculationsList.tsx with pagination and date filtering
-- [ ] T037 [P] [US4] Create CalculationDetails component in src/components/admin/CalculationDetails.tsx showing full breakdown (services, costs, multipliers, pricing)
-- [ ] T038 [US4] Create Calculations list page in src/app/admin/calculations/page.tsx with CalculationsList
-- [ ] T039 [US4] Create Calculation details page in src/app/admin/calculations/[id]/page.tsx with CalculationDetails component
-- [ ] T040 [US4] Create GET /api/admin/calculations route in src/app/api/admin/calculations/route.ts with pagination and date filtering
-- [ ] T041 [US4] Create GET /api/admin/calculations/[id] route in src/app/api/admin/calculations/[id]/route.ts returning detailed breakdown with services, costs, multipliers
-- [ ] T042 [US4] Add loading state for Calculations list page in src/app/admin/calculations/loading.tsx
-- [ ] T043 [US4] Add empty state handling for Calculations list when no calculations exist or match filters
-- [ ] T043A [US4] Add input sanitization for user name and email display in CalculationDetails to handle special characters (edge case L103)
-- [ ] T044 [US4] Add loading state for Calculation details page in src/app/admin/calculations/[id]/loading.tsx
+- [X] T036 [P] [US4] Create CalculationsList component in src/components/admin/CalculationsList.tsx with pagination and date filtering
+- [X] T037 [P] [US4] Create CalculationDetails component in src/components/admin/CalculationDetails.tsx showing full breakdown (services, costs, multipliers, pricing)
+- [X] T038 [US4] Create Calculations list page in src/app/admin/calculations/page.tsx with CalculationsList
+- [X] T039 [US4] Create Calculation details page in src/app/admin/calculations/[id]/page.tsx with CalculationDetails component
+- [X] T040 [US4] Create GET /api/admin/calculations route in src/app/api/admin/calculations/route.ts with pagination and date filtering
+- [X] T041 [US4] Create GET /api/admin/calculations/[id] route in src/app/api/admin/calculations/[id]/route.ts returning detailed breakdown with services, costs, multipliers
+- [X] T042 [US4] Add loading state for Calculations list page in src/app/admin/calculations/loading.tsx
+- [X] T043 [US4] Add empty state handling for Calculations list when no calculations exist or match filters
+- [X] T043A [US4] Add input sanitization for user name and email display in CalculationDetails to handle special characters (edge case L103)
+- [X] T044 [US4] Add loading state for Calculation details page in src/app/admin/calculations/[id]/loading.tsx
 
 **Checkpoint**: At this point, User Story 4 should be fully functional and testable independently
 
@@ -276,13 +276,13 @@ With multiple developers:
 ## Task Summary
 
 - **Total Tasks**: 61
-- **Tasks Completed**: 40
-- **Tasks Remaining**: 21
+- **Tasks Completed**: 50
+- **Tasks Remaining**: 11
 - **Tasks per User Story**:
   - User Story 1 (Services Management): 15 tasks (T010-T022) ✅
   - User Story 2 (Configuration Editor): 8 tasks (T023-T029) ✅
   - User Story 3 (Analytics Dashboard): 6 tasks (T030-T035) ✅
-  - User Story 4 (Calculations Viewer): 10 tasks (T036-T044) ⬜
+  - User Story 4 (Calculations Viewer): 10 tasks (T036-T044) ✅
 - **Setup Tasks**: 5 (T001-T005) ✅
 - **Foundational Tasks**: 5 (T006-T009A) ✅
 - **Polish Tasks**: 12 (T045-T055) ⬜
@@ -298,7 +298,7 @@ Each user story must meet its independent test criteria:
 - **User Story 1**: Admin can view, add, edit, activate/deactivate services independently (SC-001, SC-005, SC-006) ✅
 - **User Story 2**: Admin can modify configuration with validation and optimistic locking (SC-002, SC-009) ✅
 - **User Story 3**: Admin can view analytics with date filtering (SC-003, SC-010) ✅
-- **User Story 4**: Admin can view calculations with details and user data (SC-004, SC-007, SC-008) ⬜
+- **User Story 4**: Admin can view calculations with details and user data (SC-004, SC-007, SC-008) ✅
 Cross-cutting success criteria validated in Polish phase:
 - SC-005: Admin access restricted (middleware T006) ✅
 - SC-007: User name/email visible (CalculationDetails T037) ⬜
