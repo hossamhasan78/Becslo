@@ -108,8 +108,8 @@
 
 ### Implementation for User Story 5
 
-- [ ] T019 [US5] Update `React-PDF` component to include footer with UUID and date in `frontend/src/components/PDF/QuoteDocument.tsx`
-- [ ] T020 [US5] [P] Pass `calculation_id` from wizard state to the PDF export payload in `frontend/src/api/export-pdf.ts`
+- [X] T019 [US5] Update `React-PDF` component to include footer with UUID and date in `frontend/src/components/PDF/QuoteDocument.tsx`
+- [X] T020 [US5] [P] Pass `calculation_id` from wizard state to the PDF export payload in `frontend/src/api/export-pdf.ts`
 
 ---
 
@@ -117,9 +117,9 @@
 
 **Purpose**: Final cleanup and validation
 
-- [ ] T021 [P] Update feature documentation in `docs/PO-ENHANCEMENT_NOTES.md`
-- [ ] T022 Code cleanup and removal of any console logs or dev stubs
-- [ ] T023 Run `quickstart.md` validation on the completed feature
+- [X] T021 [P] Update feature documentation in `docs/PO-ENHANCEMENT_NOTES.md`
+- [X] T022 Code cleanup and removal of any console logs or dev stubs
+- [X] T023 Run `quickstart.md` validation on the completed feature
 
 ---
 

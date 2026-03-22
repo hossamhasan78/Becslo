@@ -180,7 +180,7 @@ export const QuoteDocument: React.FC<QuoteDocumentProps> = ({ data }) => {
           </View>
           <View style={styles.metaRow}>
             <Text style={styles.metaLabel}>Calculation ID</Text>
-            <Text style={styles.metaValue}>{data.calculationId.slice(0, 8)}</Text>
+            <Text style={styles.metaValue}>{data.calculationId}</Text>
           </View>
           <View style={styles.metaRow}>
             <Text style={styles.metaLabel}>Pricing Model</Text>
@@ -263,6 +263,7 @@ export const QuoteDocument: React.FC<QuoteDocumentProps> = ({ data }) => {
         </View>
 
         <View style={styles.footer}>
+          <Text style={styles.footerText}>ID: {data.calculationId}</Text>
           <Text style={styles.footerText}>Generated on {formattedDate}</Text>
           <Text style={styles.footerText}>Page 1 of 1</Text>
         </View>
