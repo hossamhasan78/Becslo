@@ -229,8 +229,19 @@ export interface PaginatedServicesResponse {
  * Paginated calculations list response
  */
 export interface PaginatedCalculationsResponse {
-  calculations: Calculation[];
+  calculations: CalculationListItem[];
   pagination: PaginationResult;
+}
+
+/**
+ * Simplified calculation item for list display
+ */
+export interface CalculationListItem {
+  id: string;
+  user_name: string;
+  user_email: string;
+  final_price: number;
+  created_at: string;
 }
 
 /**
