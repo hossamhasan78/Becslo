@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 interface NavItem {
   href: string
@@ -60,6 +60,7 @@ const navItems: NavItem[] = [
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
 
   const isActive = (href: string) => {
     if (href === '/admin') {
@@ -68,24 +69,40 @@ export default function Sidebar() {
     return pathname.startsWith(href)
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent, href: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      router.push(href)
+    }
+  }
+
   return (
-    <aside className="w-64 bg-gray-900 text-white min-h-screen flex flex-col">
+    <aside 
+      className="w-64 bg-gray-900 text-white min-h-screen flex flex-col"
+      role="navigation"
+      aria-label="Admin navigation"
+    >
       <div className="p-6 border-b border-gray-800">
         <h1 className="text-xl font-bold">Becslo Admin</h1>
         <p className="text-sm text-gray-400 mt-1">Dashboard</p>
       </div>
 
-      <nav className="flex-1 p-4">
-        <ul className="space-y-1">
+      <nav className="flex-1 p-4" role="menubar" aria-label="Main menu">
+        <ul className="space-y-1" role="group">
           {navItems.map((item) => (
-            <li key={item.href}>
+            <li key={item.href} role="none">
               <Link
                 href={item.href}
+                role="menuitem"
+                tabIndex={0}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                aria-label={item.label}
+                onKeyDown={(e) => handleKeyDown(e, item.href)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive(item.href)
                     ? 'bg-blue-600 text-white'
                     : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                }`}
+                } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900`}
               >
                 {item.icon}
                 <span className="font-medium">{item.label}</span>
@@ -98,9 +115,13 @@ export default function Sidebar() {
       <div className="p-4 border-t border-gray-800">
         <Link
           href="/wizard"
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+          role="menuitem"
+          tabIndex={0}
+          aria-label="Back to Wizard"
+          onKeyDown={(e) => handleKeyDown(e, '/wizard')}
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
           </svg>
           <span className="font-medium">Back to Wizard</span>

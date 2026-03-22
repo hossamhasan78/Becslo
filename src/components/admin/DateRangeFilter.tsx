@@ -53,7 +53,7 @@ export default function DateRangeFilter({
   }, [onFilterChange])
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
+    <div className="bg-white rounded-lg shadow p-4" role="group" aria-label="Date range filter">
       <div className="flex flex-wrap items-end gap-4">
         <div className="flex-1 min-w-[150px]">
           <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
@@ -62,6 +62,7 @@ export default function DateRangeFilter({
           <input
             type="date"
             id="startDate"
+            aria-label="Start date for filtering"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
             className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -75,6 +76,7 @@ export default function DateRangeFilter({
           <input
             type="date"
             id="endDate"
+            aria-label="End date for filtering"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
             className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -85,6 +87,7 @@ export default function DateRangeFilter({
           <button
             type="button"
             onClick={handleApply}
+            aria-label="Apply date filter"
             className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Apply
@@ -92,6 +95,7 @@ export default function DateRangeFilter({
           <button
             type="button"
             onClick={handleClear}
+            aria-label="Clear date filter"
             className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
           >
             Clear
@@ -99,40 +103,48 @@ export default function DateRangeFilter({
         </div>
       </div>
 
-      <div className="mt-3 flex flex-wrap gap-2">
-        <span className="text-sm text-gray-500">Quick select:</span>
+      <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Quick date selection">
+        <span className="text-sm text-gray-500" id="quick-select-label">Quick select:</span>
         <button
           type="button"
           onClick={() => handleQuickSelect(7)}
-          className="text-sm text-blue-600 hover:text-blue-800 underline"
+          aria-label="Last 7 days"
+          aria-describedby="quick-select-label"
+          className="text-sm text-blue-600 hover:text-blue-800 underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
         >
           Last 7 days
         </button>
         <button
           type="button"
           onClick={() => handleQuickSelect(30)}
-          className="text-sm text-blue-600 hover:text-blue-800 underline"
+          aria-label="Last 30 days"
+          aria-describedby="quick-select-label"
+          className="text-sm text-blue-600 hover:text-blue-800 underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
         >
           Last 30 days
         </button>
         <button
           type="button"
           onClick={() => handleQuickSelect(90)}
-          className="text-sm text-blue-600 hover:text-blue-800 underline"
+          aria-label="Last 90 days"
+          aria-describedby="quick-select-label"
+          className="text-sm text-blue-600 hover:text-blue-800 underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
         >
           Last 90 days
         </button>
         <button
           type="button"
           onClick={() => handleQuickSelect(365)}
-          className="text-sm text-blue-600 hover:text-blue-800 underline"
+          aria-label="Last year"
+          aria-describedby="quick-select-label"
+          className="text-sm text-blue-600 hover:text-blue-800 underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
         >
           Last year
         </button>
       </div>
 
       {error && (
-        <p className="mt-2 text-sm text-red-600">{error}</p>
+        <p className="mt-2 text-sm text-red-600" role="alert" aria-live="polite">{error}</p>
       )}
     </div>
   )
