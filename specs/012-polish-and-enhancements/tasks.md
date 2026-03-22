@@ -29,10 +29,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Define `WizardState` type in `frontend/src/types/wizard.ts` including `calculation_id` and `updatedAt`
-- [ ] T005 Implement `useWizardPersistence` hook in `frontend/src/hooks/useWizardPersistence.ts` with hydration-safe Local Storage access
-- [ ] T006 [P] Create validation utility in `frontend/src/utils/validation.ts` with `validatePositiveNumber` helper
-- [ ] T007 [P] Create `WizardStepWrapper` component in `frontend/src/components/Wizard/WizardStepWrapper.tsx` using `framer-motion`
+- [X] T004 Define `WizardState` type in `frontend/src/types/wizard.ts` including `calculation_id` and `updatedAt`
+- [X] T005 Implement `useWizardPersistence` hook in `frontend/src/hooks/useWizardPersistence.ts` with hydration-safe Local Storage access
+- [X] T006 [P] Create validation utility in `frontend/src/utils/validation.ts` with `validatePositiveNumber` helper
+- [X] T007 [P] Create `WizardStepWrapper` component in `frontend/src/components/Wizard/WizardStepWrapper.tsx` using `framer-motion`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 

@@ -2,6 +2,8 @@ export type PricingModel = 'hourly' | 'project'
 
 export interface WizardState {
   currentStep: number
+  calculation_id: string | null
+  updatedAt: string | null
   pricingModel: PricingModel | null
   services: SelectedService[]
   experienceDesigner: number
@@ -43,6 +45,8 @@ export const WIZARD_STEPS: WizardStep[] = [
 
 export const DEFAULT_WIZARD_STATE: WizardState = {
   currentStep: 1,
+  calculation_id: null,
+  updatedAt: null,
   pricingModel: null,
   services: [],
   experienceDesigner: 5,

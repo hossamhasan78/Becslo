@@ -1,5 +1,23 @@
 import type { PricingInput, ValidationError } from '../types/pricing';
 
+export function validatePositiveNumber(value: unknown): { valid: boolean; value: number | null; error?: string } {
+  if (value === null || value === undefined || value === '') {
+    return { valid: false, value: null, error: 'Value is required' }
+  }
+  
+  const num = typeof value === 'string' ? parseFloat(value) : value
+  
+  if (typeof num !== 'number' || isNaN(num)) {
+    return { valid: false, value: null, error: 'Value must be a number' }
+  }
+  
+  if (num < 0) {
+    return { valid: false, value: null, error: 'Value must be positive' }
+  }
+  
+  return { valid: true, value: num }
+}
+
 export function validatePricingInput(input: PricingInput): ValidationError[] {
   const errors: ValidationError[] = [];
 
