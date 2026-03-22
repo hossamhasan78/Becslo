@@ -1,7 +1,6 @@
 'use client'
 
 import { useWizard } from '@/lib/context/WizardContext'
-import { useState, useEffect } from 'react'
 import { StepSkeleton } from '../Skeleton'
 
 interface Config {
@@ -110,7 +109,7 @@ export function RiskProfitStep() {
       <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100 mt-6 flex gap-3">
         <div className="text-blue-600 font-bold text-xl">💡</div>
         <p className="text-xs text-zinc-500 leading-relaxed py-1">
-          Higher margins are recommended for specialized experts, while lower margins can help win competitive bids if you're just starting out.
+            Higher margins are recommended for specialized experts, while lower margins can help win competitive bids if you&apos;re just starting out.
         </p>
       </div>
     </div>

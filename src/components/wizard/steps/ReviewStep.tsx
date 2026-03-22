@@ -12,7 +12,7 @@ export function ReviewStep() {
     try {
       await calculateAndSave()
       setSaveMessage('Success! Your calculation has been persisted.')
-    } catch (error: any) {
+    } catch (error) {
       setSaveMessage(error.message || 'Save failed. Please try again.')
     }
   }
