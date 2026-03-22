@@ -106,18 +106,14 @@ export async function getMostUsedServices(
 
   const calculationIds = calculations.map((c) => c.id)
 
-  // Get calculation services with service details
+  if (calculationIds.length === 0) {
+    return []
+  }
+
+  // Get calculation services with service_id
   const { data: calcServices, error: csError } = await supabase
     .from('calculation_services')
-    .select(
-      `
-      service_id,
-      services (
-        id,
-        name
-      )
-    `
-    )
+    .select('service_id')
     .in('calculation_id', calculationIds)
 
   if (csError) {
@@ -128,6 +124,31 @@ export async function getMostUsedServices(
     return []
   }
 
+  // Get unique service IDs
+  const serviceIds = [...new Set(
+    calcServices
+      .map(cs => cs.service_id)
+      .filter((id): id is string => id !== null)
+  )]
+
+  if (serviceIds.length === 0) {
+    return []
+  }
+
+  // Fetch service details
+  const { data: services, error: serviceError } = await supabase
+    .from('services')
+    .select('id, name')
+    .in('id', serviceIds)
+
+  if (serviceError) {
+    throw new Error(`Failed to fetch services: ${serviceError.message}`)
+  }
+
+  const serviceMap = new Map(
+    services?.map(s => [s.id, s.name]) || []
+  )
+
   // Aggregate service usage counts
   const serviceCounts = new Map<
     string,
@@ -135,15 +156,14 @@ export async function getMostUsedServices(
   >()
 
   calcServices.forEach((cs) => {
-    const service = cs.services as unknown as { id: string; name: string }
-    if (service && service.id) {
-      const existing = serviceCounts.get(service.id)
+    if (cs.service_id) {
+      const existing = serviceCounts.get(cs.service_id)
       if (existing) {
         existing.count += 1
       } else {
-        serviceCounts.set(service.id, {
-          service_id: service.id,
-          service_name: service.name,
+        serviceCounts.set(cs.service_id, {
+          service_id: cs.service_id,
+          service_name: serviceMap.get(cs.service_id) || 'Unknown',
           count: 1,
         })
       }
@@ -168,26 +188,19 @@ export async function getTopClientCountries(
   endDate?: string,
   limit: number = 10
 ): Promise<TopClientCountry[]> {
-  let query = supabase
+  // Get calculations with client_country_id within date range
+  let calcQuery = supabase
     .from('calculations')
-    .select(
-      `
-      client_country_id,
-      countries (
-        id,
-        name
-      )
-    `
-    )
+    .select('client_country_id, created_at')
 
   if (startDate) {
-    query = query.gte('created_at', startDate)
+    calcQuery = calcQuery.gte('created_at', startDate)
   }
   if (endDate) {
-    query = query.lte('created_at', `${endDate}T23:59:59.999Z`)
+    calcQuery = calcQuery.lte('created_at', `${endDate}T23:59:59.999Z`)
   }
 
-  const { data: calculations, error: calcError } = await query
+  const { data: calculations, error: calcError } = await calcQuery
 
   if (calcError) {
     throw new Error(`Failed to fetch calculations: ${calcError.message}`)
@@ -197,6 +210,31 @@ export async function getTopClientCountries(
     return []
   }
 
+  // Get unique client country IDs
+  const countryIds = [...new Set(
+    calculations
+      .map(c => c.client_country_id)
+      .filter((id): id is string => id !== null)
+  )]
+
+  if (countryIds.length === 0) {
+    return []
+  }
+
+  // Fetch country details
+  const { data: countries, error: countryError } = await supabase
+    .from('countries')
+    .select('id, name')
+    .in('id', countryIds)
+
+  if (countryError) {
+    throw new Error(`Failed to fetch countries: ${countryError.message}`)
+  }
+
+  const countryMap = new Map(
+    countries?.map(c => [c.id, c.name]) || []
+  )
+
   // Aggregate country counts
   const countryCounts = new Map<
     string,
@@ -204,15 +242,14 @@ export async function getTopClientCountries(
   >()
 
   calculations.forEach((calc) => {
-    const country = calc.countries as unknown as { id: string; name: string }
-    if (country && country.id) {
-      const existing = countryCounts.get(country.id)
+    if (calc.client_country_id) {
+      const existing = countryCounts.get(calc.client_country_id)
       if (existing) {
         existing.count += 1
       } else {
-        countryCounts.set(country.id, {
-          country_id: country.id,
-          country_name: country.name,
+        countryCounts.set(calc.client_country_id, {
+          country_id: calc.client_country_id,
+          country_name: countryMap.get(calc.client_country_id) || 'Unknown',
           count: 1,
         })
       }
