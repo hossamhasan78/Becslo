@@ -86,14 +86,14 @@
 
 ### Implementation for User Story 2
 
-- [ ] T023 [P] [US2] Create ConfigEditor component in src/components/admin/ConfigEditor.tsx with inline validation and debounced API checks
-- [ ] T024 [P] [US2] Create debounce utility function in src/lib/debounce.ts for inline validation (300ms delay)
-- [ ] T025 [US2] Create Configuration page in src/app/admin/config/page.tsx with ConfigEditor component
-- [ ] T026 [US2] Create GET /api/admin/config route in src/app/api/admin/config/route.ts for retrieving current configuration
-- [ ] T027 [US2] Create PUT /api/admin/config route in src/app/api/admin/config/route.ts with optimistic locking using version column
-- [ ] T028 [US2] Add loading state for Configuration page in src/app/admin/config/loading.tsx
-- [ ] T029 [US2] Add error handling for concurrent configuration updates (409 Conflict) in ConfigEditor component with refresh prompt
-- [ ] T029A [P] [US2] Add configuration integration with wizard to apply admin config changes to wizard slider ranges
+- [X] T023 [P] [US2] Create ConfigEditor component in src/components/admin/ConfigEditor.tsx with inline validation and debounced API checks
+- [X] T024 [P] [US2] Create debounce utility function in src/lib/debounce.ts for inline validation (300ms delay)
+- [X] T025 [US2] Create Configuration page in src/app/admin/config/page.tsx with ConfigEditor component
+- [X] T026 [US2] Create GET /api/admin/config route in src/app/api/admin/config/route.ts for retrieving current configuration
+- [X] T027 [US2] Create PUT /api/admin/config route in src/app/api/admin/config/route.ts with optimistic locking using version column
+- [X] T028 [US2] Add loading state for Configuration page in src/app/admin/config/loading.tsx
+- [X] T029 [US2] Add error handling for concurrent configuration updates (409 Conflict) in ConfigEditor component with refresh prompt
+- [X] T029A [P] [US2] Add configuration integration with wizard to apply admin config changes to wizard slider ranges
 
 
 **Checkpoint**: At this point, User Story 2 should be fully functional and testable independently
@@ -276,11 +276,11 @@ With multiple developers:
 ## Task Summary
 
 - **Total Tasks**: 61
-- **Tasks Completed**: 26
-- **Tasks Remaining**: 35
+- **Tasks Completed**: 34
+- **Tasks Remaining**: 27
 - **Tasks per User Story**:
   - User Story 1 (Services Management): 15 tasks (T010-T022) ✅
-  - User Story 2 (Configuration Editor): 8 tasks (T023-T029) ⬜
+  - User Story 2 (Configuration Editor): 8 tasks (T023-T029) ✅
   - User Story 3 (Analytics Dashboard): 6 tasks (T030-T035) ⬜
   - User Story 4 (Calculations Viewer): 10 tasks (T036-T044) ⬜
 - **Setup Tasks**: 5 (T001-T005) ✅
@@ -296,7 +296,7 @@ With multiple developers:
 Each user story must meet its independent test criteria:
 
 - **User Story 1**: Admin can view, add, edit, activate/deactivate services independently (SC-001, SC-005, SC-006) ✅
-- **User Story 2**: Admin can modify configuration with validation and optimistic locking (SC-002, SC-009) ⬜
+- **User Story 2**: Admin can modify configuration with validation and optimistic locking (SC-002, SC-009) ✅
 - **User Story 3**: Admin can view analytics with date filtering (SC-003, SC-010) ⬜
 - **User Story 4**: Admin can view calculations with details and user data (SC-004, SC-007, SC-008) ⬜
 Cross-cutting success criteria validated in Polish phase:

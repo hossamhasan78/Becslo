@@ -154,6 +154,28 @@ export function GeographyStep() {
                   </div>
                 )}
               </div>
+              {searchClient && (
+                <div className="absolute top-full left-0 right-0 mt-2 max-h-60 overflow-y-auto bg-white border border-zinc-100 rounded-2xl shadow-xl z-10 animate-in fade-in zoom-in-95 duration-200">
+                  {filteredClient.length > 0 ? (
+                    filteredClient.map(c => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault()
+                          handleSelectClient(c)
+                        }}
+                        className="w-full flex items-center justify-between px-6 py-3 hover:bg-zinc-50 transition-colors border-b border-zinc-50 last:border-0 text-left"
+                      >
+                        <span className="font-medium text-zinc-800">{c.name}</span>
+                        <span className="text-xs font-bold text-zinc-400">×{c.multiplier.toFixed(2)}</span>
+                      </button>
+                    ))
+                  ) : (
+                    <div className="px-6 py-4 text-sm text-zinc-400 italic text-center">No countries found</div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
