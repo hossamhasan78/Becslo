@@ -247,40 +247,42 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  const contextValue = useMemo(() => ({
+    state,
+    result,
+    isLoading,
+    error,
+    categories,
+    allServices,
+    allCountries,
+    allCosts,
+    config,
+    updateState,
+    setCurrentStep,
+    goToNextStep,
+    goToPreviousStep,
+    resetWizard,
+    validateCurrentStep,
+    loadPricingData,
+    setPricingModel,
+    setExperienceDesigner,
+    setExperienceFreelance,
+    setDesignerCountryId,
+    setClientCountryId,
+    setDesignerCountryCode,
+    setClientCountryCode,
+    toggleCost,
+    setRiskBuffer,
+    setProfitMargin,
+    addService,
+    removeService,
+    updateServiceHours,
+    calculateAndSave
+  }), [state, result, isLoading, error, categories, allServices, allCountries, allCosts, config, updateState, setCurrentStep, goToNextStep, goToPreviousStep, resetWizard, validateCurrentStep, loadPricingData, setPricingModel, setExperienceDesigner, setExperienceFreelance, setDesignerCountryId, setClientCountryId, setDesignerCountryCode, setClientCountryCode, toggleCost, setRiskBuffer, setProfitMargin, addService, removeService, updateServiceHours, calculateAndSave])
+
   return (
     <WizardContext.Provider
-      value={{
-        state,
-        result,
-        isLoading,
-        error,
-        categories,
-        allServices,
-        allCountries,
-        allCosts,
-        config,
-        updateState,
-        setCurrentStep,
-        goToNextStep,
-        goToPreviousStep,
-        resetWizard,
-        validateCurrentStep,
-        loadPricingData,
-        setPricingModel,
-        setExperienceDesigner,
-        setExperienceFreelance,
-        setDesignerCountryId,
-        setClientCountryId,
-        setDesignerCountryCode,
-        setClientCountryCode,
-        toggleCost,
-        setRiskBuffer,
-        setProfitMargin,
-        addService,
-        removeService,
-        updateServiceHours,
-        calculateAndSave
-      }}
+      value={contextValue}
     >
       {children}
     </WizardContext.Provider>

@@ -95,8 +95,8 @@
 
 ### Implementation for User Story 4
 
-- [ ] T017 [US4] Implement `React.memo` for service category accordions in `frontend/src/components/Wizard/ServiceSelection.tsx`
-- [ ] T018 [US4] Optimize state update logic to ensure <100ms calculation re-renders in `frontend/src/context/WizardContext.tsx`
+- [X] T017 [US4] Implement `React.memo` for service category accordions in `frontend/src/components/Wizard/ServiceSelection.tsx`
+- [X] T018 [US4] Optimize state update logic to ensure <100ms calculation re-renders in `frontend/src/context/WizardContext.tsx`
 
 ---
 
