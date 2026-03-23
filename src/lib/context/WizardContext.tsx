@@ -159,7 +159,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
       highestCompletedStep: Math.max(prev.highestCompletedStep, prev.currentStep),
       currentStep: Math.min(prev.currentStep + 1, 7)
     }))
-  }, [state, setState, validateCurrentStep])
+  }, [setState, validateCurrentStep])
 
   const goToPreviousStep = useCallback(() => {
     setState(prev => ({
