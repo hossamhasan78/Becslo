@@ -7,7 +7,7 @@
 
 ## Summary
 
-Polish and enhance the Becslo application's core user experience, focusing on the 7-step wizard and PDF export functionality. This phase implements visual progress indicators, smooth transitions, robust real-time validation, and Local Storage persistence for session recovery. Technical improvements include client-side UUID generation for instant PDF availability and performance optimizations to ensure <100ms calculation updates.
+[Extract from feature spec: primary requirement + technical approach from research]
 
 ## Technical Context
 
@@ -17,68 +17,82 @@ Polish and enhance the Becslo application's core user experience, focusing on th
   the iteration process.
 -->
 
-**Language/Version**: TypeScript / NextJS 14.x (App Router)
-**Primary Dependencies**: Tailwind CSS, Supabase (Auth/PostgreSQL), `uuid` (NEEDS CLARIFICATION), Framer Motion (NEEDS CLARIFICATION), Lucide React
-**Storage**: Browser Local Storage, Supabase PostgreSQL
-**Testing**: Playwright (E2E), Vitest (Unit)
-**Target Platform**: Web / Mobile Responsive (Vercel)
-**Project Type**: Web application (NextJS Monolith)
-**Performance Goals**: <100ms real-time preview updates, 60fps UI transitions
-**Constraints**: USD currency only, nearest dollar precision, 3/4 + 1/4 layout, manual hours input only
-**Scale/Scope**: End-user wizard and PDF export (Admin Dashboard out of scope)
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-| Gate | Status | Rationale |
-|------|--------|-----------|
-| I. Authentication-First | ✅ PASS | Feature assumes functional email/password auth from Phase 0. |
-| II. Data Privacy & Analytics | ✅ PASS | No personal save implemented; calculations stored for admin analytics. |
-| III. Monolithic Architecture | ✅ PASS | Implemented as NextJS 14.x monolith with Supabase. |
-| IV. Admin-Configured Pricing | ✅ PASS | Pricing logic remains configurable via admin DB (Phase 5). |
-| V. MVP Incremental Dev | ✅ PASS | Phase 6 follows strict implementation order (after PDF/Admin). |
-| Tech: USD Only | ✅ PASS | Success criteria explicitly enforce USD/nearest dollar. |
-| UI: 3/4 + 1/4 Layout | ✅ PASS | Polish maintains constitution-mandated wizard layout. |
+[Gates determined based on constitution file]
 
 ## Project Structure
 
 ### Documentation (this feature)
 
 ```text
-specs/012-polish-and-enhancements/
-├── plan.md              # Implementation strategy
-├── research.md          # UUID & persistence strategy
-├── data-model.md        # Client-side entities
-├── quickstart.md        # Component snippets
-├── contracts/           
-│   └── uuid_integration.md # API update definitions
-└── tasks.md             # Implementation tasks
+specs/[###-feature]/
+├── plan.md              # This file (/speckit.plan command output)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── contracts/           # Phase 1 output (/speckit.plan command)
+└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
 ```
 
 ### Source Code (repository root)
+<!--
+  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
+  for this feature. Delete unused options and expand the chosen structure with
+  real paths (e.g., apps/admin, packages/something). The delivered plan must
+  not include Option labels.
+-->
 
 ```text
+# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+src/
+├── models/
+├── services/
+├── cli/
+└── lib/
+
+tests/
+├── contract/
+├── integration/
+└── unit/
+
+# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
+backend/
+├── src/
+│   ├── models/
+│   ├── services/
+│   └── api/
+└── tests/
+
 frontend/
 ├── src/
 │   ├── components/
-│   │   ├── Wizard/
-│   │   │   ├── WizardStepWrapper.tsx   # Animates transitions
-│   │   │   ├── ProgressBar.tsx        # Responsive progress visual
-│   │   │   └── ValidationFeedback.tsx  # Error UI components
-│   ├── hooks/
-│   │   └── useWizardPersistence.ts     # LocalStorage state management
-│   ├── utils/
-│   │   ├── uuid.ts                     # Native randomUUID wrapper
-│   │   └── validation.ts               # Input limits
-│   └── types/
-│       └── wizard.ts                   # WizardState interface
+│   ├── pages/
+│   └── services/
 └── tests/
-    └── e2e/
-        └── wizard-polish.spec.ts       # Playwright E2E tests
+
+# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
+api/
+└── [same as backend above]
+
+ios/ or android/
+└── [platform-specific structure: feature modules, UI flows, platform tests]
 ```
 
-**Structure Decision**: Web application monolith project structure (frontend focused). All new logic is contained within the standard NextJS `/frontend` workspace using React hooks and utility functions.
+**Structure Decision**: [Document the selected structure and reference the real
+directories captured above]
 
 ## Complexity Tracking
 
