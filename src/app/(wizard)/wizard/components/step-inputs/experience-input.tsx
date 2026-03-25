@@ -1,20 +1,27 @@
 'use client'
 
 import { useWizard } from '@/lib/context/WizardContext'
+import { validatePositiveNumber } from '@/lib/utils/validation'
 
 export function ExperienceInput() {
   const { state, setExperienceDesigner, setExperienceFreelance, validateCurrentStep } = useWizard()
 
   const validation = validateCurrentStep()
   const overallError = validation.errors.find(e => e.field === 'experienceDesigner')?.message
-  const freelanceError = validation.errors.find(e => e.field === 'experienceFreelance')?.message
+  const freelanceError = validation.errors.find(e => e.field === 'freelanceExperience')?.message
 
   const handleOverallChange = (value: number) => {
-    setExperienceDesigner(value)
+    const validation = validatePositiveNumber(value)
+    if (validation.valid && validation.value !== null) {
+      setExperienceDesigner(Math.min(10, Math.max(1, validation.value)))
+    }
   }
 
   const handleFreelanceChange = (value: number) => {
-    setExperienceFreelance(value)
+    const validation = validatePositiveNumber(value)
+    if (validation.valid && validation.value !== null) {
+      setExperienceFreelance(Math.min(state.experienceDesigner, Math.max(1, validation.value)))
+    }
   }
 
   return (

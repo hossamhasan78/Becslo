@@ -46,10 +46,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Wrap wizard steps in `WizardStepWrapper` in `frontend/src/components/Wizard/WizardMain.tsx`
-- [ ] T009 [US1] Implement `ProgressBar` component in `frontend/src/components/Wizard/ProgressBar.tsx`
-- [ ] T010 [US1] Integrate `ProgressBar` into the main wizard layout in `frontend/src/components/Wizard/WizardMain.tsx`
-- [ ] T024 [US1] Implement keyboard shortcuts (Enter/Esc) for wizard navigation in `frontend/src/components/Wizard/WizardMain.tsx`
+- [X] T008 [US1] Wrap wizard steps in `WizardStepWrapper` in `frontend/src/components/Wizard/WizardMain.tsx`
+- [X] T009 [US1] Implement `ProgressBar` component in `frontend/src/components/Wizard/ProgressBar.tsx`
+- [X] T010 [US1] Integrate `ProgressBar` into the main wizard layout in `frontend/src/components/Wizard/WizardMain.tsx`
+- [X] T024 [US1] Implement keyboard shortcuts (Enter/Esc) for wizard navigation in `frontend/src/components/Wizard/WizardMain.tsx`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently.
 
@@ -63,9 +63,9 @@
 
 ### Implementation for User Story 2
 
-- [ ] T011 [US2] Apply real-time logic to numeric inputs using `validatePositiveNumber` in `frontend/src/components/Wizard/StepInputs.tsx`
-- [ ] T012 [US2] Implement `Retry` UI and global loading states for Supabase API requests in `frontend/src/components/Common/AsyncStatus.tsx`
-- [ ] T013 [US2] Integrate `AsyncStatus` (loading/retry) into calculation flow in `frontend/src/components/Wizard/WizardMain.tsx`
+- [X] T011 [US2] Apply real-time logic to numeric inputs using `validatePositiveNumber` in `frontend/src/components/Wizard/StepInputs.tsx`
+- [X] T012 [US2] Implement `Retry` UI and global loading states for Supabase API requests in `frontend/src/components/Common/AsyncStatus.tsx`
+- [X] T013 [US2] Integrate `AsyncStatus` (loading/retry) into calculation flow in `frontend/src/components/Wizard/WizardMain.tsx`
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently.
 
@@ -79,9 +79,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T014 [US3] Update wizard layout CSS to stack panels vertically on mobile in `frontend/src/styles/wizard.css`
-- [ ] T015 [US3] [P] Add ARIA labels to all interactive elements in `frontend/src/components/Wizard/` components
-- [ ] T016 [US3] [P] Ensure focus indicators (outline) are visible for keyboard navigation in `frontend/src/styles/globals.css`
+- [X] T014 [US3] Update wizard layout CSS to stack panels vertically on mobile in `frontend/src/styles/wizard.css`
+- [X] T015 [US3] [P] Add ARIA labels to all interactive elements in `frontend/src/components/Wizard/` components
+- [X] T016 [US3] [P] Ensure focus indicators (outline) are visible for keyboard navigation in `frontend/src/styles/globals.css`
 
 **Checkpoint**: All user stories should now be independently functional.
 
@@ -95,8 +95,8 @@
 
 ### Implementation for User Story 4
 
-- [ ] T017 [US4] Implement `React.memo` for service category accordions in `frontend/src/components/Wizard/ServiceSelection.tsx`
-- [ ] T018 [US4] Optimize state update logic to ensure <100ms calculation re-renders in `frontend/src/context/WizardContext.tsx`
+- [X] T017 [US4] Implement `React.memo` for service category accordions in `frontend/src/components/Wizard/ServiceSelection.tsx`
+- [X] T018 [US4] Optimize state update logic to ensure <100ms calculation re-renders in `frontend/src/context/WizardContext.tsx`
 
 ---
 
@@ -108,8 +108,8 @@
 
 ### Implementation for User Story 5
 
-- [ ] T019 [US5] Update `React-PDF` component to include footer with UUID and date in `frontend/src/components/PDF/QuoteDocument.tsx`
-- [ ] T020 [US5] [P] Pass `calculation_id` from wizard state to the PDF export payload in `frontend/src/api/export-pdf.ts`
+- [X] T019 [US5] Update `React-PDF` component to include footer with UUID and date in `frontend/src/components/PDF/QuoteDocument.tsx`
+- [X] T020 [US5] [P] Pass `calculation_id` from wizard state to the PDF export payload in `frontend/src/api/export-pdf.ts`
 
 ---
 
@@ -117,9 +117,9 @@
 
 **Purpose**: Final cleanup and validation
 
-- [ ] T021 [P] Update feature documentation in `docs/PO-ENHANCEMENT_NOTES.md`
-- [ ] T022 Code cleanup and removal of any console logs or dev stubs
-- [ ] T023 Run `quickstart.md` validation on the completed feature
+- [X] T021 [P] Update feature documentation in `docs/PO-ENHANCEMENT_NOTES.md`
+- [X] T022 Code cleanup and removal of any console logs or dev stubs
+- [X] T023 Run `quickstart.md` validation on the completed feature
 
 ---
 

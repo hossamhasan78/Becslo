@@ -12,7 +12,8 @@ export function ReviewStep() {
     try {
       await calculateAndSave()
       setSaveMessage('Success! Your calculation has been persisted.')
-    } catch (error) {
+    } catch (err) {
+      const error = err as Error
       setSaveMessage(error.message || 'Save failed. Please try again.')
     }
   }
@@ -33,11 +34,10 @@ export function ReviewStep() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col gap-1">
         <h3 className="text-2xl font-bold text-zinc-900">Project Review</h3>
-        <p className="text-sm text-zinc-500">Everything looks solid. Review the final details below.</p>
+        <p className="text-sm text-zinc-500">Everything looks solid. Review final details below.</p>
       </div>
 
       <div className="bg-zinc-50 rounded-3xl border border-zinc-100 overflow-hidden shadow-inner p-8 space-y-8">
-        {/* Services Summary */}
         <div className="space-y-4">
           <label className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Selected Services</label>
           <div className="space-y-2">
@@ -50,7 +50,6 @@ export function ReviewStep() {
           </div>
         </div>
 
-        {/* Multipliers Summary */}
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 bg-white border border-zinc-100 rounded-2xl shadow-sm">
             <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest block mb-1">Experience</span>
@@ -62,7 +61,6 @@ export function ReviewStep() {
           </div>
         </div>
 
-        {/* Final Price Block */}
         <div className="pt-6 border-t border-zinc-200">
           <div className="flex justify-between items-end mb-4">
             <label className="text-sm font-black text-zinc-400 uppercase tracking-widest">Total Valuation</label>
@@ -94,10 +92,22 @@ export function ReviewStep() {
         </button>
 
         <button
-          disabled
-          className="w-full py-4 bg-white border-2 border-zinc-100 text-zinc-300 rounded-2xl font-bold cursor-not-allowed flex items-center justify-center gap-2"
+          disabled={!state.isSaved}
+          className={`
+            w-full py-4 bg-white border-2 border-zinc-100 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all
+            ${state.isSaved ? 'border-blue-200 text-blue-600 hover:bg-blue-50' : 'text-zinc-300 cursor-not-allowed'}
+          `}
         >
-          <span>Download PDF (Coming Soon)</span>
+          {state.isSaved ? (
+            <>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Download PDF
+            </>
+          ) : (
+            <span>Download PDF (Save first)</span>
+          )}
         </button>
 
         {state.isSaved && (

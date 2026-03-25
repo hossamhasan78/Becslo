@@ -1,6 +1,7 @@
 'use client'
 
 import { useWizard } from '@/lib/context/WizardContext'
+import { validatePositiveNumber } from '@/lib/utils/validation'
 
 export function RiskProfitInput() {
   const { state, setRiskBuffer, setProfitMargin, validateCurrentStep } = useWizard()
@@ -10,11 +11,17 @@ export function RiskProfitInput() {
   const profitError = validation.errors.find(e => e.field === 'profitMargin')?.message
 
   const handleRiskChange = (value: number) => {
-    setRiskBuffer(Math.max(0, Math.min(50, value)))
+    const validation = validatePositiveNumber(value)
+    if (validation.valid && validation.value !== null) {
+      setRiskBuffer(Math.max(0, Math.min(50, validation.value)))
+    }
   }
 
   const handleProfitChange = (value: number) => {
-    setProfitMargin(Math.max(10, Math.min(50, value)))
+    const validation = validatePositiveNumber(value)
+    if (validation.valid && validation.value !== null) {
+      setProfitMargin(Math.max(10, Math.min(50, validation.value)))
+    }
   }
 
   return (

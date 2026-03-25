@@ -1,16 +1,18 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { useWizard } from '@/lib/context/WizardContext'
 import { WizardLayout } from '@/components/wizard/WizardLayout'
 import { StepNavigation } from '@/components/wizard/StepNavigation'
+import { WizardStepWrapper } from '@/components/wizard/WizardStepWrapper'
+import { ProgressBar } from '@/components/wizard/ProgressBar'
+import { AsyncStatus } from '@/components/wizard/AsyncStatus'
 import LivePreview from '@/components/wizard/LivePreview'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import WizardLogoutButton from '@/components/wizard/WizardLogoutButton'
 
 // Import new step components
-import { PricingModelStep } from '@/components/wizard/steps/PricingModelStep'
 import { ServiceSelectionStep } from '@/components/wizard/steps/ServiceSelectionStep'
 import { ExperienceStep } from '@/components/wizard/steps/ExperienceStep'
 import { GeographyStep } from '@/components/wizard/steps/GeographyStep'
@@ -32,6 +34,30 @@ export default function WizardPage() {
 
   const [isDownloading, setIsDownloading] = useState(false)
   const [downloadError, setDownloadError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return
+      }
+
+      if (e.key === 'Enter' && state.currentStep < 6) {
+        const validation = validateCurrentStep()
+        if (validation.isValid) {
+          goToNextStep()
+        }
+      }
+
+      if (e.key === 'Escape') {
+        if (state.currentStep > 1) {
+          goToPreviousStep()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [state.currentStep, validateCurrentStep, goToNextStep, goToPreviousStep])
 
   const handleDownloadPDF = async () => {
     try {
@@ -111,14 +137,13 @@ export default function WizardPage() {
 
   const renderStep = () => {
     switch (state.currentStep) {
-      case 1: return <PricingModelStep />
-      case 2: return <ServiceSelectionStep />
-      case 3: return <ExperienceStep />
-      case 4: return <GeographyStep />
-      case 5: return <CostsStep />
-      case 6: return <RiskProfitStep />
-      case 7: return <ReviewStep />
-      default: return <PricingModelStep />
+      case 1: return <ServiceSelectionStep />
+      case 2: return <ExperienceStep />
+      case 3: return <GeographyStep />
+      case 4: return <CostsStep />
+      case 5: return <RiskProfitStep />
+      case 6: return <ReviewStep />
+      default: return <ServiceSelectionStep />
     }
   }
 
@@ -127,38 +152,48 @@ export default function WizardPage() {
 
   return (
     <ErrorBoundary>
+      <a href="#wizard-content" className="skip-link">
+        Skip to main content
+      </a>
       <WizardLayout
         leftPanel={
-          <div className="space-y-6 max-w-2xl mx-auto">
+          <div id="wizard-content" className="space-y-6 max-w-2xl mx-auto">
             <div className="flex justify-between items-center">
               <StepNavigation />
               <WizardLogoutButton />
             </div>
 
             <div className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-10 shadow-sm min-h-[500px] flex flex-col">
-              <div key={state.currentStep} className="flex-1 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                {renderStep()}
-              </div>
+              <ProgressBar currentStep={state.currentStep} />
+              
+              <WizardStepWrapper stepKey={state.currentStep}>
+                <div className="flex-1">
+                  {renderStep()}
+                </div>
+              </WizardStepWrapper>
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between items-center mt-10 pt-8 border-t border-zinc-100">
-                <button
-                  onClick={goToPreviousStep}
-                  disabled={state.currentStep <= 1}
-                  className="px-8 py-3 font-bold text-zinc-500 hover:text-zinc-900 disabled:opacity-20 disabled:cursor-not-allowed transition-all flex items-center gap-2 group"
-                >
-                  <span className="group-hover:-translate-x-1 transition-transform">←</span>
-                  Back
-                </button>
+              <div className="flex items-center mt-10 pt-8 border-t border-zinc-100 gap-4">
+                {state.currentStep > 1 && (
+                  <button
+                    onClick={goToPreviousStep}
+                    className="px-8 py-3 font-bold text-zinc-500 hover:text-zinc-900 transition-all flex items-center gap-2 group"
+                  >
+                    <span className="group-hover:-translate-x-1 transition-transform">←</span>
+                    Back
+                  </button>
+                )}
                 
-                {state.currentStep < 7 && (
+                <div className="flex-1" />
+
+                {state.currentStep < 6 && (
                   <button
                     onClick={goToNextStep}
                     disabled={!canProceed}
                     className={`
                       px-10 py-3 rounded-full font-black text-white transition-all shadow-lg active:scale-95 flex items-center gap-2 group
-                      ${canProceed 
-                        ? 'bg-zinc-900 hover:bg-black hover:shadow-xl' 
+                      ${canProceed
+                        ? 'bg-zinc-900 hover:bg-black hover:shadow-xl'
                         : 'bg-zinc-200 cursor-not-allowed text-zinc-400 shadow-none'}
                     `}
                   >
@@ -167,14 +202,14 @@ export default function WizardPage() {
                   </button>
                 )}
 
-                {state.currentStep === 7 && (
+                {state.currentStep === 6 && (
                   <button
                     onClick={handleDownloadPDF}
                     disabled={isDownloading || !canProceed}
                     className={`
                       px-10 py-3 rounded-full font-black text-white transition-all shadow-lg active:scale-95 flex items-center gap-2 group
                       ${(canProceed && !isDownloading)
-                        ? 'bg-blue-600 hover:bg-blue-700 hover:shadow-xl' 
+                        ? 'bg-blue-600 hover:bg-blue-700 hover:shadow-xl'
                         : 'bg-zinc-200 cursor-not-allowed text-zinc-400 shadow-none'}
                     `}
                   >

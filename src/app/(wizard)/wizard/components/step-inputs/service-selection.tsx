@@ -1,7 +1,8 @@
 'use client'
 
 import { useWizard } from '@/lib/context/WizardContext'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { validatePositiveNumber } from '@/lib/utils/validation'
 
 interface ServiceData {
   id: number
@@ -17,29 +18,30 @@ export function ServiceSelection() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      setIsLoading(true)
-      setError(null)
-      try {
-        const response = await fetch('/api/v1/services')
+  const fetchServices = useCallback(async () => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await fetch('/api/v1/services')
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch services: ${response.statusText}`)
-        }
-
-        const data = await response.json()
-        setServices(Array.isArray(data) ? data : [])
-      } catch (error) {
-        console.error('Failed to fetch services:', error)
-        setError('Unable to load services. Please try again.')
-        setServices([])
-      } finally {
-        setIsLoading(false)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch services: ${response.statusText}`)
       }
+
+      const data = await response.json()
+      setServices(Array.isArray(data) ? data : [])
+    } catch (err) {
+      console.error('Failed to fetch services:', err)
+      setError('Unable to load services. Please try again.')
+      setServices([])
+    } finally {
+      setIsLoading(false)
     }
-    fetchServices()
   }, [])
+
+  useEffect(() => {
+    fetchServices()
+  }, [fetchServices])
 
   // Removal of legacy sync useEffect
 
@@ -58,7 +60,10 @@ export function ServiceSelection() {
   }
 
   const handleHoursChange = (serviceId: number, hours: number) => {
-    updateServiceHours(serviceId, hours)
+    const validation = validatePositiveNumber(hours)
+    if (validation.valid && validation.value !== null) {
+      updateServiceHours(serviceId, validation.value)
+    }
   }
 
   const validation = validateCurrentStep()
@@ -77,7 +82,7 @@ export function ServiceSelection() {
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
           <p className="text-red-600">{error}</p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={fetchServices}
             className="mt-2 text-sm text-red-600 underline"
           >
             Retry

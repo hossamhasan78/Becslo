@@ -19,6 +19,7 @@ describe('Pricing Engine', () => {
 
   it('should calculate base price correctly for a single service', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -37,6 +38,7 @@ describe('Pricing Engine', () => {
 
   it('should apply experience multiplier correctly', () => {
     const input1 = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -48,6 +50,7 @@ describe('Pricing Engine', () => {
     }
 
     const input2 = {
+      pricingModel: 'project',
       ...input1,
       designerExperience: 10,
       freelanceExperience: 10,
@@ -63,6 +66,7 @@ describe('Pricing Engine', () => {
 
   it('should apply geography multiplier correctly', () => {
     const input1 = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -74,6 +78,7 @@ describe('Pricing Engine', () => {
     }
 
     const input2 = {
+      pricingModel: 'project',
       ...input1,
       designerCountryCode: 'UK',
       clientCountryCode: 'UK',
@@ -89,6 +94,7 @@ describe('Pricing Engine', () => {
 
   it('should calculate overhead costs correctly', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -107,6 +113,7 @@ describe('Pricing Engine', () => {
 
   it('should calculate risk buffer correctly', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -125,6 +132,7 @@ describe('Pricing Engine', () => {
 
   it('should calculate profit margin correctly', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -143,6 +151,7 @@ describe('Pricing Engine', () => {
 
   it('should calculate recommended range correctly', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -161,6 +170,7 @@ describe('Pricing Engine', () => {
 
   it('should handle multiple services', () => {
     const input = {
+      pricingModel: 'project',
       services: [
         { serviceId: '1', hours: 10 },
         { serviceId: '2', hours: 5 },
@@ -182,6 +192,7 @@ describe('Pricing Engine', () => {
 
   it('should include service breakdown', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -203,6 +214,7 @@ describe('Pricing Engine', () => {
 
   it('should handle zero hours', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 0 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -217,5 +229,205 @@ describe('Pricing Engine', () => {
 
     expect(result.baseCost).toBe(0)
     expect(result.finalPrice).toBe(0)
+  })
+
+  it('should handle maximum hours', () => {
+    const input = {
+      pricingModel: 'project',
+      services: [{ serviceId: '1', hours: 1000 }],
+      designerExperience: 10,
+      freelanceExperience: 10,
+      designerCountryCode: 'UK',
+      clientCountryCode: 'UK',
+      selectedCosts: ['1'],
+      riskBufferPercent: 50,
+      profitMarginPercent: 50,
+    }
+
+    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+
+    expect(result.baseCost).toBeGreaterThan(0)
+    expect(result.finalPrice).toBeGreaterThan(result.baseCost)
+    expect(result.riskBufferAmount).toBeGreaterThan(0)
+    expect(result.profitMarginAmount).toBeGreaterThan(0)
+  })
+
+  it('should handle very large experience values', () => {
+    const input = {
+      pricingModel: 'project',
+      services: [{ serviceId: '1', hours: 10 }],
+      designerExperience: 10,
+      freelanceExperience: 10,
+      designerCountryCode: 'US',
+      clientCountryCode: 'US',
+      selectedCosts: [],
+      riskBufferPercent: 0,
+      profitMarginPercent: 0,
+    }
+
+    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+
+    expect(result.experienceMultiplier).toBe(100)
+    expect(result.baseCost).toBe(50000)
+  })
+
+  it('should handle minimum experience values', () => {
+    const input = {
+      pricingModel: 'project',
+      services: [{ serviceId: '1', hours: 10 }],
+      designerExperience: 1,
+      freelanceExperience: 1,
+      designerCountryCode: 'US',
+      clientCountryCode: 'US',
+      selectedCosts: [],
+      riskBufferPercent: 0,
+      profitMarginPercent: 0,
+    }
+
+    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+
+    expect(result.experienceMultiplier).toBe(1)
+    expect(result.baseCost).toBe(500)
+  })
+
+  it('should handle empty services array', () => {
+    const input = {
+      pricingModel: 'project',
+      services: [],
+      designerExperience: 5,
+      freelanceExperience: 5,
+      designerCountryCode: 'US',
+      clientCountryCode: 'US',
+      selectedCosts: [],
+      riskBufferPercent: 0,
+      profitMarginPercent: 0,
+    }
+
+    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+
+    expect(result.baseCost).toBe(0)
+    expect(result.finalPrice).toBe(0)
+    expect(result.breakdown).toHaveLength(0)
+  })
+
+  it('should handle multiple selected costs', () => {
+    const input = {
+      pricingModel: 'project',
+      services: [{ serviceId: '1', hours: 10 }],
+      designerExperience: 5,
+      freelanceExperience: 5,
+      designerCountryCode: 'US',
+      clientCountryCode: 'US',
+      selectedCosts: ['1', '2'],
+      riskBufferPercent: 0,
+      profitMarginPercent: 0,
+    }
+
+    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+
+    expect(result.overheadCosts).toBe(150)
+    expect(result.subtotal).toBe(12650)
+  })
+
+  it('should handle maximum risk buffer percentage', () => {
+    const input = {
+      pricingModel: 'project',
+      services: [{ serviceId: '1', hours: 10 }],
+      designerExperience: 5,
+      freelanceExperience: 5,
+      designerCountryCode: 'US',
+      clientCountryCode: 'US',
+      selectedCosts: [],
+      riskBufferPercent: 50,
+      profitMarginPercent: 0,
+    }
+
+    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+
+    expect(result.riskBufferAmount).toBe(6250)
+    expect(result.finalPrice).toBe(18750)
+  })
+
+  it('should handle maximum profit margin percentage', () => {
+    const input = {
+      pricingModel: 'project',
+      services: [{ serviceId: '1', hours: 10 }],
+      designerExperience: 5,
+      freelanceExperience: 5,
+      designerCountryCode: 'US',
+      clientCountryCode: 'US',
+      selectedCosts: [],
+      riskBufferPercent: 0,
+      profitMarginPercent: 50,
+    }
+
+    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+
+    expect(result.profitMarginAmount).toBe(6250)
+    expect(result.finalPrice).toBe(18750)
+  })
+
+  it('should handle both maximum risk and profit percentages', () => {
+    const input = {
+      pricingModel: 'project',
+      services: [{ serviceId: '1', hours: 10 }],
+      designerExperience: 5,
+      freelanceExperience: 5,
+      designerCountryCode: 'US',
+      clientCountryCode: 'US',
+      selectedCosts: [],
+      riskBufferPercent: 50,
+      profitMarginPercent: 50,
+    }
+
+    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+
+    expect(result.riskBufferAmount).toBe(6250)
+    expect(result.profitMarginAmount).toBe(9375)
+    expect(result.finalPrice).toBe(28125)
+  })
+
+  it('should calculate recommended range correctly for high prices', () => {
+    const input = {
+      pricingModel: 'project',
+      services: [{ serviceId: '1', hours: 100 }],
+      designerExperience: 10,
+      freelanceExperience: 10,
+      designerCountryCode: 'UK',
+      clientCountryCode: 'UK',
+      selectedCosts: ['1'],
+      riskBufferPercent: 25,
+      profitMarginPercent: 25,
+    }
+
+    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+
+    expect(result.recommendedMin).toBeLessThan(result.finalPrice)
+    expect(result.recommendedMax).toBeGreaterThan(result.finalPrice)
+    const rangeDiff = result.recommendedMax - result.recommendedMin
+    expect(rangeDiff).toBe(Math.round(result.finalPrice * 0.4))
+  })
+
+  it('should handle mixed service types with different base rates', () => {
+    const input = {
+      pricingModel: 'project',
+      pricingModel: 'hourly',
+      services: [
+        { serviceId: '1', hours: 10 },
+        { serviceId: '2', hours: 5 },
+      ],
+      designerExperience: 5,
+      freelanceExperience: 5,
+      designerCountryCode: 'US',
+      clientCountryCode: 'US',
+      selectedCosts: [],
+      riskBufferPercent: 0,
+      profitMarginPercent: 0,
+    }
+
+    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+
+    expect(result.baseCost).toBe(21875)
+    expect(result.breakdown).toHaveLength(2)
   })
 })

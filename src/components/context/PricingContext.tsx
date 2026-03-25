@@ -23,16 +23,17 @@ interface PricingContextType {
   isLoading: boolean
 }
 
-const defaultPricing: PricingInput = {
-  services: [],
-  designerExperience: 5,
-  freelanceExperience: 5,
-  designerCountryCode: '',
-  clientCountryCode: '',
-  selectedCosts: [],
-  riskBufferPercent: 15,
-  profitMarginPercent: 20
-}
+  const defaultPricing: PricingInput = {
+    pricingModel: 'hourly',
+    services: [],
+    designerExperience: 5,
+    freelanceExperience: 5,
+    designerCountryCode: '',
+    clientCountryCode: '',
+    selectedCosts: [],
+    riskBufferPercent: 15,
+    profitMarginPercent: 20
+  }
 
 const PricingContext = createContext<PricingContextType>({
   pricing: defaultPricing,
