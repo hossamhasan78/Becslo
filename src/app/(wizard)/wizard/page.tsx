@@ -13,7 +13,6 @@ import { ErrorBoundary } from '@/components/ErrorBoundary'
 import WizardLogoutButton from '@/components/wizard/WizardLogoutButton'
 
 // Import new step components
-import { PricingModelStep } from '@/components/wizard/steps/PricingModelStep'
 import { ServiceSelectionStep } from '@/components/wizard/steps/ServiceSelectionStep'
 import { ExperienceStep } from '@/components/wizard/steps/ExperienceStep'
 import { GeographyStep } from '@/components/wizard/steps/GeographyStep'
@@ -42,7 +41,7 @@ export default function WizardPage() {
         return
       }
 
-      if (e.key === 'Enter' && state.currentStep < 7) {
+      if (e.key === 'Enter' && state.currentStep < 6) {
         const validation = validateCurrentStep()
         if (validation.isValid) {
           goToNextStep()
@@ -138,14 +137,13 @@ export default function WizardPage() {
 
   const renderStep = () => {
     switch (state.currentStep) {
-      case 1: return <PricingModelStep />
-      case 2: return <ServiceSelectionStep />
-      case 3: return <ExperienceStep />
-      case 4: return <GeographyStep />
-      case 5: return <CostsStep />
-      case 6: return <RiskProfitStep />
-      case 7: return <ReviewStep />
-      default: return <PricingModelStep />
+      case 1: return <ServiceSelectionStep />
+      case 2: return <ExperienceStep />
+      case 3: return <GeographyStep />
+      case 4: return <CostsStep />
+      case 5: return <RiskProfitStep />
+      case 6: return <ReviewStep />
+      default: return <ServiceSelectionStep />
     }
   }
 
@@ -175,24 +173,27 @@ export default function WizardPage() {
               </WizardStepWrapper>
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between items-center mt-10 pt-8 border-t border-zinc-100">
-                <button
-                  onClick={goToPreviousStep}
-                  disabled={state.currentStep <= 1}
-                  className="px-8 py-3 font-bold text-zinc-500 hover:text-zinc-900 disabled:opacity-20 disabled:cursor-not-allowed transition-all flex items-center gap-2 group"
-                >
-                  <span className="group-hover:-translate-x-1 transition-transform">←</span>
-                  Back
-                </button>
+              <div className="flex items-center mt-10 pt-8 border-t border-zinc-100 gap-4">
+                {state.currentStep > 1 && (
+                  <button
+                    onClick={goToPreviousStep}
+                    className="px-8 py-3 font-bold text-zinc-500 hover:text-zinc-900 transition-all flex items-center gap-2 group"
+                  >
+                    <span className="group-hover:-translate-x-1 transition-transform">←</span>
+                    Back
+                  </button>
+                )}
                 
-                {state.currentStep < 7 && (
+                <div className="flex-1" />
+
+                {state.currentStep < 6 && (
                   <button
                     onClick={goToNextStep}
                     disabled={!canProceed}
                     className={`
                       px-10 py-3 rounded-full font-black text-white transition-all shadow-lg active:scale-95 flex items-center gap-2 group
-                      ${canProceed 
-                        ? 'bg-zinc-900 hover:bg-black hover:shadow-xl' 
+                      ${canProceed
+                        ? 'bg-zinc-900 hover:bg-black hover:shadow-xl'
                         : 'bg-zinc-200 cursor-not-allowed text-zinc-400 shadow-none'}
                     `}
                   >
@@ -201,14 +202,14 @@ export default function WizardPage() {
                   </button>
                 )}
 
-                {state.currentStep === 7 && (
+                {state.currentStep === 6 && (
                   <button
                     onClick={handleDownloadPDF}
                     disabled={isDownloading || !canProceed}
                     className={`
                       px-10 py-3 rounded-full font-black text-white transition-all shadow-lg active:scale-95 flex items-center gap-2 group
                       ${(canProceed && !isDownloading)
-                        ? 'bg-blue-600 hover:bg-blue-700 hover:shadow-xl' 
+                        ? 'bg-blue-600 hover:bg-blue-700 hover:shadow-xl'
                         : 'bg-zinc-200 cursor-not-allowed text-zinc-400 shadow-none'}
                     `}
                   >

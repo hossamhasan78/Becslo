@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useMemo, useCallback, useEffect } from 'react'
-import { WizardState, DEFAULT_WIZARD_STATE, PricingModel, SelectedService } from '@/types/wizard'
+import { WizardState, DEFAULT_WIZARD_STATE, SelectedService } from '@/types/wizard'
 import { useSessionStorage } from '@/lib/hooks/useSessionStorage'
 import { validateStep, StepValidationResult } from '@/lib/validation/step-validators'
 import { calculatePrice } from '@/lib/pricing-engine'
@@ -28,7 +28,6 @@ interface WizardContextValue {
   loadPricingData: () => Promise<void>
   calculateAndSave: () => Promise<void>
   // Helper setters for convenience
-  setPricingModel: (model: PricingModel | null) => void
   setExperienceDesigner: (level: number) => void
   setExperienceFreelance: (level: number) => void
   setDesignerCountryId: (countryId: number | null) => void
@@ -119,7 +118,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     if (state.services.length === 0) return null
 
     const pricingInput: PricingInput = {
-      pricingModel: state.pricingModel || 'hourly',
+      pricingModel: 'project',
       services: state.services.map(s => ({ serviceId: String(s.id), hours: s.hours })),
       designerExperience: state.experienceDesigner,
       freelanceExperience: state.experienceFreelance,
@@ -157,7 +156,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     setState(prev => ({
       ...prev,
       highestCompletedStep: Math.max(prev.highestCompletedStep, prev.currentStep),
-      currentStep: Math.min(prev.currentStep + 1, 7)
+      currentStep: Math.min(prev.currentStep + 1, 6)
     }))
   }, [setState, validateCurrentStep])
 
@@ -180,7 +179,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     
     try {
       const pricingInput: PricingInput = {
-        pricingModel: state.pricingModel || 'hourly',
+        pricingModel: 'project',
         services: state.services.map(s => ({ serviceId: String(s.id), hours: s.hours })),
         designerExperience: state.experienceDesigner,
         freelanceExperience: state.experienceFreelance,
@@ -221,7 +220,6 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   }, [state, updateState])
 
   // Convenience setters
-  const setPricingModel = (model: PricingModel | null) => updateState({ pricingModel: model })
   const setExperienceDesigner = (level: number) => updateState({ experienceDesigner: level })
   const setExperienceFreelance = (level: number) => updateState({ experienceFreelance: level })
   const setDesignerCountryId = (countryId: number | null) => updateState({ designerCountryId: countryId })
@@ -264,7 +262,6 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     resetWizard,
     validateCurrentStep,
     loadPricingData,
-    setPricingModel,
     setExperienceDesigner,
     setExperienceFreelance,
     setDesignerCountryId,
@@ -278,7 +275,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     removeService,
     updateServiceHours,
     calculateAndSave
-  }), [state, result, isLoading, error, categories, allServices, allCountries, allCosts, config, updateState, setCurrentStep, goToNextStep, goToPreviousStep, resetWizard, validateCurrentStep, loadPricingData, setPricingModel, setExperienceDesigner, setExperienceFreelance, setDesignerCountryId, setClientCountryId, setDesignerCountryCode, setClientCountryCode, toggleCost, setRiskBuffer, setProfitMargin, addService, removeService, updateServiceHours, calculateAndSave])
+  }), [state, result, isLoading, error, categories, allServices, allCountries, allCosts, config, updateState, setCurrentStep, goToNextStep, goToPreviousStep, resetWizard, validateCurrentStep, loadPricingData, setExperienceDesigner, setExperienceFreelance, setDesignerCountryId, setClientCountryId, setDesignerCountryCode, setClientCountryCode, toggleCost, setRiskBuffer, setProfitMargin, addService, removeService, updateServiceHours, calculateAndSave])
 
   return (
     <WizardContext.Provider

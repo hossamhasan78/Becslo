@@ -8,7 +8,7 @@ interface ProgressBarProps {
   totalSteps?: number
 }
 
-export function ProgressBar({ currentStep, totalSteps = 7 }: ProgressBarProps) {
+export function ProgressBar({ currentStep, totalSteps = 6 }: ProgressBarProps) {
   const progress = (currentStep / totalSteps) * 100
   
   return (

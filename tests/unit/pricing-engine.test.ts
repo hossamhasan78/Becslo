@@ -19,6 +19,7 @@ describe('Pricing Engine', () => {
 
   it('should calculate base price correctly for a single service', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -37,6 +38,7 @@ describe('Pricing Engine', () => {
 
   it('should apply experience multiplier correctly', () => {
     const input1 = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -48,6 +50,7 @@ describe('Pricing Engine', () => {
     }
 
     const input2 = {
+      pricingModel: 'project',
       ...input1,
       designerExperience: 10,
       freelanceExperience: 10,
@@ -63,6 +66,7 @@ describe('Pricing Engine', () => {
 
   it('should apply geography multiplier correctly', () => {
     const input1 = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -74,6 +78,7 @@ describe('Pricing Engine', () => {
     }
 
     const input2 = {
+      pricingModel: 'project',
       ...input1,
       designerCountryCode: 'UK',
       clientCountryCode: 'UK',
@@ -89,6 +94,7 @@ describe('Pricing Engine', () => {
 
   it('should calculate overhead costs correctly', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -107,6 +113,7 @@ describe('Pricing Engine', () => {
 
   it('should calculate risk buffer correctly', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -125,6 +132,7 @@ describe('Pricing Engine', () => {
 
   it('should calculate profit margin correctly', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -143,6 +151,7 @@ describe('Pricing Engine', () => {
 
   it('should calculate recommended range correctly', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -161,6 +170,7 @@ describe('Pricing Engine', () => {
 
   it('should handle multiple services', () => {
     const input = {
+      pricingModel: 'project',
       services: [
         { serviceId: '1', hours: 10 },
         { serviceId: '2', hours: 5 },
@@ -182,6 +192,7 @@ describe('Pricing Engine', () => {
 
   it('should include service breakdown', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -203,6 +214,7 @@ describe('Pricing Engine', () => {
 
   it('should handle zero hours', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 0 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -221,6 +233,7 @@ describe('Pricing Engine', () => {
 
   it('should handle maximum hours', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 1000 }],
       designerExperience: 10,
       freelanceExperience: 10,
@@ -241,6 +254,7 @@ describe('Pricing Engine', () => {
 
   it('should handle very large experience values', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 10,
       freelanceExperience: 10,
@@ -259,6 +273,7 @@ describe('Pricing Engine', () => {
 
   it('should handle minimum experience values', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 1,
       freelanceExperience: 1,
@@ -277,6 +292,7 @@ describe('Pricing Engine', () => {
 
   it('should handle empty services array', () => {
     const input = {
+      pricingModel: 'project',
       services: [],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -296,6 +312,7 @@ describe('Pricing Engine', () => {
 
   it('should handle multiple selected costs', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -314,6 +331,7 @@ describe('Pricing Engine', () => {
 
   it('should handle maximum risk buffer percentage', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -332,6 +350,7 @@ describe('Pricing Engine', () => {
 
   it('should handle maximum profit margin percentage', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -350,6 +369,7 @@ describe('Pricing Engine', () => {
 
   it('should handle both maximum risk and profit percentages', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 10 }],
       designerExperience: 5,
       freelanceExperience: 5,
@@ -369,6 +389,7 @@ describe('Pricing Engine', () => {
 
   it('should calculate recommended range correctly for high prices', () => {
     const input = {
+      pricingModel: 'project',
       services: [{ serviceId: '1', hours: 100 }],
       designerExperience: 10,
       freelanceExperience: 10,
@@ -389,6 +410,7 @@ describe('Pricing Engine', () => {
 
   it('should handle mixed service types with different base rates', () => {
     const input = {
+      pricingModel: 'project',
       pricingModel: 'hourly',
       services: [
         { serviceId: '1', hours: 10 },

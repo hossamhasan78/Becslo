@@ -7,6 +7,7 @@ export const ServiceInputSchema = z.object({
 });
 
 export const PricingInputSchema = z.object({
+  pricingModel: z.enum(['hourly', 'project']),
   services: z.array(ServiceInputSchema).min(1, 'At least one service must be selected'),
   designerExperience: z.number().min(1, 'Designer experience must be at least 1').max(10, 'Designer experience cannot exceed 10'),
   freelanceExperience: z.number().min(1, 'Freelance experience must be at least 1').max(10, 'Freelance experience cannot exceed 10'),
@@ -37,6 +38,8 @@ export const PricingOutputSchema = z.object({
   finalPrice: z.number().nonnegative('Final price cannot be negative'),
   recommendedMin: z.number(),
   recommendedMax: z.number(),
+  experienceMultiplier: z.number(),
+  geographyMultiplier: z.number(),
   breakdown: z.array(ServiceBreakdownSchema),
 }) satisfies z.ZodType<PricingOutput>;
 

@@ -18,13 +18,7 @@ export function validateStep(stepId: number, state: WizardState): StepValidation
   const errors: StepValidationError[] = []
 
   switch (stepId) {
-    case 1: // Pricing Model
-      if (!state.pricingModel) {
-        errors.push({ field: 'pricingModel', message: 'Please select a pricing model' })
-      }
-      break
-
-    case 2: // Services
+    case 1: // Services
       if (state.services.length === 0) {
         errors.push({ field: 'services', message: 'Please select at least one service' })
       }
@@ -36,7 +30,7 @@ export function validateStep(stepId: number, state: WizardState): StepValidation
       })
       break
 
-    case 3: // Experience
+    case 2: // Experience
       if (state.experienceDesigner < 1 || state.experienceDesigner > 10) {
         errors.push({ field: 'experienceDesigner', message: 'Designer experience must be between 1 and 10' })
       }
@@ -45,7 +39,7 @@ export function validateStep(stepId: number, state: WizardState): StepValidation
       }
       break
 
-    case 4: // Geography
+    case 3: // Geography
       if (!state.designerCountryCode) {
         errors.push({ field: 'designerCountryCode', message: 'Please select your country' })
       }
@@ -54,11 +48,11 @@ export function validateStep(stepId: number, state: WizardState): StepValidation
       }
       break
 
-    case 5: // Costs
+    case 4: // Costs
       // Optional, no validation needed unless we require something
       break
 
-    case 6: // Risk & Profit
+    case 5: // Risk & Profit
       // Bounds usually enforced by sliders 0-50, 10-50
       if (state.riskBuffer < 0 || state.riskBuffer > 50) {
         errors.push({ field: 'riskBuffer', message: 'Risk buffer must be between 0 and 50' })
@@ -68,7 +62,7 @@ export function validateStep(stepId: number, state: WizardState): StepValidation
       }
       break
 
-    case 7: // Review
+    case 6: // Review
       // No validation needed for navigation, button click triggers server-side validation
       break
 

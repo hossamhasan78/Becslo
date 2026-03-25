@@ -114,7 +114,7 @@ function ProjectBreakdown({ result }: { result: PricingOutput }) {
 
 function LivePreview() {
   const { result, state, isLoading, error } = useWizard()
-  const { pricingModel, services, designerCountryCode, clientCountryCode } = state
+  const { services, designerCountryCode, clientCountryCode } = state
 
   if (isLoading) {
     return (
@@ -156,11 +156,11 @@ function LivePreview() {
 
   if (!result) return null
 
-  const isProject = pricingModel === 'project'
+  const isProject = true
 
   return (
     <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-      <PriceDisplay result={result} pricingModel={pricingModel || 'hourly'} />
+      <PriceDisplay result={result} pricingModel='project' />
       <CostBreakdown result={result} />
       {isProject ? (
         <ProjectBreakdown result={result} />
