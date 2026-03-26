@@ -1,24 +1,25 @@
 -- Migration: 004_seed_data.sql
 -- Description: Seed initial data for categories, services, countries, costs
 -- Created: 2026-03-18
+-- Updated: 2026-03-26
 -- Purpose: Database & Configuration Setup - Seed data for wizard dropdowns
+--
+-- After migration 011, only 2 categories and 34 services remain.
+-- This seed reflects the post-cleanup state.
 
--- Seed categories (4 categories)
+-- Seed categories (2 categories after cleanup)
 insert into public.categories (name, display_order) values
   ('Strategy & Research', 1),
-  ('Design & UI/UX', 2),
-  ('Development', 3),
-  ('Marketing & Launch', 4)
+  ('Design & UI/UX', 2)
 on conflict (name) do nothing;
 
--- Seed services (120+ services across categories)
--- Category 1: Strategy & Research
+-- Seed services (34 surviving services)
+-- Category 1: Strategy & Research (16 services)
 insert into public.services (category_id, name, default_hours, min_hours, max_hours) values
 (1, 'Brand Strategy', 8, 2, 40),
 (1, 'Market Research', 12, 4, 60),
 (1, 'Competitor Analysis', 6, 2, 30),
 (1, 'User Research', 10, 4, 50),
-(1, 'Product Positioning', 6, 2, 24),
 (1, 'Value Proposition Development', 5, 2, 20),
 (1, 'Customer Persona Creation', 4, 2, 16),
 (1, 'User Journey Mapping', 6, 2, 24),
@@ -30,16 +31,10 @@ insert into public.services (category_id, name, default_hours, min_hours, max_ho
 (1, 'Feature Prioritization', 4, 2, 16),
 (1, 'Usability Testing Plan', 5, 2, 20),
 (1, 'Accessibility Audit', 6, 2, 24),
-(1, 'Brand Voice & Tone', 4, 2, 16),
-(1, 'Messaging Framework', 5, 2, 20),
-(1, 'Industry Trends Analysis', 4, 2, 16),
-(1, 'Pricing Strategy', 5, 2, 20),
+(1, 'Brand Voice & Tone', 4, 2, 16);
 
--- Category 2: Design & UI/UX
-(2, 'Logo Design', 12, 4, 40),
-(2, 'Brand Identity Design', 16, 8, 60),
-(2, 'Color Palette Creation', 4, 2, 12),
-(2, 'Typography Selection', 3, 1, 8),
+-- Category 2: Design & UI/UX (18 services)
+insert into public.services (category_id, name, default_hours, min_hours, max_hours) values
 (2, 'Icon Set Design', 8, 4, 24),
 (2, 'UI Design - Web', 20, 8, 80),
 (2, 'UI Design - Mobile', 16, 8, 60),
@@ -47,112 +42,17 @@ insert into public.services (category_id, name, default_hours, min_hours, max_ho
 (2, 'UX Design - Prototyping', 12, 4, 48),
 (2, 'Design System Creation', 24, 12, 80),
 (2, 'Component Library', 16, 8, 48),
-(2, 'Landing Page Design', 8, 4, 24),
 (2, 'Dashboard Design', 12, 6, 36),
-(2, 'E-commerce Design', 16, 8, 48),
 (2, 'App Screen Design', 10, 4, 32),
 (2, 'Illustration Design', 6, 2, 20),
 (2, 'Photo Editing', 4, 1, 12),
-(2, 'Banner & Ad Design', 3, 1, 8),
-(2, 'Social Media Graphics', 4, 2, 12),
 (2, 'Presentation Design', 6, 2, 20),
-(2, 'Print Design', 8, 4, 24),
-(2, 'Packaging Design', 12, 6, 40),
-(2, 'Motion Graphics', 8, 4, 24),
 (2, 'Animation', 10, 4, 32),
-(2, 'Video Editing', 8, 4, 24),
 (2, '3D Modeling', 12, 6, 40),
 (2, 'Icon Animation', 4, 2, 12),
 (2, 'User Onboarding Design', 6, 3, 18),
-(2, 'Empty State Design', 3, 1, 8),
-(2, 'Error State Design', 3, 1, 8),
-(2, 'Loading State Design', 2, 1, 6),
 (2, 'Accessibility Design Review', 5, 2, 16),
-(2, 'Design Handoff', 3, 1, 8),
-
--- Category 3: Development
-(3, 'Frontend Development - HTML/CSS', 12, 4, 40),
-(3, 'Frontend Development - React', 20, 8, 80),
-(3, 'Frontend Development - Vue', 20, 8, 80),
-(3, 'Frontend Development - Angular', 20, 8, 80),
-(3, 'Frontend Development - Next.js', 24, 12, 80),
-(3, 'Frontend Development - Mobile (React Native)', 24, 12, 80),
-(3, 'Frontend Development - Mobile (Flutter)', 24, 12, 80),
-(3, 'Frontend Development - Mobile (Swift)', 24, 12, 80),
-(3, 'Frontend Development - Mobile (Kotlin)', 24, 12, 80),
-(3, 'Backend Development - Node.js', 24, 12, 80),
-(3, 'Backend Development - Python', 24, 12, 80),
-(3, 'Backend Development - Ruby', 24, 12, 80),
-(3, 'Backend Development - PHP', 20, 10, 60),
-(3, 'Backend Development - Java', 24, 12, 80),
-(3, 'Backend Development - Go', 20, 10, 60),
-(3, 'Backend Development - C#', 24, 12, 80),
-(3, 'Database Design', 12, 6, 40),
-(3, 'API Development', 16, 8, 48),
-(3, 'API Integration', 10, 4, 32),
-(3, 'CMS Development - WordPress', 16, 8, 48),
-(3, 'CMS Development - Headless CMS', 16, 8, 48),
-(3, 'E-commerce Development - Shopify', 20, 10, 60),
-(3, 'E-commerce Development - WooCommerce', 20, 10, 60),
-(3, 'E-commerce Development - Custom', 30, 15, 100),
-(3, 'Landing Page Development', 8, 4, 24),
-(3, 'Blog Development', 8, 4, 24),
-(3, 'Portfolio Development', 10, 5, 30),
-(3, 'Website Maintenance', 4, 2, 12),
-(3, 'Performance Optimization', 8, 4, 24),
-(3, 'Security Audit & Hardening', 10, 5, 30),
-(3, 'SEO Implementation', 8, 4, 24),
-(3, 'Accessibility Implementation', 6, 3, 18),
-(3, 'Testing & QA', 10, 4, 32),
-(3, 'Bug Fixing', 4, 1, 16),
-(3, 'Code Review', 4, 2, 12),
-(3, 'Documentation', 6, 3, 18),
-(3, 'DevOps Setup', 12, 6, 36),
-(3, 'CI/CD Pipeline Setup', 8, 4, 24),
-(3, 'Cloud Infrastructure Setup', 10, 5, 30),
-(3, 'Server Configuration', 6, 3, 18),
-(3, 'Database Optimization', 8, 4, 24),
-(3, 'Third-party Integration', 6, 3, 18),
-(3, 'Payment Gateway Integration', 8, 4, 24),
-(3, 'Email Setup & Integration', 4, 2, 12),
-(3, 'Analytics Integration', 4, 2, 12),
-(3, 'Mobile App Submission', 5, 2, 16),
-
--- Category 4: Marketing & Launch
-(4, 'Marketing Strategy', 10, 4, 40),
-(4, 'Content Marketing', 12, 6, 48),
-(4, 'Social Media Marketing', 10, 4, 40),
-(4, 'Social Media Management', 16, 8, 60),
-(4, 'Email Marketing Campaign', 8, 4, 24),
-(4, 'Email Newsletter Setup', 6, 3, 18),
-(4, 'PPC Advertising - Google Ads', 10, 5, 30),
-(4, 'PPC Advertising - Facebook Ads', 8, 4, 24),
-(4, 'PPC Advertising - LinkedIn Ads', 8, 4, 24),
-(4, 'PPC Advertising - Twitter Ads', 6, 3, 18),
-(4, 'SEO - On-page Optimization', 8, 4, 24),
-(4, 'SEO - Off-page Optimization', 6, 3, 18),
-(4, 'SEO - Technical SEO', 10, 5, 30),
-(4, 'Content Writing - Blog Posts', 4, 2, 12),
-(4, 'Content Writing - Website Copy', 6, 3, 18),
-(4, 'Content Writing - Product Descriptions', 5, 2, 16),
-(4, 'Content Writing - Case Studies', 6, 3, 18),
-(4, 'Content Writing - Press Releases', 4, 2, 12),
-(4, 'Video Production', 12, 6, 36),
-(4, 'Video Marketing', 8, 4, 24),
-(4, 'Podcast Production', 8, 4, 24),
-(4, 'Influencer Marketing', 8, 4, 24),
-(4, 'PR & Media Relations', 10, 5, 30),
-(4, 'Event Marketing', 8, 4, 24),
-(4, 'Trade Show Support', 10, 5, 30),
-(4, 'Lead Generation', 8, 4, 24),
-(4, 'Conversion Rate Optimization', 10, 5, 30),
-(4, 'Landing Page Optimization', 6, 3, 18),
-(4, 'A/B Testing', 6, 3, 18),
-(4, 'Analytics & Reporting', 6, 3, 18),
-(4, 'Brand Guidelines Document', 8, 4, 24),
-(4, 'Launch Plan Development', 8, 4, 24),
-(4, 'Go-to-Market Strategy', 10, 5, 30)
-on conflict do nothing;
+(2, 'Design Handoff', 3, 1, 8);
 
 -- Seed countries (~200 countries with ISO codes and multipliers)
 insert into public.countries (name, code, multiplier) values
@@ -215,7 +115,6 @@ insert into public.countries (name, code, multiplier) values
 ('Tunisia', 'TN', 0.50),
 ('Afghanistan', 'AF', 0.40),
 ('Albania', 'AL', 0.55),
-('Armenia', 'AM', 0.55),
 ('Azerbaijan', 'AZ', 0.55),
 ('Bahrain', 'BH', 1.10),
 ('Bangladesh', 'BD', 0.45),
@@ -240,7 +139,6 @@ insert into public.countries (name, code, multiplier) values
 ('Djibouti', 'DJ', 0.40),
 ('Dominican Republic', 'DO', 0.55),
 ('Ecuador', 'EC', 0.55),
-('El Salvador', 'SV', 0.50),
 ('Equatorial Guinea', 'GQ', 0.50),
 ('Eritrea', 'ER', 0.35),
 ('Estonia', 'EE', 0.80),
@@ -277,7 +175,6 @@ insert into public.countries (name, code, multiplier) values
 ('Lithuania', 'LT', 0.70),
 ('Luxembourg', 'LU', 1.35),
 ('Madagascar', 'MG', 0.40),
-('Malawi', 'MW', 0.40),
 ('Maldives', 'MV', 0.60),
 ('Mali', 'ML', 0.35),
 ('Malta', 'MT', 0.80),
@@ -285,7 +182,6 @@ insert into public.countries (name, code, multiplier) values
 ('Mauritania', 'MR', 0.40),
 ('Mauritius', 'MU', 0.60),
 ('Moldova', 'MD', 0.50),
-('Monaco', 'MC', 1.40),
 ('Mongolia', 'MN', 0.50),
 ('Montenegro', 'ME', 0.60),
 ('Mozambique', 'MZ', 0.40),
@@ -300,8 +196,7 @@ insert into public.countries (name, code, multiplier) values
 ('Oman', 'OM', 1.00),
 ('Pakistan', 'PK', 0.45),
 ('Palau', 'PW', 0.50),
-('Panama', 'PA', 0.65),
-('Papua New Guinea', 'PG', 0.45),
+('Papua New Guinea', 'PG', 0.65),
 ('Paraguay', 'PY', 0.55),
 ('Qatar', 'QA', 1.25),
 ('Rwanda', 'RW', 0.45),
@@ -330,7 +225,6 @@ insert into public.countries (name, code, multiplier) values
 ('Togo', 'TG', 0.40),
 ('Tonga', 'TO', 0.45),
 ('Trinidad and Tobago', 'TT', 0.65),
-('Tunisia', 'TN', 0.50),
 ('Turkmenistan', 'TM', 0.45),
 ('Tuvalu', 'TV', 0.40),
 ('Uruguay', 'UY', 0.70),
@@ -346,12 +240,11 @@ insert into public.countries (name, code, multiplier) values
 ('Bahamas', 'BS', 0.65),
 ('Barbados', 'BB', 0.60),
 ('Belize', 'BZ', 0.55),
-('Benin', 'BJ', 0.40),
 ('Bhutan', 'BT', 0.45),
 ('Bolivia', 'BO', 0.50),
 ('Congo Democratic Republic', 'CD', 0.40),
 ('Dominica', 'DM', 0.55),
-('East Timor', 'TL', 0.40),
+
 ('Falkland Islands', 'FK', 0.50),
 ('Greenland', 'GL', 0.75),
 ('Guernsey', 'GG', 1.00),
@@ -359,53 +252,12 @@ insert into public.countries (name, code, multiplier) values
 ('Isle of Man', 'IM', 0.90),
 ('Jersey', 'JE', 0.90),
 ('Macau', 'MO', 0.80),
-('Macedonia', 'MK', 0.55),
+
 ('Micronesia', 'FM', 0.45),
-('Moldova', 'MD', 0.50),
-('Mongolia', 'MN', 0.50),
 ('Montserrat', 'MS', 0.50),
-('Nauru', 'NR', 0.45),
 ('Niue', 'NU', 0.40),
 ('Norfolk Island', 'NF', 0.50),
 ('Palestine', 'PS', 0.45),
 ('Pitcairn Islands', 'PN', 0.40),
 ('Puerto Rico', 'PR', 0.75),
-('Samoa', 'WS', 0.45),
-('Svalbard and Jan Mayen', 'SJ', 0.70),
-('Tokelau', 'TK', 0.40),
-('Tonga', 'TO', 0.45),
-('Turkmenistan', 'TM', 0.45),
-('Turks and Caicos Islands', 'TC', 0.60),
-('Virgin Islands British', 'VG', 0.70),
-('Virgin Islands US', 'VI', 0.75),
-('Wallis and Futuna', 'WF', 0.40)
-on conflict (code) do nothing;
-
--- Seed costs (optional overhead costs)
-insert into public.costs (name, is_active, default_cost) values
-('Software Licenses', true, 50),
-('Stock Photos/Videos', true, 30),
-('Domain Names', true, 15),
-('Hosting (Monthly)', true, 25),
-('Email Marketing Platform', true, 30),
-('Analytics Tools', true, 20),
-('Design Tools Subscription', true, 40),
-('Development Tools', true, 25),
-('Project Management Tools', true, 20),
-('Communication Tools', true, 15),
-('VPN & Security', true, 10),
-('Backup Services', true, 15),
-('API Services', true, 20),
-('Payment Processing Fees', true, 0),
-('SSL Certificates', true, 10)
-on conflict do nothing;
-
--- Update config with full settings (if needed)
-update public.config set
-  base_rate = 50,
-  risk_buffer_min = 0,
-  risk_buffer_max = 50,
-  profit_margin_min = 10,
-  profit_margin_max = 50,
-  updated_at = now()
-where id = 1;
+('Svalbard and Jan Mayen', 'SJ', 0.80);
