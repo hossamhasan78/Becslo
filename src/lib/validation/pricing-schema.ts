@@ -10,7 +10,11 @@ export const pricingInputSchema = z.object({
   freelanceExperience: z.number().min(1).max(10),
   designerCountryCode: z.string().length(2),
   clientCountryCode: z.string().length(2),
-  selectedCosts: z.array(z.string().or(z.number()).transform(v => String(v))),
+  selectedCosts: z.array(z.object({
+    costId: z.string(),
+    costName: z.string().min(1),
+    amount: z.number().min(0).max(999999)
+  })),
   riskBufferPercent: z.number().min(0).max(50),
   profitMarginPercent: z.number().min(10).max(50)
 });

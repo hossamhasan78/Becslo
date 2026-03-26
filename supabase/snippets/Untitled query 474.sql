@@ -1,0 +1,1 @@
+SELECT name FROM public.categories ORDER BY display_order

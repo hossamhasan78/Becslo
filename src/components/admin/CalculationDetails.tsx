@@ -129,11 +129,11 @@ export default function CalculationDetails({ details }: CalculationDetailsProps)
         </div>
       </div>
 
-      {details.costs.length > 0 && (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900">Additional Costs</h2>
-          </div>
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h2 className="text-lg font-medium text-gray-900">Additional Costs</h2>
+        </div>
+        {details.costs.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -160,8 +160,12 @@ export default function CalculationDetails({ details }: CalculationDetailsProps)
               </tbody>
             </table>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="p-8 text-center text-gray-500">
+            No overhead costs recorded
+          </div>
+        )}
+      </div>
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">

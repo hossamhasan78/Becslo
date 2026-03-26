@@ -27,36 +27,29 @@ export async function POST(req: Request) {
     const input = validatedInput.data
 
     // 3. Fetch reference data for server-side calculation
-    const [servicesRes, countriesRes, costsRes] = await Promise.all([
+    const [servicesRes, countriesRes] = await Promise.all([
       supabase.from('services').select('id, name, base_rate'),
-      supabase.from('countries').select('id, code, multiplier'),
-      supabase.from('costs').select('id, is_fixed_amount, default_cost')
+      supabase.from('countries').select('id, code, multiplier')
     ])
 
-    if (servicesRes.error || countriesRes.error || costsRes.error) {
+    if (servicesRes.error || countriesRes.error) {
       return NextResponse.json({ error: 'Database error while fetching reference data' }, { status: 500 })
     }
 
-    // Map to the formats required by calculatePrice
-    const countries = countriesRes.data.map(c => ({ 
-      code: c.code, 
-      multiplier: Number(c.multiplier) 
+    // Map to formats required by calculatePrice
+    const countries = countriesRes.data.map(c => ({
+      code: c.code,
+      multiplier: Number(c.multiplier)
     }))
-    
-    const costs = costsRes.data.map(c => ({ 
-      id: String(c.id), 
-      isFixedAmount: c.is_fixed_amount, 
-      defaultCost: Number(c.default_cost) 
-    }))
-    
-    const services = servicesRes.data.map(s => ({ 
-      id: String(s.id), 
-      name: s.name, 
-      baseRate: Number(s.base_rate) 
+
+    const services = servicesRes.data.map(s => ({
+      id: String(s.id),
+      name: s.name,
+      baseRate: Number(s.base_rate)
     }))
 
     // Calculate server-side to ensure integrity
-    const pricingResult = calculatePrice(input, countries, costs, services)
+    const pricingResult = calculatePrice(input, countries, services)
 
     // 4. Insert calculation record
     const { data: calculation, error: calculationError } = await supabase
@@ -104,6 +97,29 @@ export async function POST(req: Request) {
       // Cleanup orphan calculation record if services fail
       await supabase.from('calculations').delete().match({ id: calculation.id })
       return NextResponse.json({ error: 'Failed to save calculation line items' }, { status: 500 })
+    }
+
+    // 6. Insert calculation_costs records (skip if none selected)
+    const calculationCosts = input.selectedCosts
+      .filter(c => c.amount > 0)
+      .map(c => ({
+        calculation_id: calculation.id,
+        cost_id: Number(c.costId),
+        cost_name: c.costName,
+        amount: c.amount
+      }))
+
+    if (calculationCosts.length > 0) {
+      const { error: costsError } = await supabase
+        .from('calculation_costs')
+        .insert(calculationCosts)
+
+      if (costsError) {
+        console.error('Costs Insert Error:', costsError)
+        // Cleanup orphan calculation and services if costs fail
+        await supabase.from('calculations').delete().match({ id: calculation.id })
+        return NextResponse.json({ error: 'Failed to save calculation costs' }, { status: 500 })
+      }
     }
 
     return NextResponse.json({

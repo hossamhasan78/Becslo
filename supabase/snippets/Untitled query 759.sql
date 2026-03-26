@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM public.calculation_services cs LEFT JOIN public.services s ON cs.service_id = s.id WHERE s.id IS NULL

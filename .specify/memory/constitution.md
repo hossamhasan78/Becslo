@@ -1,18 +1,16 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version Change: [TEMPLATE] → 1.0.0
-Modified Principles: N/A (initial constitution)
-Added Sections:
-  - Core Principles: I. Authentication-First, II. Data Privacy & Analytics, III. Monolithic Architecture, IV. Admin-Configured Pricing, V. MVP Incremental Development
-  - Technology Stack
-  - Development Workflow
-Removed Sections: N/A (initial creation)
+Version Change: 1.0.0 → 1.1.0
+Modified Principles: IV. Admin-Configured Pricing (amended)
+Added Sections: None
+Removed Sections: None
+Amendment Reference: Implementation Plan Addendum v1.1, Change 3 — Overhead Costs: User-Editable Amounts
+Approved By: CEO / Business Director (2026-03-25)
 Templates Requiring Updates:
   ✅ .specify/templates/plan-template.md (Constitution Check section validated)
   ✅ .specify/templates/spec-template.md (Requirements structure validated)
   ✅ .specify/templates/tasks-template.md (Task categorization validated)
-  ✅ .opencode/command/speckit.constitution.md (Command file validated)
 Follow-up TODOs: None
 -->
 
@@ -35,6 +33,8 @@ The application MUST be deployed as a NextJS 14.x monolith using Supabase for ba
 ### IV. Admin-Configured Pricing
 
 All pricing logic, service definitions, and fee calculations MUST be fully configurable through the admin dashboard. Rationale: Enables rapid pricing adjustments without code changes, supports diverse geography and experience factors, and separates business logic from implementation.
+
+**Amendment v1.1** (approved 2026-03-25, ref: Implementation Plan Addendum v1.1 Change 3): Overhead cost *amounts* are an exception to this principle — they are entered by the user at calculation time, not pre-configured by the admin. Admins continue to configure what cost *categories* exist. This exception applies only to the `costs.default_cost` field, which is permanently removed. All other pricing parameters (base rate, risk buffer, profit margin, service rates, geography multipliers) remain admin-configurable.
 
 ### V. MVP Incremental Development
 
@@ -101,4 +101,4 @@ All pull requests MUST verify compliance with:
 
 Violations of non-negotiable principles (e.g., adding alternative authentication methods) require explicit team approval with documented rationale.
 
-**Version**: 1.0.0 | **Ratified**: 2026-03-17 | **Last Amended**: 2026-03-17
+**Version**: 1.1.0 | **Ratified**: 2026-03-17 | **Last Amended**: 2026-03-26

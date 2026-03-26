@@ -1,3 +1,9 @@
+export interface CostEntry {
+  costId: number;
+  costName: string;
+  amount: number;
+}
+
 export interface PricingInput {
   pricingModel: 'hourly' | 'project';
   services: Array<{
@@ -8,7 +14,7 @@ export interface PricingInput {
   freelanceExperience: number;
   designerCountryCode: string;
   clientCountryCode: string;
-  selectedCosts: string[];
+  selectedCosts: Array<{ costId: string; costName: string; amount: number }>;
   riskBufferPercent: number;
   profitMarginPercent: number;
 }
@@ -24,9 +30,16 @@ export interface ServiceBreakdown {
   cost: number;
 }
 
+export interface CostBreakdown {
+  costId: string;
+  costName: string;
+  amount: number;
+}
+
 export interface PricingOutput {
   baseCost: number;
   overheadCosts: number;
+  costBreakdown: CostBreakdown[];
   subtotal: number;
   riskBufferAmount: number;
   profitMarginAmount: number;
@@ -73,7 +86,6 @@ export interface Cost {
   id: number;
   name: string;
   is_fixed_amount: boolean;
-  default_cost: number;
   is_active: boolean;
   created_at: string;
   updated_at: string;

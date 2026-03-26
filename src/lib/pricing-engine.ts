@@ -1,15 +1,9 @@
-import type { PricingInput, PricingOutput, ServiceBreakdown } from './types/pricing';
+import type { PricingInput, PricingOutput, ServiceBreakdown, CostBreakdown } from './types/pricing';
 import { roundToNearestDollar } from './utils/formatting';
 
 interface CountryMultiplier {
   code: string;
   multiplier: number;
-}
-
-interface CostItem {
-  id: string;
-  isFixedAmount: boolean;
-  defaultCost: number;
 }
 
 interface ServiceItem {
@@ -21,7 +15,6 @@ interface ServiceItem {
 export function calculatePrice(
   input: PricingInput,
   countries: CountryMultiplier[],
-  costs: CostItem[],
   services: ServiceItem[]
 ): PricingOutput {
   const breakdown: ServiceBreakdown[] = []
@@ -70,16 +63,11 @@ export function calculatePrice(
 
   baseCost = roundToNearestDollar(baseCost)
 
+  const costBreakdown: CostBreakdown[] = []
   let overheadCosts = 0
-  const costCount = input.selectedCosts.length
-  for (let i = 0; i < costCount; i++) {
-    const costId = input.selectedCosts[i]
-    for (let j = 0; j < costs.length; j++) {
-      if (costs[j].id === costId) {
-        overheadCosts += costs[j].defaultCost
-        break
-      }
-    }
+  for (const entry of input.selectedCosts) {
+    overheadCosts += entry.amount
+    costBreakdown.push({ costId: entry.costId, costName: entry.costName, amount: entry.amount })
   }
   overheadCosts = roundToNearestDollar(overheadCosts)
 
@@ -96,6 +84,7 @@ export function calculatePrice(
   return {
     baseCost,
     overheadCosts,
+    costBreakdown,
     subtotal,
     riskBufferAmount,
     profitMarginAmount,

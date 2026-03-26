@@ -96,25 +96,10 @@ export async function GET(
       )
     }
 
-    const { data: calcCosts, error: costsError } = await supabase
+    const { data: calcCosts } = await supabase
       .from('calculation_costs')
-      .select('cost_id, amount')
+      .select('cost_name, amount')
       .eq('calculation_id', id)
-
-    let costNames: Record<string, string> = {}
-    if (calcCosts && calcCosts.length > 0) {
-      const costIds = calcCosts.map(cc => cc.cost_id).filter((id): id is string => id !== null)
-      if (costIds.length > 0) {
-        const { data: costs } = await supabase
-          .from('costs')
-          .select('id, name')
-          .in('id', costIds)
-        
-        costNames = Object.fromEntries(
-          costs?.map(c => [c.id, c.name]) || []
-        )
-      }
-    }
 
     const details: CalculationDetails = {
       id: calculation.id,
@@ -143,7 +128,7 @@ export async function GET(
         cost: cs.cost,
       })),
       costs: (calcCosts || []).map(cc => ({
-        cost_name: costNames[cc.cost_id || ''] || 'Unknown',
+        cost_name: cc.cost_name,
         amount: cc.amount,
       })),
       multipliers: {
