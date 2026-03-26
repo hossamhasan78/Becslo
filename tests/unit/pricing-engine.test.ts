@@ -8,11 +8,6 @@ describe('Pricing Engine', () => {
     { code: 'UK', multiplier: 1.2 },
   ]
 
-  const mockCosts = [
-    { id: '1', isFixedAmount: true, defaultCost: 100 },
-    { id: '2', isFixedAmount: false, defaultCost: 50 },
-  ]
-
   const mockServices = [
     { id: '1', name: 'Design', baseRate: 50 },
     { id: '2', name: 'Development', baseRate: 75 },
@@ -31,7 +26,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 0,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.baseCost).toBe(12500)
     expect(result.finalPrice).toBe(12500)
@@ -56,8 +51,8 @@ describe('Pricing Engine', () => {
       freelanceExperience: 10,
     }
 
-    const result1 = calculatePrice(input1, mockCountries, mockCosts, mockServices)
-    const result2 = calculatePrice(input2, mockCountries, mockCosts, mockServices)
+    const result1 = calculatePrice(input1, mockCountries, mockServices)
+    const result2 = calculatePrice(input2, mockCountries, mockServices)
 
     expect(result2.baseCost).toBeGreaterThan(result1.baseCost)
     expect(result1.baseCost).toBe(12500)
@@ -83,8 +78,8 @@ describe('Pricing Engine', () => {
       clientCountryCode: 'UK',
     }
 
-    const result1 = calculatePrice(input1, mockCountries, mockCosts, mockServices)
-    const result2 = calculatePrice(input2, mockCountries, mockCosts, mockServices)
+    const result1 = calculatePrice(input1, mockCountries, mockServices)
+    const result2 = calculatePrice(input2, mockCountries, mockServices)
 
     expect(result2.baseCost).toBeGreaterThan(result1.baseCost)
     expect(result1.baseCost).toBe(12500)
@@ -99,12 +94,12 @@ describe('Pricing Engine', () => {
       freelanceExperience: 5,
       designerCountryCode: 'US',
       clientCountryCode: 'US',
-      selectedCosts: ['1'],
+      selectedCosts: [{ costId: '1', costName: 'Software', amount: 100 }],
       riskBufferPercent: 0,
       profitMarginPercent: 0,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.overheadCosts).toBe(100)
     expect(result.subtotal).toBe(12600)
@@ -123,7 +118,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 0,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.riskBufferAmount).toBe(1250)
     expect(result.finalPrice).toBe(13750)
@@ -142,7 +137,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 20,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.profitMarginAmount).toBe(2500)
     expect(result.finalPrice).toBe(15000)
@@ -161,7 +156,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 0,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.recommendedMin).toBe(10000)
     expect(result.recommendedMax).toBe(15000)
@@ -183,7 +178,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 0,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.baseCost).toBe(21875)
     expect(result.breakdown).toHaveLength(2)
@@ -202,7 +197,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 0,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.breakdown).toHaveLength(1)
     expect(result.breakdown[0].serviceId).toBe('1')
@@ -224,7 +219,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 0,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.baseCost).toBe(0)
     expect(result.finalPrice).toBe(0)
@@ -238,12 +233,12 @@ describe('Pricing Engine', () => {
       freelanceExperience: 10,
       designerCountryCode: 'UK',
       clientCountryCode: 'UK',
-      selectedCosts: ['1'],
+      selectedCosts: [{ costId: '1', costName: 'Software', amount: 100 }],
       riskBufferPercent: 50,
       profitMarginPercent: 50,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.baseCost).toBeGreaterThan(0)
     expect(result.finalPrice).toBeGreaterThan(result.baseCost)
@@ -264,7 +259,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 0,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.experienceMultiplier).toBe(100)
     expect(result.baseCost).toBe(50000)
@@ -283,7 +278,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 0,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.experienceMultiplier).toBe(1)
     expect(result.baseCost).toBe(500)
@@ -302,7 +297,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 0,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.baseCost).toBe(0)
     expect(result.finalPrice).toBe(0)
@@ -317,12 +312,15 @@ describe('Pricing Engine', () => {
       freelanceExperience: 5,
       designerCountryCode: 'US',
       clientCountryCode: 'US',
-      selectedCosts: ['1', '2'],
+      selectedCosts: [
+        { costId: '1', costName: 'Software', amount: 100 },
+        { costId: '2', costName: 'Marketing', amount: 50 },
+      ],
       riskBufferPercent: 0,
       profitMarginPercent: 0,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.overheadCosts).toBe(150)
     expect(result.subtotal).toBe(12650)
@@ -341,7 +339,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 0,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.riskBufferAmount).toBe(6250)
     expect(result.finalPrice).toBe(18750)
@@ -360,7 +358,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 50,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.profitMarginAmount).toBe(6250)
     expect(result.finalPrice).toBe(18750)
@@ -379,7 +377,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 50,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.riskBufferAmount).toBe(6250)
     expect(result.profitMarginAmount).toBe(9375)
@@ -394,12 +392,12 @@ describe('Pricing Engine', () => {
       freelanceExperience: 10,
       designerCountryCode: 'UK',
       clientCountryCode: 'UK',
-      selectedCosts: ['1'],
+      selectedCosts: [{ costId: '1', costName: 'Software', amount: 100 }],
       riskBufferPercent: 25,
       profitMarginPercent: 25,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.recommendedMin).toBeLessThan(result.finalPrice)
     expect(result.recommendedMax).toBeGreaterThan(result.finalPrice)
@@ -423,7 +421,7 @@ describe('Pricing Engine', () => {
       profitMarginPercent: 0,
     }
 
-    const result = calculatePrice(input, mockCountries, mockCosts, mockServices)
+    const result = calculatePrice(input, mockCountries, mockServices)
 
     expect(result.baseCost).toBe(21875)
     expect(result.breakdown).toHaveLength(2)

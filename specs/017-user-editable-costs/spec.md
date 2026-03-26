@@ -40,19 +40,19 @@ When the user proceeds from the Costs step to the Results step (Step 6), the fin
 
 ---
 
-### User Story 3 - Admin Manages Cost Categories Without Amounts (Priority: P2)
+### User Story 3 - Admin Views Cost Line Items in Calculation Detail (Priority: P2)
 
-An admin visits the admin configuration editor to manage cost categories. They can add new category names and remove existing ones. However, they no longer see a "default cost amount" input field anywhere in the admin UI — that field has been permanently removed. The admin's role is to define what cost categories exist, not to pre-set amounts.
+An admin opens the calculation detail page for any calculation saved after this change. Instead of a blank or unavailable costs section, they see individual cost line items — each showing the category name and the user-entered amount. No "default cost amount" field or value appears anywhere in the admin view.
 
-**Why this priority**: The admin experience must be consistent with the new model. Leaving a "default cost" field in the admin panel would be misleading and could imply defaults are being applied when they are not.
+**Why this priority**: The admin experience must be consistent with the new model. The calculation detail view should reflect actual user-entered costs as individual line items, not database defaults. Note: there is no dedicated cost category management page — cost categories are seeded data. This story covers only the calculation detail view.
 
-**Independent Test**: Log in as admin, open the cost categories configuration page, confirm there is no input field for a default amount on any cost category — only the category name and add/remove controls.
+**Independent Test**: Log in as admin, open any calculation saved after this change at `/admin/calculations/[id]`, confirm the costs section lists individual line items with cost category name and amount for each entered cost. Confirm no "default cost" label, value, or field appears on the page.
 
 **Acceptance Scenarios**:
 
-1. **Given** the admin is on the cost categories management page, **When** they view an existing cost category, **Then** no "default amount" or "default cost" field is visible.
-2. **Given** the admin adds a new cost category, **When** they complete the form, **Then** only the category name is required — no amount field is present in the form.
-3. **Given** the admin opens any cost-related configuration panel, **When** they inspect all form fields, **Then** no field labelled "default cost", "default amount", or similar exists.
+1. **Given** the admin opens a calculation detail page for a calculation where the user entered overhead costs, **When** the page loads, **Then** each cost appears as an individual line item showing the category name and the user-entered amount in USD.
+2. **Given** the admin opens a calculation detail page for a calculation where the user entered no overhead costs, **When** the page loads, **Then** the costs section shows "No overhead costs recorded" (no blank fields or zero-value rows).
+3. **Given** the admin inspects any part of the calculation detail page, **When** they review all displayed fields and values, **Then** no field or value labelled "default cost", "default amount", or similar exists anywhere on the page.
 
 ---
 
@@ -72,18 +72,17 @@ An admin visits the admin configuration editor to manage cost categories. They c
 - **FR-001**: The costs data store MUST NOT contain a default cost amount field after the migration runs — the field is permanently removed, not nulled or deprecated.
 - **FR-002**: The Costs step (Step 4) MUST display each active cost category as a row with an editable numeric input field. No pre-populated value is shown. The field MUST restrict input to numeric characters only — non-numeric keystrokes are blocked at the field level with no error message required.
 - **FR-002a**: Each cost field MUST enforce a maximum value of $999,999. Values above this cap MUST be rejected at the field level (input blocked or clamped) before the user can advance.
-- **FR-003**: The Costs step MUST treat any field left blank or set to 0 as excluded from the calculation. Only positive values (up to $999,999) are included.
+- **FR-003**: The Costs step MUST treat any field left blank or set to 0 as excluded from the calculation. Only positive values (up to $999,999) are included. Entering a cost amount is optional — the wizard MUST allow the user to advance from the Costs step with all fields empty or zero, contributing $0 overhead.
 - **FR-004**: The pricing engine MUST sum only the values the user entered on the Costs step. It MUST NOT read or apply any stored default cost amount.
-- **FR-005**: The admin cost category editor MUST NOT present any field for entering or editing a default cost amount. Admins manage category names only.
-- **FR-006**: Entering a cost amount MUST be optional — the wizard MUST allow the user to advance from the Costs step with all fields empty or zero.
+- **FR-005**: The admin calculation detail view MUST NOT display any "default cost" field or value. Cost line items displayed must come exclusively from user-entered amounts stored in `calculation_costs`.
 - **FR-007**: Cost amounts entered by the user MUST be rounded to the nearest dollar consistent with the product-wide rounding rule.
 - **FR-008**: The data migration MUST be safe to run on a database where the default cost field has already been removed — it must not error on a clean state.
 
 ### Key Entities
 
-- **Cost Category**: A named overhead type defined by the admin (e.g., "Software Subscriptions"). After this change, it holds only a name and display order — no default amount.
-- **User Cost Entry**: The amount a user types for a specific cost category during a wizard session. On calculation completion, each entry is stored individually as a separate record attached to the calculation — preserving the category name and the user-entered amount. This enables the Results step to display cost line items by name and amount.
-- **Calculation**: The wizard output record. Its overhead cost total is the sum of all individual user cost entries stored against it. No single pre-summed total is stored — the total is always derived from the individual entries.
+- **Cost Category**: A named overhead type defined by the admin (e.g., "Software Subscriptions"). After this change, it holds only a name (`name`), active flag (`is_active`), and type flag (`is_fixed_amount`) — no default amount.
+- **User Cost Entry**: The amount a user types for a specific cost category during a wizard session. On calculation completion, each entry is stored individually as a separate record in `calculation_costs` — preserving the category name (snapshot) and the user-entered amount. This enables the Results step to display cost line items by name and amount.
+- **Calculation**: The wizard output record. Its overhead cost total is derived from the individual `calculation_costs` entries attached to it. A computed total is also stored on the calculation record for query efficiency, but individual line-item detail is preserved in `calculation_costs`.
 
 ---
 

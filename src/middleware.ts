@@ -87,7 +87,8 @@ export async function middleware(request: NextRequest) {
   // Handle login/signup pages - redirect if already authenticated
   if (isPublicRoute(pathname) && user) {
     const url = request.nextUrl.clone()
-    url.pathname = '/wizard'
+    const isAdmin = user.user_metadata?.role === 'admin'
+    url.pathname = isAdmin ? '/admin' : '/wizard'
     return NextResponse.redirect(url)
   }
 

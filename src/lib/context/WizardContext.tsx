@@ -34,7 +34,7 @@ interface WizardContextValue {
   setClientCountryId: (countryId: number | null) => void
   setDesignerCountryCode: (code: string) => void
   setClientCountryCode: (code: string) => void
-  toggleCost: (costId: number) => void
+  setCostAmount: (costId: number, costName: string, amount: number) => void
   setRiskBuffer: (value: number) => void
   setProfitMargin: (value: number) => void
   addService: (service: SelectedService) => void
@@ -97,17 +97,12 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   }, [loadPricingData])
 
   // Map to engine formats for calculation
-  const engineCountries = useMemo(() => 
+  const engineCountries = useMemo(() =>
     allCountries.map(c => ({ code: c.code, multiplier: c.multiplier })),
     [allCountries]
   )
-  
-  const engineCosts = useMemo(() => 
-    allCosts.map(c => ({ id: String(c.id), isFixedAmount: c.is_fixed_amount, defaultCost: c.default_cost })),
-    [allCosts]
-  )
-  
-  const engineServices = useMemo(() => 
+
+  const engineServices = useMemo(() =>
     allServices.map((s: Service) => ({ id: String(s.id), name: s.name, baseRate: s.base_rate })),
     [allServices]
   )
@@ -124,18 +119,18 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
       freelanceExperience: state.experienceFreelance,
       designerCountryCode: state.designerCountryCode,
       clientCountryCode: state.clientCountryCode,
-      selectedCosts: state.costs.map(String),
+      selectedCosts: state.costs.map(c => ({ costId: String(c.costId), costName: c.costName, amount: c.amount })),
       riskBufferPercent: state.riskBuffer,
       profitMarginPercent: state.profitMargin
     }
 
     try {
-      return calculatePrice(pricingInput, engineCountries, engineCosts, engineServices)
+      return calculatePrice(pricingInput, engineCountries, engineServices)
     } catch (err) {
       console.error('Calculation error:', err)
       return null
     }
-  }, [state, engineCountries, engineCosts, engineServices])
+  }, [state, engineCountries, engineServices])
 
   const updateState = useCallback((updates: Partial<WizardState>) => {
     setState(prev => ({ ...prev, ...updates }))
@@ -176,7 +171,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   const calculateAndSave = useCallback(async () => {
     setIsLoading(true)
     setError(null)
-    
+
     try {
       const pricingInput: PricingInput = {
         pricingModel: 'project',
@@ -185,7 +180,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         freelanceExperience: state.experienceFreelance,
         designerCountryCode: state.designerCountryCode,
         clientCountryCode: state.clientCountryCode,
-        selectedCosts: state.costs.map(String),
+        selectedCosts: state.costs.map(c => ({ costId: String(c.costId), costName: c.costName, amount: c.amount })),
         riskBufferPercent: state.riskBuffer,
         profitMarginPercent: state.profitMargin
       }
@@ -207,7 +202,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         isSaved: true,
         savedCalculationId: resultData.calculationId
       })
-      
+
       return resultData
     } catch (err: unknown) {
       console.error('Save error:', err)
@@ -226,12 +221,24 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
   const setClientCountryId = (countryId: number | null) => updateState({ clientCountryId: countryId })
   const setDesignerCountryCode = (code: string) => updateState({ designerCountryCode: code })
   const setClientCountryCode = (code: string) => updateState({ clientCountryCode: code })
-  
-  const toggleCost = (costId: number) => {
-    const exists = state.costs.includes(costId)
-    updateState({
-      costs: exists ? state.costs.filter(id => id !== costId) : [...state.costs, costId]
-    })
+
+  const setCostAmount = (costId: number, costName: string, amount: number) => {
+    if (amount === 0) {
+      updateState({
+        costs: state.costs.filter(c => c.costId !== costId)
+      })
+    } else {
+      const existing = state.costs.find(c => c.costId === costId)
+      if (existing) {
+        updateState({
+          costs: state.costs.map(c => c.costId === costId ? { ...c, amount } : c)
+        })
+      } else {
+        updateState({
+          costs: [...state.costs, { costId, costName, amount }]
+        })
+      }
+    }
   }
 
   const setRiskBuffer = (value: number) => updateState({ riskBuffer: value })
@@ -268,14 +275,14 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     setClientCountryId,
     setDesignerCountryCode,
     setClientCountryCode,
-    toggleCost,
+    setCostAmount,
     setRiskBuffer,
     setProfitMargin,
     addService,
     removeService,
     updateServiceHours,
     calculateAndSave
-  }), [state, result, isLoading, error, categories, allServices, allCountries, allCosts, config, updateState, setCurrentStep, goToNextStep, goToPreviousStep, resetWizard, validateCurrentStep, loadPricingData, setExperienceDesigner, setExperienceFreelance, setDesignerCountryId, setClientCountryId, setDesignerCountryCode, setClientCountryCode, toggleCost, setRiskBuffer, setProfitMargin, addService, removeService, updateServiceHours, calculateAndSave])
+  }), [state, result, isLoading, error, categories, allServices, allCountries, allCosts, config, updateState, setCurrentStep, goToNextStep, goToPreviousStep, resetWizard, validateCurrentStep, loadPricingData, setExperienceDesigner, setExperienceFreelance, setDesignerCountryId, setClientCountryId, setDesignerCountryCode, setClientCountryCode, setCostAmount, setRiskBuffer, setProfitMargin, addService, removeService, updateServiceHours, calculateAndSave])
 
   return (
     <WizardContext.Provider

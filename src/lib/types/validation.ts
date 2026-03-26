@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { PricingInput, PricingOutput, ServiceBreakdown } from './pricing';
+import type { PricingInput, PricingOutput, ServiceBreakdown, CostBreakdown } from './pricing';
 
 export const ServiceInputSchema = z.object({
   serviceId: z.string().uuid(),
@@ -13,7 +13,11 @@ export const PricingInputSchema = z.object({
   freelanceExperience: z.number().min(1, 'Freelance experience must be at least 1').max(10, 'Freelance experience cannot exceed 10'),
   designerCountryCode: z.string().length(2, 'Country code must be 2 characters'),
   clientCountryCode: z.string().length(2, 'Country code must be 2 characters'),
-  selectedCosts: z.array(z.string().uuid()).optional().default([]),
+  selectedCosts: z.array(z.object({
+    costId: z.string(),
+    costName: z.string(),
+    amount: z.number().min(0).max(999999)
+  })).default([]),
   riskBufferPercent: z.number().min(0, 'Risk buffer must be at least 0%').max(50, 'Risk buffer cannot exceed 50%'),
   profitMarginPercent: z.number().min(10, 'Profit margin must be at least 10%').max(50, 'Profit margin cannot exceed 50%'),
 }) satisfies z.ZodType<PricingInput>;
@@ -29,9 +33,16 @@ export const ServiceBreakdownSchema = z.object({
   cost: z.number(),
 }) satisfies z.ZodType<ServiceBreakdown>;
 
+export const CostBreakdownSchema = z.object({
+  costId: z.string(),
+  costName: z.string(),
+  amount: z.number(),
+}) satisfies z.ZodType<CostBreakdown>;
+
 export const PricingOutputSchema = z.object({
   baseCost: z.number(),
   overheadCosts: z.number(),
+  costBreakdown: z.array(CostBreakdownSchema),
   subtotal: z.number(),
   riskBufferAmount: z.number(),
   profitMarginAmount: z.number(),

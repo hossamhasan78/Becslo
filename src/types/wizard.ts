@@ -1,3 +1,5 @@
+import { CostEntry } from '@/lib/types/pricing'
+
 export interface WizardState {
   currentStep: number
   calculation_id: string | null
@@ -9,7 +11,7 @@ export interface WizardState {
   clientCountryId: number | null
   designerCountryCode: string
   clientCountryCode: string
-  costs: number[]
+  costs: CostEntry[]
   riskBuffer: number
   profitMargin: number
   highestCompletedStep: number
