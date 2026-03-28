@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useMemo, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { getClient } from '@/lib/supabase/client'
 
 interface AuthFormProps {
@@ -38,6 +38,7 @@ function getFriendlyError(message: string): string {
 
 export function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
@@ -46,6 +47,24 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [success, setSuccess] = useState('')
 
   const supabase = useMemo(() => getClient(), [])
+
+  // Check for email confirmation success message
+  useEffect(() => {
+    const confirmed = searchParams.get('confirmed')
+    if (confirmed === 'true') {
+      setSuccess('Email confirmed! You can now log in.')
+      setError('')
+    }
+
+    const errorParam = searchParams.get('error')
+    if (errorParam === 'confirmation_failed') {
+      setError('Email confirmation failed. Please try signing up again.')
+      setSuccess('')
+    } else if (errorParam === 'invalid_code') {
+      setError('Invalid confirmation link. Please try signing up again.')
+      setSuccess('')
+    }
+  }, [searchParams])
 
   const handleLogin = async () => {
     setLoading(true)
