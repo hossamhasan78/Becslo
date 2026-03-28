@@ -7,7 +7,8 @@
       "Bash(head -30 \"src/app/\\(wizard\\)/wizard/components/step-inputs/geography-input.tsx\")",
       "Bash(python3:*)",
       "Bash(xargs echo:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(ls -la \"src/app/\\(auth\\)/\")"
     ]
   }
 }
