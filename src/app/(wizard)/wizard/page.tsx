@@ -197,7 +197,7 @@ export default function WizardPage() {
                         : 'bg-zinc-200 cursor-not-allowed text-zinc-400 shadow-none'}
                     `}
                   >
-                    Next Step
+                    {state.currentStep === 5 ? 'Calculate' : 'Next Step'}
                     <span className="group-hover:translate-x-1 transition-transform">→</span>
                   </button>
                 )}
