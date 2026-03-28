@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { apiUrl } from '@/lib/api'
 import { useRouter } from 'next/navigation'
 import type { AnalyticsMetrics } from '@/types/admin'
 import AnalyticsTables from '@/components/admin/AnalyticsTables'
@@ -33,7 +34,7 @@ export default function AnalyticsPage() {
       if (end) params.append('end_date', end)
       if (params.toString()) url += `?${params.toString()}`
 
-      const response = await fetch(url)
+      const response = await fetch(apiUrl(url))
       const result = await response.json()
 
       if (result.error) {

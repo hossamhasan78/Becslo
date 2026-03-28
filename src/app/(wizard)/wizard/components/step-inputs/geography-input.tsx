@@ -1,6 +1,7 @@
 'use client'
 
 import { useWizard } from '@/lib/context/WizardContext'
+import { apiUrl } from '@/lib/api'
 import { useState, useEffect } from 'react'
 
 interface CountryData {
@@ -21,7 +22,7 @@ export function GeographyInput() {
       setIsLoading(true)
       setError(null)
       try {
-        const response = await fetch('/api/v1/countries')
+        const response = await fetch(apiUrl('/api/v1/countries'))
 
         if (!response.ok) {
           throw new Error(`Failed to fetch countries: ${response.statusText}`)

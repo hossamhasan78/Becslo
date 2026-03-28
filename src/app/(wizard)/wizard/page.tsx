@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { apiUrl } from '@/lib/api'
 
 import { useWizard } from '@/lib/context/WizardContext'
 import { WizardLayout } from '@/components/wizard/WizardLayout'
@@ -73,7 +74,7 @@ export default function WizardPage() {
       const id = state.savedCalculationId
       if (!id) throw new Error('Could not generate Calculation ID')
 
-      const response = await fetch(`/api/v1/export-pdf?id=${id}`)
+      const response = await fetch(apiUrl(`/api/v1/export-pdf?id=${id}`))
       
       if (!response.ok) {
         throw new Error('Failed to generate PDF. Please try again.')

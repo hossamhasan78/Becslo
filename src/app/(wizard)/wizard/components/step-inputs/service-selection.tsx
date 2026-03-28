@@ -1,6 +1,7 @@
 'use client'
 
 import { useWizard } from '@/lib/context/WizardContext'
+import { apiUrl } from '@/lib/api'
 import { useState, useEffect, useCallback } from 'react'
 import { validatePositiveNumber } from '@/lib/utils/validation'
 
@@ -22,7 +23,7 @@ export function ServiceSelection() {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await fetch('/api/v1/services')
+      const response = await fetch(apiUrl('/api/v1/services'))
 
       if (!response.ok) {
         throw new Error(`Failed to fetch services: ${response.statusText}`)

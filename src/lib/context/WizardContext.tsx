@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useMemo, useCallback, useEffect } from 'react'
+import { apiUrl } from '@/lib/api'
 import { WizardState, DEFAULT_WIZARD_STATE, SelectedService } from '@/types/wizard'
 import { validateStep, StepValidationResult } from '@/lib/validation/step-validators'
 import { calculatePrice } from '@/lib/pricing-engine'
@@ -71,11 +72,11 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
     setError(null)
     try {
       const [catsRes, servsRes, countriesRes, costsRes, configRes] = await Promise.all([
-        fetch('/api/v1/categories').then(res => res.ok ? res.json() : Promise.reject('Failed to load categories')),
-        fetch('/api/v1/services').then(res => res.ok ? res.json() : Promise.reject('Failed to load services')),
-        fetch('/api/v1/countries').then(res => res.ok ? res.json() : Promise.reject('Failed to load countries')),
-        fetch('/api/v1/costs').then(res => res.ok ? res.json() : Promise.reject('Failed to load costs')),
-        fetch('/api/v1/config').then(res => res.ok ? res.json() : Promise.reject('Failed to load config'))
+        fetch(apiUrl('/api/v1/categories')).then(res => res.ok ? res.json() : Promise.reject('Failed to load categories')),
+        fetch(apiUrl('/api/v1/services')).then(res => res.ok ? res.json() : Promise.reject('Failed to load services')),
+        fetch(apiUrl('/api/v1/countries')).then(res => res.ok ? res.json() : Promise.reject('Failed to load countries')),
+        fetch(apiUrl('/api/v1/costs')).then(res => res.ok ? res.json() : Promise.reject('Failed to load costs')),
+        fetch(apiUrl('/api/v1/config')).then(res => res.ok ? res.json() : Promise.reject('Failed to load config'))
       ])
 
       setCategories(catsRes)
@@ -182,7 +183,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         profitMarginPercent: state.profitMargin
       }
 
-      const response = await fetch('/api/v1/calculate-and-save', {
+      const response = await fetch(apiUrl('/api/v1/calculate-and-save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pricingInput)

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { apiUrl } from '@/lib/api'
 import type { Service } from '@/types/admin'
 
 interface Category {
@@ -39,7 +40,7 @@ export default function ServiceForm({ service, onSubmit, onCancel }: ServiceForm
     async function fetchCategories() {
       setIsLoading(true)
       try {
-        const response = await fetch('/api/v1/categories')
+        const response = await fetch(apiUrl('/api/v1/categories'))
         const data = await response.json()
         setCategories(data || [])
       } catch (error) {

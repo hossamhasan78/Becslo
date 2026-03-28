@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { apiUrl } from '@/lib/api'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { CalculationDetails as CalculationDetailsType } from '@/types/admin'
@@ -21,7 +22,7 @@ export default function CalculationDetailsPage() {
       setError(null)
 
       try {
-        const response = await fetch(`/api/admin/calculations/${id}`)
+        const response = await fetch(apiUrl(`/api/admin/calculations/${id}`))
         const result = await response.json()
 
         if (result.error) {

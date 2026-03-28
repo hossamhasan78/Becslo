@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { apiUrl } from '@/lib/api'
 import { useRouter } from 'next/navigation'
 import type { Configuration, ConfigurationUpdateInput } from '@/types/admin'
 import ConfigEditor from '@/components/admin/ConfigEditor'
@@ -15,7 +16,7 @@ export default function ConfigPage() {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await fetch('/api/admin/config')
+      const response = await fetch(apiUrl('/api/admin/config'))
       const result = await response.json()
 
       if (result.error) {
@@ -41,7 +42,7 @@ export default function ConfigPage() {
   }, [fetchConfig])
 
   const handleSave = async (data: ConfigurationUpdateInput): Promise<Configuration> => {
-    const response = await fetch('/api/admin/config', {
+    const response = await fetch(apiUrl('/api/admin/config'), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { apiUrl } from '@/lib/api'
 import { useRouter, useParams } from 'next/navigation'
 import ServiceForm, { type ServiceFormData } from '@/components/admin/ServiceForm'
 import type { Service } from '@/types/admin'
@@ -26,7 +27,7 @@ export default function EditServicePage() {
       setError(null)
 
       try {
-        const response = await fetch(`/api/admin/services/${serviceId}`)
+        const response = await fetch(apiUrl(`/api/admin/services/${serviceId}`))
         const result: ApiResponse<Service> = await response.json()
 
         if (result.error) {
@@ -51,7 +52,7 @@ export default function EditServicePage() {
     setError(null)
 
     try {
-      const response = await fetch(`/api/admin/services/${serviceId}`, {
+      const response = await fetch(apiUrl(`/api/admin/services/${serviceId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

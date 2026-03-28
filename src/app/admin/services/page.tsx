@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
+import { apiUrl } from '@/lib/api'
 import { useRouter, useSearchParams } from 'next/navigation'
 import ServicesTable from '@/components/admin/ServicesTable'
 import type { Service } from '@/types/admin'
@@ -41,7 +42,7 @@ export default function ServicesPage() {
     setError(null)
 
     try {
-      const response = await fetch(`/api/admin/services?page=${pageNum}&page_size=25`)
+      const response = await fetch(apiUrl(`/api/admin/services?page=${pageNum}&page_size=25`))
       const result: ApiResponse<PaginatedData> = await response.json()
 
       if (result.error) {
@@ -72,7 +73,7 @@ export default function ServicesPage() {
 
   const handleToggleActive = async (service: Service) => {
     try {
-      const response = await fetch(`/api/admin/services/${service.id}`, {
+      const response = await fetch(apiUrl(`/api/admin/services/${service.id}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_active: !service.is_active }),
@@ -94,7 +95,7 @@ export default function ServicesPage() {
 
   const handleDelete = async (service: Service) => {
     try {
-      const response = await fetch(`/api/admin/services/${service.id}`, {
+      const response = await fetch(apiUrl(`/api/admin/services/${service.id}`), {
         method: 'DELETE',
       })
 
@@ -175,7 +176,7 @@ function CreateServiceModal({
   onSuccess: (service: Service) => void
 }) {
   const handleSubmit = async (data: ServiceFormData) => {
-    const response = await fetch('/api/admin/services', {
+    const response = await fetch(apiUrl('/api/admin/services'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),

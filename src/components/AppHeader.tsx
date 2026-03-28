@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { apiUrl } from '@/lib/api'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/context/AuthContext'
 
@@ -18,7 +19,7 @@ export function AppHeader() {
     setLogoutError(null)
 
     try {
-      const response = await fetch('/api/auth/logout', {
+      const response = await fetch(apiUrl('/api/auth/logout'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       })

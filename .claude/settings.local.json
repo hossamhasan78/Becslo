@@ -3,7 +3,10 @@
     "allow": [
       "Bash(xargs grep:*)",
       "Bash(grep -B5 -A5 \"window.location.href = ''''/wizard''''\" src/app/admin/analytics/page.tsx)",
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(head -30 \"src/app/\\(wizard\\)/wizard/components/step-inputs/geography-input.tsx\")",
+      "Bash(python3:*)",
+      "Bash(xargs echo:*)"
     ]
   }
 }
