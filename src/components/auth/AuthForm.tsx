@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { getClient } from '@/lib/supabase/client'
 
 interface AuthFormProps {
@@ -36,13 +37,14 @@ function getFriendlyError(message: string): string {
 }
 
 export function AuthForm({ mode }: AuthFormProps) {
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  
+
   const supabase = useMemo(() => getClient(), [])
 
   const handleLogin = async () => {
@@ -65,7 +67,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       setError(getFriendlyError(error.message))
     } else if (data.session) {
       const isAdmin = data.user?.user_metadata?.role === 'admin'
-      window.location.href = isAdmin ? '/admin' : '/wizard'
+      router.push(isAdmin ? '/admin' : '/wizard')
     } else if (data.user) {
       setError('Please check your email to confirm your account before logging in.')
     } else {
@@ -104,7 +106,7 @@ export function AuthForm({ mode }: AuthFormProps) {
     } else {
       setSuccess('Account created! Please log in.')
       setTimeout(() => {
-        window.location.href = '/login'
+        router.push('/login')
       }, 1500)
     }
     setLoading(false)

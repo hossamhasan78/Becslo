@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import type { AnalyticsMetrics } from '@/types/admin'
 import AnalyticsTables from '@/components/admin/AnalyticsTables'
 import DateRangeFilter from '@/components/admin/DateRangeFilter'
@@ -14,6 +15,7 @@ const EMPTY_METRICS: AnalyticsMetrics = {
 }
 
 export default function AnalyticsPage() {
+  const router = useRouter()
   const [metrics, setMetrics] = useState<AnalyticsMetrics>(EMPTY_METRICS)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -36,7 +38,7 @@ export default function AnalyticsPage() {
 
       if (result.error) {
         if (response.status === 401) {
-          window.location.href = '/wizard'
+          router.push('/wizard')
           return
         }
         setError(result.error.message)

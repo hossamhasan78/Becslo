@@ -1,6 +1,7 @@
 'use client'
 
-import React, { Component, ErrorInfo, ReactNode } from 'react'
+import React, { ReactNode } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   children: ReactNode
@@ -10,7 +11,7 @@ interface State {
   hasError: boolean
 }
 
-export class GlobalErrorBoundary extends Component<Props, State> {
+class GlobalErrorBoundaryClass extends React.Component<Props & { router: ReturnType<typeof useRouter> }, State> {
   public state: State = {
     hasError: false
   }
@@ -19,7 +20,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
     return { hasError: true }
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Global Error Boundary:', error, errorInfo)
   }
 
@@ -40,7 +41,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
                   Something went wrong. Please refresh the page to continue.
                 </p>
                 <button
-                  onClick={() => window.location.href = '/'}
+                  onClick={() => this.props.router.push('/')}
                   className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                 >
                   Refresh Page
@@ -54,4 +55,9 @@ export class GlobalErrorBoundary extends Component<Props, State> {
 
     return this.props.children
   }
+}
+
+export function GlobalErrorBoundary({ children }: { children: ReactNode }) {
+  const router = useRouter()
+  return <GlobalErrorBoundaryClass router={router}>{children}</GlobalErrorBoundaryClass>
 }

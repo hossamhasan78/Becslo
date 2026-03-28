@@ -1,15 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { CalculationDetails as CalculationDetailsType } from '@/types/admin'
 import CalculationDetails from '@/components/admin/CalculationDetails'
 
 export default function CalculationDetailsPage() {
   const params = useParams()
+  const router = useRouter()
   const id = params.id as string
-  
+
   const [details, setDetails] = useState<CalculationDetailsType | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -25,7 +26,7 @@ export default function CalculationDetailsPage() {
 
         if (result.error) {
           if (response.status === 401) {
-            window.location.href = '/wizard'
+            router.push('/wizard')
             return
           }
           if (response.status === 404) {

@@ -42,7 +42,7 @@ export default function CalculationsPage() {
 
       if (result.error) {
         if (response.status === 401) {
-          window.location.href = '/wizard'
+          router.push('/wizard')
           return
         }
         setError(result.error.message)

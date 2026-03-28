@@ -1,6 +1,7 @@
 'use client'
 
-import React, { Component, ErrorInfo, ReactNode } from 'react'
+import React, { useState, ReactNode } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   children: ReactNode
@@ -11,7 +12,7 @@ interface State {
   error: Error | null
 }
 
-export class ErrorBoundary extends Component<Props, State> {
+class ErrorBoundaryClass extends React.Component<Props & { router: ReturnType<typeof useRouter> }, State> {
   public state: State = {
     hasError: false,
     error: null
@@ -21,7 +22,7 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error }
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo)
   }
 
@@ -53,7 +54,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
             <div className="flex flex-col gap-3">
               <button
-                onClick={() => window.location.href = '/login'}
+                onClick={() => this.props.router.push('/login')}
                 className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
                 Go to Login
@@ -72,4 +73,9 @@ export class ErrorBoundary extends Component<Props, State> {
 
     return this.props.children
   }
+}
+
+export function ErrorBoundary({ children }: { children: ReactNode }) {
+  const router = useRouter()
+  return <ErrorBoundaryClass router={router}>{children}</ErrorBoundaryClass>
 }
