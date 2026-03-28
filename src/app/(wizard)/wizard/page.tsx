@@ -4,13 +4,10 @@ import { useState, useEffect } from 'react'
 
 import { useWizard } from '@/lib/context/WizardContext'
 import { WizardLayout } from '@/components/wizard/WizardLayout'
-import { StepNavigation } from '@/components/wizard/StepNavigation'
 import { WizardStepWrapper } from '@/components/wizard/WizardStepWrapper'
 import { ProgressBar } from '@/components/wizard/ProgressBar'
-import { AsyncStatus } from '@/components/wizard/AsyncStatus'
-import LivePreview from '@/components/wizard/LivePreview'
+
 import { ErrorBoundary } from '@/components/ErrorBoundary'
-import WizardLogoutButton from '@/components/wizard/WizardLogoutButton'
 
 // Import new step components
 import { ServiceSelectionStep } from '@/components/wizard/steps/ServiceSelectionStep'
@@ -21,12 +18,12 @@ import { RiskProfitStep } from '@/components/wizard/steps/RiskProfitStep'
 import { ReviewStep } from '@/components/wizard/steps/ReviewStep'
 
 export default function WizardPage() {
-  const { 
-    state, 
+  const {
+    state,
     isLoading,
-    error,
-    goToNextStep, 
+    goToNextStep,
     goToPreviousStep,
+    setCurrentStep,
     validateCurrentStep,
     loadPricingData,
     calculateAndSave
@@ -59,21 +56,21 @@ export default function WizardPage() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [state.currentStep, validateCurrentStep, goToNextStep, goToPreviousStep])
 
+  const handleCalculate = async () => {
+    try {
+      await calculateAndSave()
+    } catch {
+      // Error is set in WizardContext; advance to Step 6 anyway so user sees their result
+    }
+    goToNextStep()
+  }
+
   const handleDownloadPDF = async () => {
     try {
       setIsDownloading(true)
       setDownloadError(null)
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let id = (state as any).savedCalculationId;
-      
-      if (!id) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const res = await (calculateAndSave as any)()
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        id = res?.calculationId || (state as any).savedCalculationId
-      }
-
+      const id = state.savedCalculationId
       if (!id) throw new Error('Could not generate Calculation ID')
 
       const response = await fetch(`/api/v1/export-pdf?id=${id}`)
@@ -109,28 +106,6 @@ export default function WizardPage() {
             <p className="text-zinc-500 font-medium animate-pulse">Initializing your bespoke pricing engine...</p>
           </div>
         }
-        rightPanel={<div className="animate-pulse bg-zinc-50 rounded-3xl h-full w-full" />}
-      />
-    )
-  }
-
-  if (error) {
-    return (
-      <WizardLayout
-        leftPanel={
-          <div className="flex flex-col items-center justify-center min-h-[500px] text-center px-6">
-            <div className="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center text-3xl mb-6">⚠️</div>
-            <h2 className="text-2xl font-black text-zinc-900 mb-2">Something went wrong</h2>
-            <p className="text-zinc-500 mb-8 max-w-md">{error}</p>
-            <button 
-              onClick={loadPricingData}
-              className="px-8 py-3 bg-zinc-900 text-white rounded-full font-bold hover:bg-black transition-all"
-            >
-              Try Again
-            </button>
-          </div>
-        }
-        rightPanel={<div className="bg-zinc-50 rounded-3xl h-full w-full" />}
       />
     )
   }
@@ -158,13 +133,8 @@ export default function WizardPage() {
       <WizardLayout
         leftPanel={
           <div id="wizard-content" className="space-y-6 max-w-2xl mx-auto">
-            <div className="flex justify-between items-center">
-              <StepNavigation />
-              <WizardLogoutButton />
-            </div>
-
             <div className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-10 shadow-sm min-h-[500px] flex flex-col">
-              <ProgressBar currentStep={state.currentStep} />
+              <ProgressBar currentStep={state.currentStep} highestCompletedStep={state.highestCompletedStep} setCurrentStep={setCurrentStep} />
               
               <WizardStepWrapper stepKey={state.currentStep}>
                 <div className="flex-1">
@@ -188,7 +158,7 @@ export default function WizardPage() {
 
                 {state.currentStep < 6 && (
                   <button
-                    onClick={goToNextStep}
+                    onClick={state.currentStep === 5 ? handleCalculate : goToNextStep}
                     disabled={!canProceed}
                     className={`
                       px-10 py-3 rounded-full font-black text-white transition-all shadow-lg active:scale-95 flex items-center gap-2 group
@@ -249,7 +219,6 @@ export default function WizardPage() {
             )}
           </div>
         }
-        rightPanel={<LivePreview />}
       />
     </ErrorBoundary>
   )

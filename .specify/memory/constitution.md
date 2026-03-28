@@ -1,17 +1,21 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version Change: 1.0.0 → 1.1.0
-Modified Principles: IV. Admin-Configured Pricing (amended)
+Version Change: 1.1.0 → 1.2.0
+Modified Principles: Development Workflow §Code Organization (amended)
 Added Sections: None
 Removed Sections: None
-Amendment Reference: Implementation Plan Addendum v1.1, Change 3 — Overhead Costs: User-Editable Amounts
+Amendment Reference: Implementation Plan Addendum v1.1, Changes 5 & 6 — Results Step Redesign / Right-Panel Removal
 Approved By: CEO / Business Director (2026-03-25)
 Templates Requiring Updates:
   ✅ .specify/templates/plan-template.md (Constitution Check section validated)
   ✅ .specify/templates/spec-template.md (Requirements structure validated)
   ✅ .specify/templates/tasks-template.md (Task categorization validated)
 Follow-up TODOs: None
+
+Previous change (1.0.0 → 1.1.0):
+  Modified Principles: IV. Admin-Configured Pricing (amended)
+  Amendment Reference: Implementation Plan Addendum v1.1, Change 3 — Overhead Costs: User-Editable Amounts
 -->
 
 # Becslo Constitution
@@ -57,9 +61,11 @@ Implementation MUST follow a strict priority order: (1) Authentication flow, (2)
 ### Code Organization
 
 Frontend structure follows NextJS 14.x conventions with app router:
-- Wizard UI: 3/4 left panel for step-by-step input, 1/4 right panel for live preview
+- Wizard UI: full-width single-panel layout (see Amendment v1.2 below)
 - Service hours: manual input only (no templates in MVP)
-- Real-time accumulation: fee updates MUST be reflected immediately in the live preview panel
+- Real-time accumulation: fee calculation updates MUST be computed in real time and displayed to the user; as of Amendment v1.2, output is presented on Step 6 rather than a persistent sidebar panel
+
+**Amendment v1.2** (approved 2026-03-25, ref: Implementation Plan Addendum v1.1 Changes 5 & 6): The right-hand live preview sidebar is permanently removed from the wizard layout. The wizard now occupies full available width on all steps. Real-time calculation output (useMemo in WizardContext) is preserved and displayed in full on Step 6 (Results), satisfying the spirit of the real-time accumulation requirement. No separate live preview panel renders on Steps 1–5.
 
 ### Testing Requirements
 
@@ -101,4 +107,4 @@ All pull requests MUST verify compliance with:
 
 Violations of non-negotiable principles (e.g., adding alternative authentication methods) require explicit team approval with documented rationale.
 
-**Version**: 1.1.0 | **Ratified**: 2026-03-17 | **Last Amended**: 2026-03-26
+**Version**: 1.2.0 | **Ratified**: 2026-03-17 | **Last Amended**: 2026-03-28

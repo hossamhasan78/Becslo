@@ -1,25 +1,13 @@
 'use client'
 
 import { useWizard } from '@/lib/context/WizardContext'
-import { useState } from 'react'
 
 export function ReviewStep() {
-  const { state, result, validateCurrentStep, calculateAndSave, isLoading } = useWizard()
-  const [saveMessage, setSaveMessage] = useState('')
+  const { result, updateState } = useWizard()
 
-  const handleCalculateSave = async () => {
-    setSaveMessage('')
-    try {
-      await calculateAndSave()
-      setSaveMessage('Success! Your calculation has been persisted.')
-    } catch (err) {
-      const error = err as Error
-      setSaveMessage(error.message || 'Save failed. Please try again.')
-    }
+  const goBackToStep1 = () => {
+    updateState({ currentStep: 1 })
   }
-
-  const validation = validateCurrentStep()
-  const canFinalize = validation.isValid
 
   if (!result) {
     return (
@@ -30,106 +18,146 @@ export function ReviewStep() {
     )
   }
 
+  const experienceMultiplierDisplay = result.experienceMultiplier.toFixed(2)
+  const geographyMultiplierDisplay = result.geographyMultiplier.toFixed(2)
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col gap-1">
-        <h3 className="text-2xl font-bold text-zinc-900">Project Review</h3>
-        <p className="text-sm text-zinc-500">Everything looks solid. Review final details below.</p>
+        <h3 className="text-2xl font-bold text-zinc-900">Your Project Quote</h3>
+        <p className="text-sm text-zinc-500">Complete breakdown of your calculated price.</p>
       </div>
 
-      <div className="bg-zinc-50 rounded-3xl border border-zinc-100 overflow-hidden shadow-inner p-8 space-y-8">
-        <div className="space-y-4">
-          <label className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Selected Services</label>
-          <div className="space-y-2">
-            {result.breakdown.map((item: any, i: number) => (
-              <div key={i} className="flex justify-between items-center py-2 border-b border-zinc-200 last:border-0">
-                <span className="text-sm font-bold text-zinc-700">{item.serviceName}</span>
-                <span className="text-sm font-black text-zinc-900">${Math.round(item.subtotal)}</span>
+      {result.breakdown.length > 0 ? (
+        <div className="bg-white rounded-3xl border border-zinc-100 shadow-sm overflow-hidden">
+          <div className="p-6">
+            <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-4">Selected Services</label>
+            <div className="space-y-2">
+              {result.breakdown.map((item) => (
+                <div key={item.serviceId} className="flex justify-between items-center py-3 border-b border-zinc-100 last:border-0">
+                  <span className="text-sm font-bold text-zinc-800">{item.serviceName}</span>
+                  <span className="text-sm text-zinc-500">{item.hours}h</span>
+                  <span className="text-sm font-bold text-zinc-900">${Math.round(item.cost)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white rounded-3xl border border-zinc-100 shadow-sm p-6">
+          <div className="flex flex-col items-center justify-center py-8">
+            <svg className="w-12 h-12 text-zinc-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 0-6m0 6m6-0h6m-6 0-6m6 0h6m0 6l9 9" />
+            </svg>
+            <div className="text-center">
+              <h4 className="text-sm font-medium text-zinc-700">No services selected</h4>
+              <button
+                onClick={goBackToStep1}
+                className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-all"
+              >
+                ← Go back to select services
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-3xl border border-zinc-100 shadow-sm p-6">
+          <div className="text-xs font-bold text-zinc-400 uppercase tracking-widest block mb-4">Experience Multiplier</div>
+          <div className="text-center">
+            <div className="text-5xl font-black text-zinc-900">
+              ×{experienceMultiplierDisplay}
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-zinc-100 shadow-sm p-6">
+          <div className="text-xs font-bold text-zinc-400 uppercase tracking-widest block mb-4">Geography Multiplier</div>
+          <div className="text-center">
+            <div className="text-5xl font-black text-zinc-900">
+              ×{geographyMultiplierDisplay}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {result.costBreakdown.length > 0 ? (
+        <div className="bg-white rounded-3xl border border-zinc-100 shadow-sm overflow-hidden">
+          <div className="p-6">
+            <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-4">Overhead Costs</label>
+            <div className="space-y-2">
+              {result.costBreakdown.map((item, i) => (
+                <div key={i} className="flex justify-between items-center py-3 border-b border-zinc-100 last:border-0">
+                  <span className="text-sm font-bold text-zinc-800">{item.costName}</span>
+                  <span className="text-sm font-bold text-zinc-900">${Math.round(item.amount)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white rounded-3xl border border-zinc-100 shadow-sm p-6">
+          <div className="text-center">
+            <svg className="w-12 h-12 text-zinc-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 0-6m0 6m6-0h6m-6 0-6m6 0h6m0 6l9 9" />
+            </svg>
+            <div className="text-center">
+              <h4 className="text-sm font-medium text-zinc-700">No overhead costs entered</h4>
+              <p className="text-xs text-zinc-500 mt-2">Leave this step empty if no additional business expenses apply</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="bg-white rounded-3xl border border-zinc-100 shadow-sm overflow-hidden">
+        <div className="p-6">
+          <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-4">Pricing Summary</label>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-zinc-500 font-medium">Services Subtotal</span>
+              <span className="text-lg font-bold text-zinc-900">${Math.round(result.baseCost)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-zinc-500 font-medium">Overhead Costs</span>
+              <span className="text-lg font-bold text-zinc-900">${Math.round(result.overheadCosts)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-zinc-500 font-medium">Subtotal</span>
+              <span className="text-lg font-bold text-zinc-900">${Math.round(result.subtotal)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-zinc-500 font-medium">Risk Buffer</span>
+              <span className="text-lg font-bold text-zinc-900">${Math.round(result.riskBufferAmount)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-zinc-500 font-medium">Profit Margin</span>
+              <span className="text-lg font-bold text-zinc-900">${Math.round(result.profitMarginAmount)}</span>
+            </div>
+            <div className="pt-4 border-t border-zinc-200 mt-4">
+              <div className="flex justify-between items-center">
+                <span className="text-base font-bold text-zinc-900">Final Price</span>
+                <span className="text-3xl font-black text-blue-600">${Math.round(result.finalPrice)}</span>
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-4 bg-white border border-zinc-100 rounded-2xl shadow-sm">
-            <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest block mb-1">Experience</span>
-            <span className="text-lg font-black text-blue-600">×{result.experienceMultiplier.toFixed(2)}</span>
-          </div>
-          <div className="p-4 bg-white border border-zinc-100 rounded-2xl shadow-sm">
-            <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest block mb-1">Geography</span>
-            <span className="text-lg font-black text-blue-600">×{result.geographyMultiplier.toFixed(2)}</span>
-          </div>
-        </div>
-
-        <div className="pt-6 border-t border-zinc-200">
-          <div className="flex justify-between items-end mb-4">
-            <label className="text-sm font-black text-zinc-400 uppercase tracking-widest">Total Valuation</label>
-            <div className="text-5xl font-black text-zinc-900">${Math.round(result.finalPrice)}</div>
-          </div>
-          <div className="bg-zinc-900 text-white p-6 rounded-2xl shadow-xl">
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-50">Recommended Range</span>
-            </div>
-            <div className="text-xl font-black flex items-center gap-2">
-              <span>${Math.round(result.recommendedMin)}</span>
-              <span className="text-zinc-500 text-sm">to</span>
-              <span>${Math.round(result.recommendedMax)}</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <button
-          onClick={handleCalculateSave}
-          disabled={isLoading || !canFinalize || state.isSaved}
-          className={`
-            w-full py-5 rounded-2xl text-white font-black text-lg transition-all shadow-xl hover:shadow-2xl active:scale-[0.98]
-            ${(isLoading || state.isSaved) ? 'bg-zinc-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
-          `}
-        >
-          {isLoading ? 'Persisting Quote...' : state.isSaved ? 'Quote Saved' : 'Calculate & Save'}
-        </button>
-
-        <button
-          disabled={!state.isSaved}
-          className={`
-            w-full py-4 bg-white border-2 border-zinc-100 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all
-            ${state.isSaved ? 'border-blue-200 text-blue-600 hover:bg-blue-50' : 'text-zinc-300 cursor-not-allowed'}
-          `}
-        >
-          {state.isSaved ? (
-            <>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              Download PDF
-            </>
-          ) : (
-            <span>Download PDF (Save first)</span>
-          )}
-        </button>
-
-        {state.isSaved && (
-          <div className="p-6 bg-zinc-900 border border-zinc-700 rounded-3xl flex items-center justify-between text-white animate-in zoom-in-95 duration-500">
-            <div className="flex flex-col gap-1">
-              <span className="text-[10px] font-bold uppercase opacity-40 tracking-[0.2em] text-zinc-300">Reference ID</span>
-              <span className="text-xs font-black font-mono text-zinc-100">{state.savedCalculationId}</span>
+      <div className="bg-zinc-900 rounded-3xl border border-zinc-800 shadow-xl p-8 text-white">
+        <div className="flex flex-col gap-2">
+          <div className="text-xs font-bold uppercase tracking-widest opacity-80 mb-2">Recommended Range</div>
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <div className="text-2xl font-bold">$</div>
+              <div className="text-3xl font-black">{Math.round(result.recommendedMin)}</div>
             </div>
-            <div className="bg-emerald-500/20 text-emerald-400 rounded-full px-4 py-2 flex items-center gap-2 border border-emerald-500/30">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
-              <span className="text-xs font-bold uppercase tracking-widest">Persisted</span>
+            <div className="flex-1">
+              <div className="text-2xl font-bold">$</div>
+              <div className="text-3xl font-black">{Math.round(result.recommendedMax)}</div>
             </div>
           </div>
-        )}
-
-        {saveMessage && !state.isSaved && (
-          <div className="p-4 rounded-2xl text-center font-bold animate-in zoom-in-95 duration-200 bg-red-50 text-red-700 border border-red-100">
-            {saveMessage}
-          </div>
-        )}
+        </div>
       </div>
     </div>
   )
