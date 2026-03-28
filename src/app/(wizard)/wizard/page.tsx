@@ -7,8 +7,7 @@ import { WizardLayout } from '@/components/wizard/WizardLayout'
 import { StepNavigation } from '@/components/wizard/StepNavigation'
 import { WizardStepWrapper } from '@/components/wizard/WizardStepWrapper'
 import { ProgressBar } from '@/components/wizard/ProgressBar'
-import { AsyncStatus } from '@/components/wizard/AsyncStatus'
-import LivePreview from '@/components/wizard/LivePreview'
+
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import WizardLogoutButton from '@/components/wizard/WizardLogoutButton'
 
@@ -21,11 +20,10 @@ import { RiskProfitStep } from '@/components/wizard/steps/RiskProfitStep'
 import { ReviewStep } from '@/components/wizard/steps/ReviewStep'
 
 export default function WizardPage() {
-  const { 
-    state, 
+  const {
+    state,
     isLoading,
-    error,
-    goToNextStep, 
+    goToNextStep,
     goToPreviousStep,
     validateCurrentStep,
     loadPricingData,
@@ -109,28 +107,6 @@ export default function WizardPage() {
             <p className="text-zinc-500 font-medium animate-pulse">Initializing your bespoke pricing engine...</p>
           </div>
         }
-        rightPanel={<div className="animate-pulse bg-zinc-50 rounded-3xl h-full w-full" />}
-      />
-    )
-  }
-
-  if (error) {
-    return (
-      <WizardLayout
-        leftPanel={
-          <div className="flex flex-col items-center justify-center min-h-[500px] text-center px-6">
-            <div className="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center text-3xl mb-6">⚠️</div>
-            <h2 className="text-2xl font-black text-zinc-900 mb-2">Something went wrong</h2>
-            <p className="text-zinc-500 mb-8 max-w-md">{error}</p>
-            <button 
-              onClick={loadPricingData}
-              className="px-8 py-3 bg-zinc-900 text-white rounded-full font-bold hover:bg-black transition-all"
-            >
-              Try Again
-            </button>
-          </div>
-        }
-        rightPanel={<div className="bg-zinc-50 rounded-3xl h-full w-full" />}
       />
     )
   }
@@ -249,7 +225,6 @@ export default function WizardPage() {
             )}
           </div>
         }
-        rightPanel={<LivePreview />}
       />
     </ErrorBoundary>
   )
