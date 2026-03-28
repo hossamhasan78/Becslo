@@ -57,21 +57,21 @@ export default function WizardPage() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [state.currentStep, validateCurrentStep, goToNextStep, goToPreviousStep])
 
+  const handleCalculate = async () => {
+    try {
+      await calculateAndSave()
+    } catch {
+      // Error is set in WizardContext; advance to Step 6 anyway so user sees their result
+    }
+    goToNextStep()
+  }
+
   const handleDownloadPDF = async () => {
     try {
       setIsDownloading(true)
       setDownloadError(null)
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let id = (state as any).savedCalculationId;
-      
-      if (!id) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const res = await (calculateAndSave as any)()
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        id = res?.calculationId || (state as any).savedCalculationId
-      }
-
+      const id = state.savedCalculationId
       if (!id) throw new Error('Could not generate Calculation ID')
 
       const response = await fetch(`/api/v1/export-pdf?id=${id}`)
@@ -164,7 +164,7 @@ export default function WizardPage() {
 
                 {state.currentStep < 6 && (
                   <button
-                    onClick={goToNextStep}
+                    onClick={state.currentStep === 5 ? handleCalculate : goToNextStep}
                     disabled={!canProceed}
                     className={`
                       px-10 py-3 rounded-full font-black text-white transition-all shadow-lg active:scale-95 flex items-center gap-2 group

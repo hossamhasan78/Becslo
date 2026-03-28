@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useState, useMemo, useCallback, useEffect } from 'react'
 import { WizardState, DEFAULT_WIZARD_STATE, SelectedService } from '@/types/wizard'
-import { useSessionStorage } from '@/lib/hooks/useSessionStorage'
 import { validateStep, StepValidationResult } from '@/lib/validation/step-validators'
 import { calculatePrice } from '@/lib/pricing-engine'
 import { PricingInput, PricingOutput, Category, Service, Country, Cost, Config } from '@/lib/types/pricing'
@@ -53,8 +52,8 @@ export function useWizard() {
 }
 
 export function WizardProvider({ children }: { children: React.ReactNode }) {
-  // Use sessionStorage for persistence
-  const [state, setState] = useSessionStorage<WizardState>('becslo_wizard_state', DEFAULT_WIZARD_STATE)
+  // Use in-memory state for fresh start on every page load
+  const [state, setState] = useState<WizardState>(DEFAULT_WIZARD_STATE)
   
   // Reference data state
   const [categories, setCategories] = useState<Category[]>([])
@@ -164,8 +163,6 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
 
   const resetWizard = useCallback(() => {
     setState(DEFAULT_WIZARD_STATE)
-    if (typeof window !== 'undefined') {
-    }
   }, [setState])
   
   const calculateAndSave = useCallback(async () => {
