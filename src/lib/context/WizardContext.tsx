@@ -183,7 +183,7 @@ export function WizardProvider({ children }: { children: React.ReactNode }) {
         profitMarginPercent: state.profitMargin
       }
 
-      const response = await fetch(apiUrl('/api/v1/calculate-and-save', {
+      const response = await fetch(apiUrl('/api/v1/calculate-and-save'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pricingInput)
