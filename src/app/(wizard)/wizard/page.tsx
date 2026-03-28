@@ -4,12 +4,10 @@ import { useState, useEffect } from 'react'
 
 import { useWizard } from '@/lib/context/WizardContext'
 import { WizardLayout } from '@/components/wizard/WizardLayout'
-import { StepNavigation } from '@/components/wizard/StepNavigation'
 import { WizardStepWrapper } from '@/components/wizard/WizardStepWrapper'
 import { ProgressBar } from '@/components/wizard/ProgressBar'
 
 import { ErrorBoundary } from '@/components/ErrorBoundary'
-import WizardLogoutButton from '@/components/wizard/WizardLogoutButton'
 
 // Import new step components
 import { ServiceSelectionStep } from '@/components/wizard/steps/ServiceSelectionStep'
@@ -25,6 +23,7 @@ export default function WizardPage() {
     isLoading,
     goToNextStep,
     goToPreviousStep,
+    setCurrentStep,
     validateCurrentStep,
     loadPricingData,
     calculateAndSave
@@ -134,13 +133,8 @@ export default function WizardPage() {
       <WizardLayout
         leftPanel={
           <div id="wizard-content" className="space-y-6 max-w-2xl mx-auto">
-            <div className="flex justify-between items-center">
-              <StepNavigation />
-              <WizardLogoutButton />
-            </div>
-
             <div className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-10 shadow-sm min-h-[500px] flex flex-col">
-              <ProgressBar currentStep={state.currentStep} />
+              <ProgressBar currentStep={state.currentStep} highestCompletedStep={state.highestCompletedStep} setCurrentStep={setCurrentStep} />
               
               <WizardStepWrapper stepKey={state.currentStep}>
                 <div className="flex-1">
