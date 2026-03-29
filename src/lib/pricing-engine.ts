@@ -29,7 +29,10 @@ export function calculatePrice(
     if (c.code === input.designerCountryCode) designerMultiplier = c.multiplier
     if (c.code === input.clientCountryCode) clientMultiplier = c.multiplier
   }
-  const geographyMultiplier = designerMultiplier * clientMultiplier
+  // If designer and client are in the same country, no geographic cost adjustment (multiplier = 1)
+  const geographyMultiplier = input.designerCountryCode === input.clientCountryCode
+    ? 1
+    : designerMultiplier * clientMultiplier
 
   const serviceCount = input.services.length
   for (let i = 0; i < serviceCount; i++) {
