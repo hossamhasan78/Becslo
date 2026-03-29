@@ -173,7 +173,7 @@ export default function WizardPage() {
                   </button>
                 )}
 
-                {state.currentStep === 6 && (
+                {false && state.currentStep === 6 && (
                   <button
                     onClick={handleDownloadPDF}
                     disabled={isDownloading || !canProceed}
