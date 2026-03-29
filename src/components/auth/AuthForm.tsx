@@ -117,7 +117,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       password,
       options: {
         data: { name },
-        emailRedirectTo: 'https://tools.hsd-designs.com/becslo/auth/callback'
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://becslo.hsd-designs.com'}/auth/callback`
       }
     })
     

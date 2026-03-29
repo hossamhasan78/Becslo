@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const code = searchParams.get('code')
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://tools.hsd-designs.com/becslo').replace(/\/$/, '')
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://becslo.hsd-designs.com').replace(/\/$/, '')
 
   if (!code) {
     return NextResponse.redirect(`${siteUrl}/login?error=invalid_code`)
