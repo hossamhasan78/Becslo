@@ -31,11 +31,11 @@ export function validateStep(stepId: number, state: WizardState): StepValidation
       break
 
     case 2: // Experience
-      if (state.experienceDesigner < 1 || state.experienceDesigner > 3) {
-        errors.push({ field: 'experienceDesigner', message: 'Experience level must be between 1 and 3' })
+      if (state.experienceDesigner < 1 || state.experienceDesigner > 25) {
+        errors.push({ field: 'experienceDesigner', message: 'Designer experience must be between 1 and 25 years' })
       }
-      if (state.experienceFreelance < 1 || state.experienceFreelance > state.experienceDesigner) {
-        errors.push({ field: 'experienceFreelance', message: 'Freelance experience must be between 1 and your overall experience level' })
+      if (state.experienceFreelance < 1 || state.experienceFreelance > 25) {
+        errors.push({ field: 'experienceFreelance', message: 'Freelance experience must be between 1 and 25 years' })
       }
       break
 

@@ -13,7 +13,7 @@ export function ExperienceInput() {
   const handleOverallChange = (value: number) => {
     const validation = validatePositiveNumber(value)
     if (validation.valid && validation.value !== null) {
-      setExperienceDesigner(Math.min(3, Math.max(1, validation.value)))
+      setExperienceDesigner(Math.min(25, Math.max(1, validation.value)))
     }
   }
 
@@ -36,7 +36,7 @@ export function ExperienceInput() {
           id="overallExperience"
           type="number"
           min="1"
-          max="3"
+          max="25"
           step="1"
           value={state.experienceDesigner}
           onChange={(e) => handleOverallChange(parseInt(e.target.value) || 1)}
@@ -44,7 +44,7 @@ export function ExperienceInput() {
             overallError ? 'border-red-500' : 'border-gray-300'
           }`}
         />
-        <p className="text-xs text-zinc-500 mt-1">Experience level (1-3, where 3 is most experienced)</p>
+        <p className="text-xs text-zinc-500 mt-1">Years of professional experience (1-25)</p>
         {overallError && (
           <p className="text-sm text-red-600 mt-1">{overallError}</p>
         )}
