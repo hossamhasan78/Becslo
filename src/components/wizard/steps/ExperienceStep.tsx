@@ -3,16 +3,31 @@
 import { useWizard } from '@/lib/context/WizardContext'
 
 const EXPERIENCE_LABELS: Record<number, string> = {
-  1: 'Junior',
-  2: 'Junior',
-  3: 'Mid-Level',
-  4: 'Mid-Level',
-  5: 'Mid-Level',
-  6: 'Senior',
-  7: 'Senior',
-  8: 'Senior',
-  9: 'Expert',
-  10: 'Expert'
+  1: 'Newcomer',
+  2: 'Newcomer',
+  3: 'Junior',
+  4: 'Junior',
+  5: 'Junior',
+  6: 'Mid-Level',
+  7: 'Mid-Level',
+  8: 'Mid-Level',
+  9: 'Senior',
+  10: 'Senior',
+  11: 'Senior',
+  12: 'Expert',
+  13: 'Expert',
+  14: 'Expert',
+  15: 'Veteran',
+  16: 'Veteran',
+  17: 'Veteran',
+  18: 'Master',
+  19: 'Master',
+  20: 'Master',
+  21: 'Legend',
+  22: 'Legend',
+  23: 'Legend',
+  24: 'Legend',
+  25: 'Legend'
 }
 
 export function ExperienceStep() {
@@ -34,15 +49,15 @@ export function ExperienceStep() {
             </label>
             <div className="flex items-baseline gap-1">
               <span className="text-3xl font-black text-blue-600">{state.experienceDesigner}</span>
-              <span className="text-sm font-bold text-zinc-400">/ 10</span>
+              <span className="text-sm font-bold text-zinc-400">/ 25</span>
             </div>
           </div>
-          
+
           <div className="relative pt-2">
             <input
               type="range"
               min="1"
-              max="10"
+              max="25"
               step="1"
               value={state.experienceDesigner}
               onChange={(e) => setExperienceDesigner(parseInt(e.target.value))}
@@ -66,15 +81,15 @@ export function ExperienceStep() {
             </label>
             <div className="flex items-baseline gap-1">
               <span className="text-3xl font-black text-blue-600">{state.experienceFreelance}</span>
-              <span className="text-sm font-bold text-zinc-400">/ 10</span>
+              <span className="text-sm font-bold text-zinc-400">/ 25</span>
             </div>
           </div>
-          
+
           <div className="relative pt-2">
             <input
               type="range"
               min="1"
-              max="10"
+              max="25"
               step="1"
               value={state.experienceFreelance}
               onChange={(e) => setExperienceFreelance(parseInt(e.target.value))}
