@@ -32,10 +32,10 @@ export function calculatePrice(
     if (c.code === input.clientCountryCode) clientMultiplier = c.multiplier
   }
   // If designer and client are in the same country, no geographic cost adjustment (multiplier = 1)
-  // If different countries, apply cross-border premium (1.6x the average of both multipliers)
+  // If different countries, apply cross-border premium (1.15x the average of both multipliers)
   const geographyMultiplier = input.designerCountryCode === input.clientCountryCode
     ? 1
-    : (designerMultiplier + clientMultiplier) / 2 * 1.6
+    : (designerMultiplier + clientMultiplier) / 2 * 1.15
 
   const serviceCount = input.services.length
   for (let i = 0; i < serviceCount; i++) {
