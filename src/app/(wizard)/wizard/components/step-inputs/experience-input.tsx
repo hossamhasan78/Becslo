@@ -8,7 +8,7 @@ export function ExperienceInput() {
 
   const validation = validateCurrentStep()
   const overallError = validation.errors.find(e => e.field === 'experienceDesigner')?.message
-  const freelanceError = validation.errors.find(e => e.field === 'freelanceExperience')?.message
+  const freelanceError = validation.errors.find(e => e.field === 'experienceFreelance')?.message
 
   const handleOverallChange = (value: number) => {
     const validation = validatePositiveNumber(value)
