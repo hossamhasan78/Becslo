@@ -3,11 +3,17 @@ import { createServerClient as createSupabaseServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import type { ApiResponse, CalculationDetails } from '@/types/admin'
 
-async function getAdminUser(supabase: Awaited<ReturnType<typeof import('@/lib/supabase/server').createClient>>) {
+async function getAdminUser(supabase: any) {
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user || user.user_metadata?.role !== 'admin') {
-    return null
-  }
+  if (!user) return null
+
+  const { data: adminRecord } = await supabase
+    .from('admin_users')
+    .select('user_id')
+    .eq('user_id', user.id)
+    .single()
+
+  if (!adminRecord) return null
   return user
 }
 
