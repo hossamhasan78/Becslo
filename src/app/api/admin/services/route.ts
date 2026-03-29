@@ -5,17 +5,14 @@ import { cookies } from 'next/headers'
 import type { Service, PaginatedServicesResponse, ApiResponse } from '@/types/admin'
 
 async function getAdminUser(supabase: any) {
-  const { data: { user }, error } = await supabase.auth.getUser()
-  console.log('getAdminUser - user:', user?.id, 'error:', error)
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
 
-  const { data: adminRecord, error: adminError } = await supabase
+  const { data: adminRecord } = await supabase
     .from('admin_users')
     .select('user_id')
     .eq('user_id', user.id)
     .single()
-
-  console.log('getAdminUser - adminRecord:', adminRecord, 'adminError:', adminError)
 
   if (!adminRecord) return null
   return user
