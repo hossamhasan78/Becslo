@@ -20,9 +20,9 @@ export function calculatePrice(
   const breakdown: ServiceBreakdown[] = []
   let baseCost = 0
 
-  // Experience multiplier: additive percentage-based (5% per year)
-  // 1 year = 1.05x, 10 years = 1.50x, 25 years = 2.25x
-  const experienceMultiplier = 1 + (input.designerExperience * 0.05) + (input.freelanceExperience * 0.05)
+  // Experience multiplier: additive percentage-based (15% per year)
+  // 1 year = 1.15x, 10 years = 2.50x, 25 years = 4.00x
+  const experienceMultiplier = 1 + (input.designerExperience * 0.15) + (input.freelanceExperience * 0.15)
 
   let designerMultiplier = 1
   let clientMultiplier = 1

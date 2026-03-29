@@ -89,7 +89,7 @@ export function ExperienceStep() {
             <input
               type="range"
               min="1"
-              max="25"
+              max={state.experienceDesigner}
               step="1"
               value={state.experienceFreelance}
               onChange={(e) => setExperienceFreelance(parseInt(e.target.value))}
